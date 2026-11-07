@@ -2338,7 +2338,7 @@ function omni(text){
 }
 function search(q){
   const d=strip(q.toLowerCase());const words=d.split(/[^a-z0-9]+/).filter(w=>w.length>=2);
-  return INDEX.filter(s=>!s.locked||S.unlocked.includes(s.locked)).map(s=>{
+  return INDEX.filter(s=>!s.locked||(S.unlocked||[]).includes(s.locked)).map(s=>{
     let sc=0;
     for(const k of s.kw){
       if(k.includes(' ')){if(d.includes(k.trim()))sc+=2;continue}
@@ -3572,7 +3572,18 @@ function renderMenu(){
   }
   $('#menu-body').innerHTML=h;
 }
+/* completa los datos que no existían en partidas guardadas con versiones anteriores */
+function upgradeSave(st){
+  const d={shop:[],tshop:{},inv:[],buyers:[],hired:[],cands:[],bills:[],shipments:[],deliveries:[],door:[],fridgeItems:[],botMsgs:[],used:{},lexUse:{},pantry:{},unlocked:[],proStories:[],absUsed:[],
+    jobsDone:{plates:0,surveys:0,typing:0},day$:{sales:0,profit:0,jobs:0,spent:0},revenue:0,stove:false,fridge:false,drone:false,botSub:false,botPro:false,restock2:false,aiOn:true,auto:true,view:'room',wall:0,food:100,drink:100,sales:0,earned:0,nextId:1,t:0,day:1,min:480,money:20};
+  for(const k in d)if(st[k]===undefined||st[k]===null)st[k]=JSON.parse(JSON.stringify(d[k]));
+  if(!Array.isArray(st.tabs)||!st.tabs.length){const id=st.nextId++;st.tabs=[{id,url:'buscalo.com',back:[],fwd:[]}];st.tab=id}
+  for(const l of [...st.shop,...Object.values(st.tshop).flat()])if(!l.qty)l.qty=1;
+  for(const b of st.buyers){b.msgs=b.msgs||[];b.asked=b.asked||[];b.seen=b.seen||[]}
+  return st;
+}
 function afterLoad(){
+  upgradeSave(S);
   for(const b of S.buyers)if(b.typing){b.typing=false;b.waitingSince=S.t;b.msgs.forEach(m=>m.pending=false)}
   S.view=S.view||'room';S.wall=S.wall||0;S.door=S.door||[];if(S.view==='pc'){S.view='room'}
   S.cur=null;$('#chat').hidden=true;$('#fridge').hidden=true;$('#pkg').hidden=true;$('#editor').hidden=true;$('#job').hidden=true;$('#stats').hidden=true;
