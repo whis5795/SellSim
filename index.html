@@ -1352,7 +1352,7 @@ function spawnBuyer(it){
 function opening(b,it){
   const n=`${art(it)} ${low(it.name)}`,o=money(b.offer);
   const w=it.kw.length?wordFor(it.story,pick(it.kw)):null;
-  const hook=w?` Lo de «${w}» me llamó la atención.`:'';
+  const hook=w?' '+pick(['La historia me llamó mucho la atención.','Me encantó lo que contaste en el anuncio.','La historia que cuentas me dejó pensando.']):'';
   const ask=b.offer<it.price?` Pides ${money(it.price)}, pero yo puedo pagar ${o}.`:` Te ofrezco ${o}.`;
   if(b.conv>=50)return pick([`¡Hola! Vi ${n}.${hook}${ask}`,`Buenas, me encantó la publicación de ${n}.${ask}`]);
   if(b.conv>=30)return `Hola. Me interesa ${n}, pero quiero estar seguro de lo que dice el anuncio.${hook}${ask}`;
@@ -1367,8 +1367,8 @@ const TOPICS=[
   react:x=>[`Que tenga ${x} cambia bastante las cosas.`,`Lo del ${x} me deja más tranquilo.`],
   ask:()=>[{id:'tpr1',q:'¿Quién lo emitió o lo firmó? ¿Un experto, un museo, un notario?',a:['museo','expert','tasador','notari','perito','universidad','instituto','subasta','fundacion','asociacion','club','especialista','casa de','__name__']},{id:'tpr2',q:'¿Me lo puedes mostrar? Aunque sea con una foto.',photo:true}]},
  {id:'famous',find:(t,d,it)=>{const k=it.kw.find(k=>rx(k).test(d));return k&&wordFor(t,k)},
-  react:x=>[`Lo de «${x}» es lo que más me llama la atención.`,`Eso de «${x}» suena increíble, si es cierto.`],
-  ask:x=>[{id:'tf1',q:'¿Y cómo termina algo así en una venta por internet?',a:['herencia','hered','subasta','regal','encontr','compr','famili','necesito','mudanza','espacio','consegu','dinero']},{id:'tf2',q:`¿Hay alguna prueba de lo de «${x}»?`,a:PROOF.concat(['diario','libro','nota','articulo','testigo','pasaporte','carta'])}]},
+  react:x=>['Esa parte de la historia es lo que más me llama la atención.','Eso suena increíble, si es cierto.','Justo eso es lo que me interesa.'],
+  ask:x=>[{id:'tf1',q:'¿Y cómo termina algo así en una venta por internet?',a:['herencia','hered','subasta','regal','encontr','compr','famili','necesito','mudanza','espacio','consegu','dinero']},{id:'tf2',q:'¿Hay alguna prueba de eso?',a:PROOF.concat(['diario','libro','nota','articulo','testigo','pasaporte','carta'])}]},
  {id:'year',find:t=>{const m=t.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/);return m&&m[1]},
   react:x=>[`¿${x}? Eso es mucho tiempo.`,`Así que ${x}… interesante.`],
   ask:x=>[{id:'ty1',q:`¿Y cómo llegó hasta ti desde ${x}?`,a:ORIGIN},{id:'ty2',q:`¿Cómo sabes lo de ${x}? ¿Tiene alguna marca o fecha grabada?`,a:PROOF.concat(['marca','grabad','inscrip','fecha','etiqueta','serie','abajo','atras','conto','decia'])}]},
@@ -1413,7 +1413,8 @@ function nextQuestion(b,it,topic,text){
   const opts=[];
   const y=(it.story.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/)||[])[1];
   if(y)opts.push({id:'fy',q:`En el anuncio dices ${y}. ¿Cómo sabes la fecha exacta?`,a:PROOF.concat(['marca','grabad','fecha','abuel','famili','conto','sabe','registr','diario','libro','etiqueta'])});
-  for(const k of it.kw.slice(0,4)){const w=wordFor(it.story,k);if(w)opts.push({id:'fk'+k,q:`Cuéntame más de eso de «${w}» que pusiste en el anuncio.`,a:[k,'__long__']})}
+  const CATQ={'Fama':'Cuéntame más de la persona famosa de la historia.','Historia':'¿Qué más sabes de esa época?','Misterio':'¿Qué es eso misterioso que mencionas en el anuncio?','Aventura':'¿Cómo fue esa aventura que cuentas?','Emoción':'¿Qué significa este objeto para tu familia?','Detalle':'¿Me describes mejor ese detalle que mencionas?','Valor':'¿Qué lo hace tan especial frente a otros iguales?','Escena':'¿Cómo era ese lugar que describes?'};
+  for(const [cat,stems] of Object.entries(LEX)){const k=it.kw.find(k=>stems.includes(k));if(k)opts.push({id:'fk'+cat,q:CATQ[cat],a:[k,'__long__']})}
   if(!b.photos)opts.push({id:'fp',q:'¿Me puedes mandar una foto del artículo?',photo:true});
   opts.push({id:'fv',q:`¿Por qué debería pagar ${money(b.offer)} por esto?`,a:['histor','unic','raro','tasacion','valor','coleccion','pocos','famos'].concat(it.kw)});
   opts.push({id:'fs',q:'¿En qué estado está?',a:CONDITION.concat(['bien','mal','excelente','bueno','usad'])});
@@ -1598,7 +1599,7 @@ function buyerReply(b,ev,it){
   if(f.insult)L.push(b.insults>1?'Otra vez faltándome el respeto. Última vez que te lo paso.':pick(['¿Perdón? Así no se le habla a un cliente.','Qué falta de respeto. Me estoy arrepintiendo.']));
   else if(f.gib)L.push(pick(['No entendí nada de lo que escribiste.','¿Qué? Eso no se entiende.']));
   else if(f.caps)L.push('¿Por qué me gritas?');
-  else if(b.persona==='tikismikis'&&chipsHaveForm(ev))L.push(pick(['Perdona, pero esa ortografía duele.','Revisa lo que escribes, por favor: '+((ev.chips.find(c=>c.l.includes('→'))||{}).l||'hay errores')+'.','Un vendedor serio cuida cómo escribe.']));
+  else if(b.persona==='tikismikis'&&chipsHaveForm(ev))L.push(pick(['Perdona, pero esa ortografía duele.',(()=>{const c=ev.chips.find(c=>c.l.includes('→'));if(!c)return 'Revisa lo que escribes, por favor.';const m=c.l.match(/«(.+)» → «(.+)»/);return m?`Por cierto, se escribe ${m[2]}, no ${m[1]}.`:'Revisa lo que escribes, por favor.'})(),'Un vendedor serio cuida cómo escribe.']));
   else if(f.spell>=4)L.push(pick(['Escribes un poco raro… ¿eres un vendedor serio?','Con tantas faltas me cuesta confiar.']));
   else if(f.slang)L.push(pick(['Uf, qué informal todo…','No sé si estoy hablando con alguien serio.']));
   /* 2. lo que tú le preguntaste */
@@ -1620,7 +1621,7 @@ function buyerReply(b,ev,it){
     if(f.ask==='photo_offer'){nextQ={id:'po',q:'¿Me la mandas ahora?',photo:true}}
   }
   /* 3. su pregunta pendiente */
-  if(f.answered)L.push(f.answerWord&&f.answerWord.length>3&&Math.random()<.6?`«${f.answerWord}»… vale, eso me sirve.`:pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
+  if(f.answered)L.push(false?'':pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
   else if(f.giveUpQ)L.push('Veo que no me vas a responder eso. Lo tendré en cuenta.');
   else if(f.evaded&&b.q){keepQ='Eso no es una respuesta.'}
   else if(f.partial&&b.q){keepQ='Bien, pero no me respondiste del todo.'}
