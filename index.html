@@ -975,6 +975,7 @@ details.chips[open] summary{display:none}
 .cu-card .cup-txt code{background:var(--bg);color:var(--ink)}
 .sheet{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
 body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
+[class$="-st"] .eta{background:transparent!important;color:inherit!important;opacity:.7;font-weight:600}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -2372,11 +2373,14 @@ function tick(){
     if(w>WAIT(b)*.7&&!b.nudged){b.nudged=true;b.msgs.push({from:'b',text:pick(['¿Sigues ahí?','Hola, ¿me respondes cuando puedas?','Sigo esperando tu respuesta.'])});b.unread=1;dirty=true;if(S.cur===b.id)renderChat(true);else toast(`${b.name} te está esperando`,'',()=>openChat(b.id))}
     if(w>WAIT(b)){b.msgs.push({from:'b',text:'Bueno, veo que no contestas. Adiós.'});loseBuyer(b,'Se cansó de esperar tu respuesta.');if(S.cur===b.id)renderChat()}
   }
-  for(const dl of S.deliveries.filter(x=>S.t>=x.at)){
-    if(dl.ing){S.door.push({uid:S.nextId++,ing:dl.ing,day:S.day});toast(`Tocan la puerta: llegaron ${ING[dl.ing].n.toLowerCase()}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});dirty=true;continue}
+  const arrived=S.deliveries.filter(x=>S.t>=x.at);let ring=null;
+  if(arrived.length){ring=Math.random()<.5?'bell':'knock';try{doorSound(ring)}catch(e){}}
+  const DOOR=ring==='bell'?'Suena el timbre':'Tocan la puerta';
+  for(const dl of arrived){
+    if(dl.ing){S.door.push({uid:S.nextId++,ing:dl.ing,day:S.day});toast(`${DOOR}: llegaron ${ING[dl.ing].n.toLowerCase()}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});dirty=true;continue}
     const F=FOOD.find(f=>f.id===dl.food);
     S.door.push({uid:S.nextId++,id:F.id,day:S.day});
-    toast(`Tocan la puerta: llegó ${low(F.name)}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});
+    toast(`${DOOR}: llegó ${low(F.name)}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});
     dirty=true;
   }
   S.deliveries=S.deliveries.filter(x=>S.t<x.at);
@@ -2436,6 +2440,29 @@ function endDay(){
     if(S.weak)toast('Amaneciste débil: hoy convences un 25 % menos.');
     renderTaskbar();renderPage();
   });
+}
+
+/* ================= SONIDOS DE LA PUERTA ================= */
+let AC=null;
+function audio(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C()}if(AC.state==='suspended')AC.resume();return AC}
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{try{audio()}catch(e){}},{once:true,passive:true}));
+function doorSound(kind){
+  const ac=audio();if(!ac||ac.state!=='running')return;const t0=ac.currentTime+.05,out=ac.createGain();out.gain.value=.55;out.connect(ac.destination);
+  if(kind==='bell'){ // ding-dong
+    [[659.3,0],[523.3,.55]].forEach(([f,dt])=>{
+      for(const [mult,vol,type] of [[1,.5,'sine'],[2,.12,'sine'],[3.01,.05,'triangle']]){
+        const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f*mult;
+        g.gain.setValueAtTime(0,t0+dt);g.gain.linearRampToValueAtTime(vol,t0+dt+.01);g.gain.exponentialRampToValueAtTime(.0008,t0+dt+1.6);
+        o.connect(g);g.connect(out);o.start(t0+dt);o.stop(t0+dt+1.7)}});
+  }else{ // toc toc ... toc
+    const len=Math.floor(ac.sampleRate*.08),buf=ac.createBuffer(1,len,ac.sampleRate),ch=buf.getChannelData(0);
+    for(let i=0;i<len;i++)ch[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+    [0,.17,.5].forEach((dt,i)=>{const t=t0+dt;
+      const n=ac.createBufferSource();n.buffer=buf;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=900;lp.Q.value=2;
+      const g=ac.createGain();g.gain.value=i===2?.9:.75;n.connect(lp);lp.connect(g);g.connect(out);n.start(t);
+      const o=ac.createOscillator(),og=ac.createGain();o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(70,t+.09);
+      og.gain.setValueAtTime(.9,t);og.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(og);og.connect(out);o.start(t);o.stop(t+.14)});
+  }
 }
 
 /* ================= NAVEGADOR ================= */
@@ -2782,7 +2809,7 @@ function pageBanco(){
 
 /* ---------- Comida y hogar ---------- */
 function foodCard(F,site){return `<article class="${site}-item"><div class="${site}-ic">${F.icon}</div><div class="${site}-ii"><h3>${F.name}</h3><p>${F.desc}</p>
-  <div class="${site}-st">${F.food?`<span>Comida +${F.food}</span>`:''}${F.drink?`<span>Bebida +${F.drink}</span>`:''}</div></div>
+  <div class="${site}-st">${F.food?`<span>Comida +${F.food}</span>`:''}${F.drink?`<span>Bebida +${F.drink}</span>`:''}<span class="eta">⏱ ~${foodEta(F)} s</span></div></div>
   <div class="${site}-buy"><b class="num">${cupTag(foodHost(F),F.price)}</b><button data-act="order" data-id="${F.id}" ${S.money<cupPrice(foodHost(F),F.price)?'disabled':''}>Pedir</button></div></article>`}
 function pendingFor(kind){const p=S.deliveries.filter(d=>d.food&&FOOD.find(f=>f.id===d.food).kind===kind);return p.length?Math.max(0,Math.min(...p.map(d=>d.at))-S.t):null}
 function pageComeYa(){
@@ -2802,11 +2829,13 @@ function pageSuper(){
   <div class="sp-ing">${Object.entries(ING).map(([k,g])=>`<button class="sp-ingb" data-act="order-ing" data-id="${k}" ${S.money<cupPrice('superpronto.com',g.price)?'disabled':''}><span>${g.i}</span><b>${g.n}</b><small>×${g.pack} · ${cupTag('superpronto.com',g.price)}</small></button>`).join('')}</div>
   <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p></div>`};
 }
+const foodWait=F=>F.kind==='junk'?ri(3,6)+F.price*F.price*2:ri(14,20)+F.price*6;
+const foodEta=F=>F.kind==='junk'?4+F.price*F.price*2:17+F.price*6;
 const foodHost=F=>F.kind==='junk'?'comeya.com':'superpronto.com';
 function order(id){
   const F=FOOD.find(f=>f.id===id);if(!F||S.money<cupPrice(foodHost(F),F.price))return;
   const pay=cupPay(foodHost(F),F.price);S.money-=pay;S.day$.spent+=pay;flashMoney(-1);
-  const wait=F.kind==='junk'?ri(4,8):ri(18,30);
+  const wait=foodWait(F);
   S.deliveries.push({food:F.id,at:S.t+wait});
   toast(`Pediste ${low(F.name)}. Llega en ${wait} segundos.`);dirty=true;save();
 }
