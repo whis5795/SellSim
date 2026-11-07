@@ -2908,7 +2908,7 @@ function renderPage(force){
   const keep={};page.querySelectorAll('input[id],textarea[id]').forEach(el=>{keep[el.id]=el.value});
   const act=document.activeElement&&page.contains(document.activeElement)?document.activeElement.id:null;
   let sel=null;if(act){const a=document.activeElement;try{sel=[a.selectionStart,a.selectionEnd]}catch(e){}}
-  page.className='page site-'+r.cls;page.innerHTML=r.html;page.dataset.host=r.host||'';
+  page.className='page site-'+r.cls;if(page._html!==r.html||lastRenderedUrl!==t.url){page.innerHTML=r.html;page._html=r.html}page.dataset.host=r.host||'';
   if(r.host==='bolitas.com'&&!PK.raf)PK.raf=requestAnimationFrame(pkLoop);
   if(!force||lastRenderedUrl===t.url){for(const id in keep){const el=page.querySelector('#'+CSS.escape(id));if(el&&el.type!=='checkbox')el.value=keep[id]}}
   if(act){const el=page.querySelector('#'+CSS.escape(act));if(el){el.focus();if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
@@ -5217,6 +5217,13 @@ function tiersHTML(){const rev=Math.round(S.revenue||0);
   return `<section class="bs-pins bs-tiers"><h2>💎 Tiendas exclusivas</h2><p class="bs-pinhint">Objetos mejores y más caros, y clientes que pagan mucho más. Se desbloquean según lo que llevas vendido (${money(rev)}).</p><div class="bs-tlist">${SHOP_TIERS.map(t=>{const on=(S.unlocked||[]).includes(t.id);const pc=Math.min(100,Math.round(rev/t.need*100));
     return on?`<button class="bs-tier on" data-go="${t.host}"><b>${esc(t.name)}</b><small>${t.host} · ${esc(t.tag||'')}</small><span class="bs-tgo">Entrar ›</span></button>`
       :`<div class="bs-tier"><b>🔒 ${esc(t.name)}</b><small>Vende ${money(t.need)} en total para recibir la invitación</small><span class="minibar"><i style="width:${pc}%;background:#2B50E8"></i></span><small>${pc} % · te faltan ${money(Math.max(0,t.need-rev))}</small></div>`}).join('')}</div></section>`}
+
+/* el botón Buscar responde al primer toque, aunque la página se actualice o el teclado se cierre */
+document.addEventListener('pointerdown',e=>{const btn=e.target.closest('.bs-btn');if(!btn)return;const f=btn.closest('form');if(!f)return;
+  const q=((f.querySelector('#bs-q')||{}).value||'').trim();e.preventDefault();
+  if(!q){const i=f.querySelector('#bs-q');if(i)i.focus();return}
+  const url='buscalo.com/buscar?q='+encodeURIComponent(q);
+  if(f.closest('#hw-page')){if(typeof hwGo==='function')hwGo(url)}else{go(url);const a=document.activeElement;if(a&&a.blur)a.blur()}},true);
 
 /* ================= MODO AYUDANTE: no tocar lo que estás escribiendo ================= */
 // Si hay un campo con el foco (y el teclado abierto), no se reemplaza; solo se actualizan los mensajes,
