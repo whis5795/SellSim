@@ -1296,6 +1296,7 @@ body.helper{background:var(--bg)}
 .req-h{display:flex;gap:10px;align-items:center}.req-h small{display:block;color:#5A6283;font-size:12px}.req-h .av{background:hsl(var(--h) 70% 88%);color:hsl(var(--h) 55% 24%)}
 .req-perm{border:1.5px solid #D2D8E6;background:#F4F6FB;color:#5A6283;border-radius:999px;padding:6px 10px;font:700 12.5px inherit;cursor:pointer;text-align:left}.req-perm.on{border-color:#1F9D63;background:#E3F7EC;color:#135C3A}
 .req-a{display:flex;gap:8px}.req-yes{flex:1;border:0;border-radius:12px;padding:10px;background:#2645F2;color:#fff;font:800 14px inherit;cursor:pointer}.req-no{border:0;border-radius:12px;padding:10px 14px;background:#EEF0F5;color:#141A33;font:700 14px inherit;cursor:pointer}
+.ck-ask{text-align:center;font-weight:700;margin:6px 0 0}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -5705,7 +5706,7 @@ hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
       else{const F=FOOD.find(f=>f.id===p.id);S.door=S.door.filter(x=>x!==p);if(S.fridge&&m.mode!=='eat'){S.fridgeItems.push({uid:S.nextId++,id:F.id,day:p.day});note=`Guardaste ${low(F.name)} en su refrigerador.`}else{consume(F);note=`Tu amigo se comió ${low(F.name)}.`}}}}
     if(a==='pick-all'){const n=S.door.length;if(n){const tt=toast;toast=()=>{};try{pickAllDo(S.fridge&&m.mode!=='eat'?'store':'eat')}finally{toast=tt}note=`Recogiste ${n} pedido${n>1?'s':''} de la puerta${S.fridge&&m.mode!=='eat'?' y los guardaste':''}.`}}
     if(a==='ship-window'){const n=dispatchAll();note=n?`Enviaste ${n} paquete${n>1?'s':''} por la ventana.`:'No hay paquetes para enviar.'}
-    if(a==='eat'){const fi=S.fridgeItems.find(x=>x.uid===+m.id);if(fi){const F=FOOD.find(f=>f.id===fi.id);S.fridgeItems=S.fridgeItems.filter(x=>x!==fi);consume(F);note=`Tu amigo comió ${low(F.name)} del refrigerador.`}}
+    if(a==='eat'){const fi=S.fridgeItems.find(x=>x.uid===+m.id);if(fi){const F=FOOD.find(f=>f.id===fi.id);S.fridgeItems=S.fridgeItems.filter(x=>x!==fi);consume(fi.fo!=null?{food:fi.fo,drink:fi.dr||0}:F);note=`Tu amigo comió ${low(F.name)} del refrigerador.`}}
     if(a==='use-bed')note='Solo tu amigo puede irse a dormir.';
     if(a==='cook')note='La cocina la usa tu amigo: los minijuegos se juegan en su partida.';
     if(note&&!/^(Solo|La cocina)/.test(note))toast(`🏠 ${peer.name}: ${note}`,'good');
@@ -5921,6 +5922,39 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act^="req-
   if(a==='req-yes')radarAccept(id);
   if(a==='req-no')radarReject(id)});
 setInterval(()=>{try{if(typeof RH!=='undefined')renderReqCards()}catch(e){}},1000);
+
+/* ================= PLATOS COCINADOS: comer ahora o guardar en el refrigerador ================= */
+// cada receta tiene su "plato" para poder guardarlo (no aparece en ninguna tienda)
+for(const r of RECIPES)if(!FOOD.some(f=>f.id==='dish-'+r.id))FOOD.push({id:'dish-'+r.id,name:r.n,icon:r.i,kind:'home',price:0,food:r.food,drink:r.drink,desc:'Hecho en casa.'});
+let CKDONE=null;
+ckFinish=function(q){
+  KS.stopAll();KS.ding();
+  const r=CK.r;q=Math.round(clamp(q,40,100));const k=.55+.45*q/100;
+  const food=Math.round(r.food*k),drink=Math.round(r.drink*k);
+  CKDONE={r,food,drink,q};
+  const head=`<div class="ck-done"><div class="ck-burst">${Array.from({length:12},(_,i)=>`<i style="--a:${i*30}deg"></i>`).join('')}<span>${r.i}</span></div>
+   <h3>${q>=90?'¡Te salió perfecto!':q>=70?'¡Muy rico!':'Comestible… más o menos'}</h3><p>Calidad <b class="num">${q} %</b></p>
+   <div class="ck-gain">${food?`<span>🍔 +${food}</span>`:''}${drink?`<span>💧 +${drink}</span>`:''}</div>`;
+  if(S.fridge){
+    $('#ck-body').innerHTML=head+`<p class="ck-ask">¿Te lo comes ahora o lo guardas para después?</p>
+     <div class="row-acts" style="justify-content:center"><button class="btn" data-act="dish-eat">Comer ahora</button><button class="btn ghost" data-act="dish-store">🧊 Guardar en el refrigerador</button></div>
+     <p class="ck-legend" style="text-align:center">En el refrigerador dura ${FRIDGE_DAYS} días.</p></div>`;
+  }else{dishEat(true);$('#ck-body').innerHTML=head+dishAfter('Sin refrigerador hay que comerlo al momento.')+'</div>'}
+};
+function dishAfter(note){return `${note?`<p class="ck-legend" style="text-align:center">${note}</p>`:''}<div class="row-acts" style="justify-content:center"><button class="btn" data-act="ck-book">Volver al recetario</button><button class="btn ghost" data-act="ck-close">Salir de la cocina</button></div>`}
+function dishEat(silent){const d=CKDONE;if(!d)return;CKDONE=null;consume({food:d.food,drink:d.drink});save();toast(`Comiste ${d.r.n.toLowerCase()}: comida ${S.food} %, bebida ${S.drink} %.`,'good')}
+function dishStore(){const d=CKDONE;if(!d)return;CKDONE=null;S.fridgeItems.push({uid:S.nextId++,id:'dish-'+d.r.id,day:S.day,fo:d.food,dr:d.drink});save();toast(`🧊 Guardaste ${d.r.n.toLowerCase()} en el refrigerador.`,'good');roomKey=''}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="dish-eat"],[data-act="dish-store"]');if(!t)return;
+  if(t.dataset.act==='dish-eat'){dishEat();$('.ck-done .row-acts').outerHTML=dishAfter('')}else{dishStore();$('.ck-done .row-acts').outerHTML=dishAfter('Lo encuentras en el refrigerador de la cocina.')}
+  const ask=$('.ck-ask');if(ask)ask.remove()});
+// si sales de la cocina sin elegir, se guarda (o se come si no hay refrigerador) para no perderlo
+const _closeCookD=closeCook;closeCook=function(){if(CKDONE){S.fridge?dishStore():dishEat()}return _closeCookD()};
+const _renderBookD=renderBook;renderBook=function(){if(CKDONE){S.fridge?dishStore():dishEat()}return _renderBookD()};
+// comer un plato guardado usa lo que llenaba al cocinarlo
+const _eatD=eat;
+eat=function(uid){const fi=S.fridgeItems.find(f=>f.uid===uid);if(fi&&fi.fo!=null){const F=FOOD.find(f=>f.id===fi.id)||{name:'plato'};consume({food:fi.fo,drink:fi.dr||0});S.fridgeItems=S.fridgeItems.filter(f=>f!==fi);toast(`Comiste: ${low(F.name)} (hecho en casa).`,'good');roomKey='';try{openFridge()}catch(e){}save();return}return _eatD(uid)};
+const _consumeD=consume;
+consume=function(f){if(f&&f.fo!=null)return _consumeD({food:f.fo,drink:f.dr||0});return _consumeD(f)};
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
