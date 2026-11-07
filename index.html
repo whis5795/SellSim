@@ -1134,6 +1134,8 @@ body.helper{background:var(--bg)}
 .hp-sl{display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:700}.hp-sl input{width:100%}
 
 .hp-cutl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px}.hp-cutl b{color:var(--good)}.hp-cutl input{width:100%;margin-top:6px}
+.hp-cutchip{display:flex;align-items:center;gap:6px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font:600 13.5px inherit;color:var(--ink);cursor:pointer}.hp-cutchip b{color:var(--good)}.hp-cutchip span{margin-left:auto;color:var(--cobalt);font-weight:800;font-size:12.5px}
+.hp-cutl.open{animation:emIn .25s ease}.hp-cutfoot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}.hp-cutfoot small{color:var(--muted)}.hp-btn.sm{padding:7px 14px;font-size:13px}
 .hp-stats{display:flex;gap:8px;flex-wrap:wrap}.hp-stats span:not(:empty){background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
 .hp-ship{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
 .hp-ship.has{border-color:#FFC93C;background:color-mix(in srgb,#FFC93C 14%,var(--surface))}.hp-ship>div{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}.hp-ship span{font-size:12.5px;color:var(--muted)}
@@ -1146,6 +1148,17 @@ body.helper{background:var(--bg)}
 .bk-wallet>div{display:flex;flex-direction:column;gap:2px}.bk-wl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.bk-wallet b{font-size:24px}.bk-wallet small{font-size:12px;opacity:.8}
 .hp-wal{background:#FFF3CF!important;border-color:#F2C14E!important;color:#5A3D00}
 .hp-walbox{display:flex;flex-direction:column;gap:4px;background:#FFF3CF;color:#5A3D00;border:1px solid #F2C14E;border-radius:14px;padding:12px;font-size:13px}
+
+.pr-f{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}.pr-cut{font-weight:600;opacity:.75}.pr-f small{opacity:.7}
+.pr-perm{border:1.5px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:3px 9px;font:700 11.5px inherit;cursor:pointer}.pr-perm.on{border-color:var(--good);color:var(--good);background:var(--good-soft)}
+.em-perms{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.hp-shopbtn{width:100%}
+.hb-stat{display:flex;gap:8px;padding:8px 14px;background:var(--surface);font-size:12.5px;font-weight:700;color:var(--muted);flex-wrap:wrap}
+.hb-tabs{display:flex;gap:6px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--line)}.hb-tabs button{flex:1;border:0;border-radius:10px;padding:8px;background:var(--surface-2);color:var(--muted);font:700 13px inherit;cursor:pointer}.hb-tabs button.on{background:var(--cobalt);color:#fff}
+.hb-list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.hb-row{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:9px 10px}
+.hb-ic{font-size:26px;width:40px;text-align:center}.hb-i{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.hb-i small{color:var(--muted);font-size:12px}
+.hb-buy{border:0;border-radius:999px;padding:8px 12px;background:#E5484D;color:#fff;font:800 13px 'JetBrains Mono',monospace;cursor:pointer}.hb-buy.alt{background:var(--cobalt)}.hb-buy:disabled{opacity:.4}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -2541,7 +2554,7 @@ function takeLoan(amount){
 /* ---------- reloj ---------- */
 function tick(){
   if(!S||menuOpen()||!$('#daytx').hidden)return;
-  S.t++;if(S.min<23*60+57)S.min+=3;
+  S.t++;S._mf=(S._mf||0)+1;if(S._mf>=1){S._mf=0;if(S.min<23*60+59)S.min+=1}
   const before=S.shop.length;
   S.shop=S.shop.filter(l=>l.exp>S.t);for(const k in S.tshop){const n=S.tshop[k].length;S.tshop[k]=S.tshop[k].filter(l=>l.exp>S.t);if(S.tshop[k].length!==n)dirty=true}
   if(S.min>=15*60&&!S.restock2){S.restock2=true;restockAll();dirty=true;toast('Las tiendas renovaron sus ofertas de la tarde.')}
@@ -2600,8 +2613,19 @@ function openNight(){
   $('#night').hidden=false;
 }
 const STARVE_DEATH=3,FRIDGE_DAYS=7;
+// el agua no caduca; todo lo demás (comida, refrescos, jugos e ingredientes) sí
+const NO_ROT=['agua'];const noRot=f=>!f.ing&&NO_ROT.includes(f.id);
+// la despensa guarda lotes con su fecha: con refrigerador duran 7 días, sin él 2
+function pantryRot(){S.pantry=S.pantry||{};S.pLots=S.pLots||[];const out=[];
+  for(const k of Object.keys(ING)){const have=S.pantry[k]||0;let lots=S.pLots.filter(l=>l.k===k).sort((a,b)=>a.day-b.day);let sum=lots.reduce((a,l)=>a+l.n,0);
+    while(sum>have&&lots.length){const l=lots[0],d=Math.min(l.n,sum-have);l.n-=d;sum-=d;if(!l.n)lots.shift()}
+    if(have>sum)lots.push({k,n:have-sum,day:S.day-1});
+    const life=S.fridge?FRIDGE_DAYS:2;const bad=lots.filter(l=>l.day<=S.day-life);const lost=bad.reduce((a,l)=>a+l.n,0);
+    if(lost){S.pantry[k]=Math.max(0,have-lost);out.push(ING[k].n.toLowerCase());lots=lots.filter(l=>!bad.includes(l))}
+    S.pLots=S.pLots.filter(l=>l.k!==k).concat(lots)}
+  return out}
 const fridgeLeft=fi=>fi.day+FRIDGE_DAYS-S.day; // días que le quedan, contando hoy
-const fridgeState=fi=>{const n=fridgeLeft(fi);return n<=1?'Se pudre esta noche':`Fresco · dura ${n} días más`};
+const fridgeState=fi=>{if(noRot(fi))return 'No caduca';const n=fridgeLeft(fi);return n<=1?'Se pudre esta noche':`Fresco · dura ${n} días más`};
 function gameOver(){
   S.dead=S.day;$('#night').hidden=true;save();
   $('#dead-body').innerHTML=`<div class="sum-grid">
@@ -2622,8 +2646,8 @@ function endDay(){
     else{b.amount=Math.ceil(b.amount*1.1);b.late=true}
   }
   S.day++;S.min=8*60;
-  const rotten=S.fridgeItems.filter(f=>f.day<=S.day-FRIDGE_DAYS),rotDoor=S.door.filter(f=>f.day<=S.day-2);
-  if(rotten.length||rotDoor.length){toast(`Se pudrió: ${[...rotten,...rotDoor].map(r=>r.ing?ING[r.ing].n.toLowerCase():low(FOOD.find(f=>f.id===r.id).name)).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f));S.door=S.door.filter(f=>!rotDoor.includes(f))}
+  const rotten=S.fridgeItems.filter(f=>!noRot(f)&&f.day<=S.day-FRIDGE_DAYS),rotDoor=S.door.filter(f=>!noRot(f)&&f.day<=S.day-2);const rotPantry=pantryRot();
+  if(rotten.length||rotDoor.length||rotPantry.length){toast(`Se pudrió: ${[...[...rotten,...rotDoor].map(r=>r.ing?ING[r.ing].n.toLowerCase():low(FOOD.find(f=>f.id===r.id).name)),...rotPantry].join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f));S.door=S.door.filter(f=>!rotDoor.includes(f))}
   for(const sh of S.shipments.filter(x=>x.day&&x.day<=S.day))deliverShipment(sh);
   S.food=clamp(S.food-10,0,100);S.drink=clamp(S.drink-10,0,100);
   for(const h of S.hired)addBill('salary',`Sueldo de ${h.name}`,h.salary,S.day,{emp:h.id});
@@ -3025,7 +3049,7 @@ function pageComeYa(){
   const w=pendingFor('junk');
   return {title:'ComeYa · Comida rápida',host:'comeya.com',cls:'altoque',html:`<div class="at-head"><div class="at-in"><div class="at-logo">COME YA</div><p>Comida rápida a domicilio · llega en minutos</p></div></div>
   <div class="at-in at-body">${w!=null?`<div class="at-pend">Tu pedido llega en ${w} s</div>`:''}
-  <p class="at-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes comerlos o guardarlos en el refrigerador: ahí duran una semana.':'Sin refrigerador se pudren a los 2 días: cómelos pronto.'}</p>
+  <p class="at-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes comerlos o guardarlos en el refrigerador: ahí duran una semana.':'Sin refrigerador se pudren a los 2 días (el agua no caduca).'}</p>
   ${FOOD.filter(f=>f.kind==='junk').map(f=>foodCard(f,'at')).join('')}</div>`};
 }
 function pageSuper(){
@@ -3036,7 +3060,7 @@ function pageSuper(){
   <h2 class="sp-h2">Ingredientes para cocinar</h2>
   <p class="sp-note">${S.stove?'Llegan a tu puerta y se guardan en la despensa de la cocina.':'Necesitas una cocina para usarlos: se compra en tiendas de muebles.'} Tienes: ${Object.entries(S.pantry||{}).filter(([k,v])=>v>0).map(([k,v])=>ING[k].i+'×'+v).join(' ')||'nada'}.</p>
   <div class="sp-ing">${Object.entries(ING).map(([k,g])=>`<button class="sp-ingb" data-act="order-ing" data-id="${k}" ${S.money<cupPrice('superpronto.com',g.price)?'disabled':''}><span>${g.i}</span><b>${g.n}</b><small>×${g.pack} · ${cupTag('superpronto.com',g.price)}</small></button>`).join('')}</div>
-  <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina: ahí duran una semana.':'Sin refrigerador se pudren a los 2 días: cómelos pronto.'}</p></div>`};
+  <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina: ahí duran una semana.':'Sin refrigerador se pudren a los 2 días (el agua no caduca).'}</p></div>`};
 }
 const foodWait=F=>Math.max(2,Math.round((F.kind==='junk'?ri(3,6)+F.price*F.price*2:ri(14,20)+F.price*6)*deliveryFactor()));
 const foodEta=F=>Math.max(2,Math.round((F.kind==='junk'?4+F.price*F.price*2:17+F.price*6)*deliveryFactor()));
@@ -3600,7 +3624,7 @@ function wallSVG(w,sky){
    <rect x="262" y="210" width="16" height="24" rx="3" fill="#F3F5FA" stroke="#C8CEDB"/><rect x="267" y="216" width="6" height="10" rx="2" fill="#C8CEDB"/>
    <g transform="translate(58 150)"><circle cx="0" cy="0" r="4" fill="#3A3F52"/><path d="M-16 6 Q0 -2 16 6 L22 70 L-22 70 Z" fill="#2645F2"/><path d="M-6 6 L0 26 L6 6" fill="none" stroke="#1A33C4" stroke-width="2"/></g>
    <rect x="112" y="378" width="136" height="16" rx="4" fill="#8A3B2E"/><text x="180" y="390" font-size="9" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#F2C9A8" font-family="Figtree,sans-serif">BIENVENIDO</text>
-   ${pk.map((p,i)=>bag(i<3?20+i*42:228+(i-3)*42,p.ing?{name:ING[p.ing].n,icon:ING[p.ing].i}:FOOD.find(f=>f.id===p.id),p.uid,p.day<=S.day-1)).join('')}`}
+   ${pk.map((p,i)=>bag(i<3?20+i*42:228+(i-3)*42,p.ing?{name:ING[p.ing].n,icon:ING[p.ing].i}:FOOD.find(f=>f.id===p.id),p.uid,!noRot(p)&&p.day<=S.day-1)).join('')}`}
   if(w===2){const pan=Object.entries(S.pantry||{}).filter(([k,v])=>v>0).slice(0,8);return base+`
    <rect x="-2000" y="190" width="4400" height="110" fill="var(--rm-tile)"/>
    <g stroke="var(--rm-tileline)" stroke-width="1">${Array.from({length:6},(_,i)=>`<line x1="-2000" y1="${208+i*18}" x2="2400" y2="${208+i*18}"/>`).join('')}${Array.from({length:30},(_,i)=>`<line x1="${-300+i*24}" y1="190" x2="${-300+i*24}" y2="300"/>`).join('')}</g>
@@ -4723,16 +4747,27 @@ const _friendCard=friendCard;
 friendCard=function(){return _friendCard().replace(/🟢 ([^·<]+?)(?=( · |<))/g,(m,n)=>{const p=friendList().find(x=>esc(x.name)===n.trim());return p?`🟢 ${n} (${p.cut===0?'gratis':Math.round((p.cut!=null?p.cut:FRIEND_CUT)*100)+' %'})`:m})};
 
 /* ---- celular del amigo ---- */
-function cutCtl(){return `<label class="hp-lab hp-cutl">Tu comisión por venta: <b id="hp-cutv">${HP.cut?HP.cut+' %':'gratis 💛'}</b><input type="range" id="hp-cut" min="0" max="20" step="1" value="${HP.cut}"></label>`}
-document.addEventListener('input',e=>{if(e.target.id==='hp-cut'){HP.cut=+e.target.value;$('#hp-cutv').textContent=HP.cut?HP.cut+' %':'gratis 💛';try{localStorage.setItem('lvc-helper-cut',HP.cut)}catch(x){}}});
-document.addEventListener('change',e=>{if(e.target.id==='hp-cut'&&HP.ch&&HP.stage==='live')HP.ch.send(JSON.stringify({t:'cut',v:HP.cut}))});
+// la comisión se muestra plegada; se abre con un botón y se guarda sola a los 5 segundos
+const HPC={open:false,timer:null};
+const cutTxt=()=>HP.cut?HP.cut+' %':'gratis 💛';
+function cutCtl(){return HPC.open?`<div class="hp-lab hp-cutl open"><span>Tu comisión por venta: <b id="hp-cutv">${cutTxt()}</b></span><input type="range" id="hp-cut" min="0" max="20" step="1" value="${HP.cut}" aria-label="Comisión">
+    <span class="hp-cutfoot"><small id="hp-cutt">Se guarda en 5 s</small><button class="hp-btn sm" data-act="hp-cut-ok">Listo</button></span></div>`
+  :`<button class="hp-cutchip" data-act="hp-cut-open">💸 Tu comisión: <b>${cutTxt()}</b><span>Cambiar</span></button>`}
+function cutArm(){clearInterval(HPC.timer);let left=5;const tt=$('#hp-cutt');if(tt)tt.textContent='Se guarda en 5 s';
+  HPC.timer=setInterval(()=>{left--;const t=$('#hp-cutt');if(t)t.textContent=left>0?`Se guarda en ${left} s`:'Guardado';if(left<=0)cutClose()},1000)}
+function cutClose(){clearInterval(HPC.timer);HPC.open=false;try{localStorage.setItem('lvc-helper-cut',HP.cut)}catch(x){}
+  if(HP.ch&&HP.stage==='live')HP.ch.send(JSON.stringify({t:'cut',v:HP.cut}));hpToast(`Comisión guardada: ${cutTxt()}`);hpRender()}
+document.addEventListener('input',e=>{if(e.target.id==='hp-cut'){HP.cut=+e.target.value;$('#hp-cutv').textContent=cutTxt();cutArm()}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;
+  if(t.dataset.act==='hp-cut-open'){HPC.open=true;const keepName=$('#hp-name')?$('#hp-name').value:null;hpRender().then?.(()=>{if(keepName!=null&&$('#hp-name'))$('#hp-name').value=keepName;cutArm()});if(!hpRender.then)setTimeout(cutArm,50)}
+  if(t.dataset.act==='hp-cut-ok')cutClose()});
 let HPS={ships:[],shipped:0};
 const _hpRender3=hpRender;
 hpRender=async function(soft){
   // pantallas de entrada: agregar la elección de comisión debajo del nombre
   if(HP.stage!=='live'){await _hpRender3(soft);const n=$('#hp-name');if(n&&!$('#hp-cut'))n.closest('label').insertAdjacentHTML('afterend',cutCtl());return}
   if(HP.cur!=null)return _hpRender3(soft);
-  const el=$('#hp');if(soft&&document.activeElement&&document.activeElement.id==='hp-cut')return;
+  const el=$('#hp');if(soft&&HPC.open)return;
   const ships=HPS.ships||[];
   el.innerHTML=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">🟢 ${esc(HP.name)}</span></header>
   <main class="hp-list"><div class="hp-stats"><span>Día ${HP.day||'—'}</span><span>${HP.sold} venta${HP.sold===1?'':'s'}</span><span>${HP.earned?'$'+HP.earned+' ganados':HP.cut?'':'trabajas gratis'}</span></div>
@@ -4774,6 +4809,80 @@ hpRender=async function(soft){await _hpRenderW(soft);const el=$('#hp');if(!el)re
   const main=el.querySelector('.hp-main');
   if(main&&!main.querySelector('.hp-walbox')&&w.total&&(HP.stage==='radar'||HP.stage==='closed'||HP.stage==='failed'||HP.stage==='name'))
     main.insertAdjacentHTML('beforeend',`<div class="hp-walbox"><b>💰 Tus ahorros de ayudante: $${w.bal}</b><span>Se guardan en este celular. Gástalos en tu propia partida: toca <b>Mi partida</b> y pásalos desde Banco Confianza.</span></div>`)};
+
+/* ================= AYUDANTE CON PERMISO DE COMPRA ================= */
+// El anfitrión decide quién puede comprar con su dinero: comida, ingredientes y ofertas de las tiendas.
+function hostAct(act,id){const b=document.createElement('button');b.dataset.act=act;b.dataset.id=id;b.hidden=true;document.body.appendChild(b);b.click();b.remove()}
+const _hostOnMsg4=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t!=='buy')return _hostOnMsg4(peer,raw);
+  const say=(o)=>{try{peer.ch.send(JSON.stringify(o))}catch(e){}};
+  if(!hasF('phone'))return say({t:'err',msg:'Tu amigo ya no tiene teléfono móvil.'});
+  if(!peer.perm)return say({t:'err',msg:'Tu amigo no te dio permiso para comprar.'});
+  if(isOffline())return say({t:'err',msg:'Tu amigo no tiene internet: tiene que pagar la factura.'});
+  const m0=S.money;let what='';
+  if(m.k==='food'){const F=FOOD.find(f=>f.id===m.id);if(!F)return;what=F.name;hostAct('order',F.id)}
+  else if(m.k==='ing'){const g=ING[m.id];if(!g)return;what=g.n;hostAct('order-ing',m.id)}
+  else if(m.k==='item'){const l=allListings().find(x=>x.id==m.id);if(!l||l.bought)return say({t:'err',msg:'Esa oferta ya no está.'});what=(m.all&&l.qty>1?l.qty+' × ':'')+l.name;hostAct(m.all?'buy-all':'buy',l.id)}
+  const spent=Math.round((m0-S.money)*100)/100;
+  if(spent<=0)return say({t:'err',msg:'No alcanzó el dinero de tu amigo para eso.'});
+  peer.spent=(peer.spent||0)+spent;
+  toast(`🛒 ${peer.name} compró ${low(what)} por ${money(spent)} con tu dinero.`,'');
+  say({t:'bought',msg:`Compraste ${low(what)} por $${spent}.`});hostPush(true)};
+// lo que ve el amigo para comprar
+const _hostPush4=hostPush;
+hostPush=function(force){const ps=friendList();if(!ps.length)return;
+  const shop=ps.some(p=>p.perm)?{
+    food:FOOD.map(F=>({id:F.id,n:F.name,i:F.icon,k:F.kind,p:cupPrice(foodHost(F),F.price),fo:F.food,dr:F.drink,eta:foodEta(F)})),
+    ing:S.stove?Object.entries(ING).map(([k,g])=>({id:k,n:g.n,i:g.i,p:cupPrice('superpronto.com',g.price),pk:g.pack,have:(S.pantry||{})[k]||0})):[],
+    items:allListings().filter(l=>!l.bought&&l.exp>S.t).slice(0,30).map(l=>({id:l.id,n:l.name,i:l.icon,p:l.price,q:l.qty||1,left:Math.max(0,l.exp-S.t)})),
+    food$:{food:Math.round(S.food),drink:Math.round(S.drink),fridge:!!S.fridge}}:null;
+  for(const p of ps){p._shop=p.perm?shop:null}
+  // reutiliza el envío normal y agrega permiso + tienda por amigo
+  for(const p of ps){const base=JSON.parse(JSON.stringify({perm:!!p.perm,shop:p._shop,money:Math.round(S.money)}));p._extra=base}
+  const send=Object.getOwnPropertyDescriptor(RTCDataChannel.prototype,'send');
+  for(const p of ps){if(!p._wrapped){const ch=p.ch,orig=ch.send.bind(ch);ch.send=d=>{try{const o=JSON.parse(d);if(o.t==='state'&&p._extra){Object.assign(o,p._extra);d=JSON.stringify(o)}}catch(e){}return orig(d)};p._wrapped=true}}
+  _hostPush4(force)};
+// permiso: botón en la ventana de amigos
+const _renderPair4=renderPair;
+renderPair=async function(){await _renderPair4();const box=$('.pr-friends');if(!box)return;
+  box.innerHTML=friendList().map(p=>`<span class="pr-f">🟢 ${esc(p.name)} <span class="pr-cut">${p.cut===0?'gratis':Math.round((p.cut!=null?p.cut:FRIEND_CUT)*100)+' %'}</span>
+    <button class="pr-perm ${p.perm?'on':''}" data-act="pr-perm" data-id="${p.id}">${p.perm?'🛒 Puede comprar':'🔒 Sin compras'}</button>${p.spent?`<small>gastó ${money(p.spent)}</small>`:''}</span>`).join('')};
+const _friendCard4=friendCard;
+friendCard=function(){let h=_friendCard4();const fr=friendList();if(!fr.length)return h;
+  return h.replace('</div>\n    ',`<span class="em-perms">${fr.map(p=>`<button class="pr-perm ${p.perm?'on':''}" data-act="pr-perm" data-id="${p.id}">${esc(p.name)}: ${p.perm?'🛒 puede comprar':'🔒 sin compras'}</button>`).join('')}</span></div>\n    `)};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t||t.dataset.act!=='pr-perm')return;
+  const p=LK.peers.find(x=>x.id===t.dataset.id);if(!p)return;p.perm=!p.perm;
+  toast(p.perm?`${p.name} ahora puede comprar comida y ofertas con tu dinero.`:`${p.name} ya no puede comprar.`);renderPair();try{renderPage(true)}catch(x){}hostPush(true)});
+
+/* ---- celular del amigo: pestaña de compras ---- */
+const HB={tab:'food',view:false};
+const _hpWire4=hpWire;
+hpWire=function(pc){_hpWire4(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=>{prev(e);const ch=e.channel,on=ch.onmessage;ch.onmessage=ev=>{try{const m=JSON.parse(ev.data);
+  if(m.t==='state'){HB.perm=m.perm;HB.shop=m.shop;HB.money=m.money;if(!m.perm)HB.view=false}
+  if(m.t==='bought')hpToast('🛒 '+m.msg)}catch(x){}on(ev)}}};
+const _hpRender4=hpRender;
+hpRender=async function(soft){
+  if(!(HP.stage==='live'&&HP.cur==null&&HB.view&&HB.perm&&HB.shop)){await _hpRender4(soft);
+    const st=$('#hp .hp-stats');if(st&&HP.stage==='live'&&HP.cur==null&&!st.querySelector('.hp-shopbtn'))st.insertAdjacentHTML('afterend',HB.perm?`<button class="hp-btn hp-shopbtn" data-act="hb-open">🛒 Comprar para tu amigo · tiene $${HB.money}</button>`:'<p class="hp-small">🔒 Tu amigo no te dio permiso para comprar. Puede dártelo en su partida (ventana de amigos).</p>');return}
+  const s=HB.shop,el=$('#hp');const keepScroll=$('#hb-list')?$('#hb-list').scrollTop:0;
+  const tabs=[['food','🍔 Comida'],['ing','🥕 Ingredientes'],['items','🏷️ Ofertas']];
+  const row=(k,x)=>{const can=HB.money>=x.p;
+    if(k==='food')return `<div class="hb-row"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>${x.k==='junk'?'ComeYa':'SuperPronto'} · ${x.fo?'comida +'+x.fo:''}${x.fo&&x.dr?' · ':''}${x.dr?'bebida +'+x.dr:''} · ⏱ ${x.eta} s</small></span><button class="hb-buy" data-act="hb-buy" data-k="food" data-id="${x.id}" ${can?'':'disabled'}>$${x.p}</button></div>`;
+    if(k==='ing')return `<div class="hb-row"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>×${x.pk} · tiene ${x.have}</small></span><button class="hb-buy" data-act="hb-buy" data-k="ing" data-id="${x.id}" ${can?'':'disabled'}>$${x.p}</button></div>`;
+    return `<div class="hb-row"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>${x.q>1?'Quedan '+x.q+' · ':''}se va en ${Math.ceil(x.left/60)} min</small></span><button class="hb-buy" data-act="hb-buy" data-k="item" data-id="${x.id}" ${can?'':'disabled'}>$${x.p}</button>${x.q>1?`<button class="hb-buy alt" data-act="hb-buy" data-k="item" data-all="1" data-id="${x.id}" ${HB.money>=x.p*x.q?'':'disabled'}>×${x.q}</button>`:''}</div>`};
+  const list=HB.tab==='ing'&&!s.ing.length?'<div class="hp-empty">Tu amigo todavía no tiene cocina, así que no hay ingredientes para comprar.</div>':(s[HB.tab]||[]).map(x=>row(HB.tab,x)).join('')||'<div class="hp-empty">No hay nada por ahora.</div>';
+  el.innerHTML=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">💳 $${HB.money}</span></header>
+  <div class="hp-chatv"><div class="hp-ch"><button class="hp-back" data-act="hb-close" aria-label="Volver">‹</button><div class="hp-cht"><b>Comprar para tu amigo</b><small>Usa su dinero. Lo que compres llega a su puerta o a su inventario.</small></div></div>
+    <div class="hb-stat"><span>🍔 ${s.food$.food} %</span><span>💧 ${s.food$.drink} %</span><span>${s.food$.fridge?'🧊 con refrigerador':'sin refrigerador'}</span></div>
+    <div class="hb-tabs">${tabs.map(([k,l])=>`<button class="${HB.tab===k?'on':''}" data-act="hb-tab" data-id="${k}">${l}</button>`).join('')}</div>
+    <div class="hb-list" id="hb-list">${list}</div></div>`;
+  $('#hb-list').scrollTop=keepScroll};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='hb-open'){HB.view=true;hpRender()}
+  if(a==='hb-close'){HB.view=false;hpRender()}
+  if(a==='hb-tab'){HB.tab=t.dataset.id;hpRender()}
+  if(a==='hb-buy'&&HP.ch){HP.ch.send(JSON.stringify({t:'buy',k:t.dataset.k,id:t.dataset.k==='item'?+t.dataset.id||t.dataset.id:t.dataset.id,all:!!t.dataset.all}));t.disabled=true}});
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
