@@ -1287,6 +1287,9 @@ body.helper{background:var(--bg)}
 .site-bazarito .em-tabs a.on{color:var(--ink)}
 .site-bazarito .av{background:hsl(var(--h) 70% 88%)!important;color:hsl(var(--h) 55% 24%)!important}
 .em-tile.other{border-style:dashed}.em-tile.other small{color:#B06A00}
+.ck-pantry span{position:relative}.ck-exp{font-style:normal;font:800 10px 'JetBrains Mono',monospace;padding:1px 5px;border-radius:999px;margin-left:2px}
+.ck-exp.ok{background:var(--good-soft);color:var(--good)}.ck-exp.warn{background:#FFF3CF;color:#8A5A00}.ck-exp.bad{background:var(--bad-soft);color:var(--bad);animation:ckBlink 1.4s ease-in-out infinite}@keyframes ckBlink{50%{opacity:.55}}
+.ck-warn{margin:8px 0 0;padding:8px 12px;border-radius:12px;background:var(--bad-soft);color:var(--bad);font-weight:700;font-size:13px}.ck-legend{margin:6px 0 0;font-size:12px;color:var(--muted)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -2753,6 +2756,17 @@ function pantryRot(){S.pantry=S.pantry||{};S.pLots=S.pLots||[];const out=[];
     if(lost){S.pantry[k]=Math.max(0,have-lost);out.push(ING[k].n.toLowerCase());lots=lots.filter(l=>!bad.includes(l))}
     S.pLots=S.pLots.filter(l=>l.k!==k).concat(lots)}
   return out}
+// ordenar los lotes de la despensa durante el día (lo nuevo cuenta como comprado hoy)
+function pantrySync(){S.pantry=S.pantry||{};S.pLots=S.pLots||[];
+  for(const k of Object.keys(ING)){const have=S.pantry[k]||0;let lots=S.pLots.filter(l=>l.k===k).sort((a,b)=>a.day-b.day);let sum=lots.reduce((a,l)=>a+l.n,0);
+    while(sum>have&&lots.length){const l=lots[0],d=Math.min(l.n,sum-have);l.n-=d;sum-=d;if(!l.n)lots.shift()}
+    if(have>sum)lots.push({k,n:have-sum,day:S.day});S.pLots=S.pLots.filter(l=>l.k!==k).concat(lots)}}
+// días que le quedan al ingrediente más viejo (contando hoy); null si no hay
+function ingLeft(k){pantrySync();const life=S.fridge?FRIDGE_DAYS:2;let m=null;
+  for(const l of S.pLots.filter(l=>l.k===k&&l.n>0)){const d=l.day+life-S.day;if(m==null||d<m)m=d}
+  for(const p of (S.door||[]).filter(p=>p.ing===k)){const d=p.day+2-S.day;if(m==null||d<m)m=d}
+  return m}
+const ingTxt=d=>d==null?'':d<=1?'se pudre esta noche':`dura ${d} días`;
 const fridgeLeft=fi=>fi.day+FRIDGE_DAYS-S.day; // días que le quedan, contando hoy
 const fridgeState=fi=>{if(noRot(fi))return 'No caduca';const n=fridgeLeft(fi);return n<=1?'Se pudre esta noche':`Fresco · dura ${n} días más`};
 function gameOver(){
@@ -3965,7 +3979,8 @@ function closeCook(){KS.stopAll();CK=null;$('#cook').hidden=true;roomKey='';rend
 function renderBook(){
   $('#ck-title').textContent='Recetario';
   $('#ck-body').innerHTML=`<p class="ck-intro">Cocinar llena mucho más que la comida rápida. Compra ingredientes en el supermercado: llegan a tu puerta y van a la despensa.</p>
-  <div class="ck-pantry">${Object.entries(ING).map(([k,g])=>`<span class="${have(k)?'':'off'}">${g.i}<b class="num">${have(k)}</b></span>`).join('')}</div>
+  <div class="ck-pantry">${Object.entries(ING).map(([k,g])=>{const d=have(k)?ingLeft(k):null;return `<span class="${have(k)?'':'off'}" title="${esc(g.n)}${d!=null?': '+ingTxt(d):''}">${g.i}<b class="num">${have(k)}</b>${d!=null?`<em class="ck-exp ${d<=1?'bad':d<=2?'warn':'ok'}">${d<=1?'hoy':d+'d'}</em>`:''}</span>`}).join('')}</div>
+  ${(()=>{const soon=Object.keys(ING).filter(k=>have(k)&&ingLeft(k)!=null&&ingLeft(k)<=1);return soon.length?`<p class="ck-warn">⏳ Se pudren esta noche: ${soon.map(k=>ING[k].i+' '+ING[k].n.toLowerCase()).join(', ')}. ¡Cocínalos hoy!</p>`:`<p class="ck-legend">⏳ Los números indican cuántos días le quedan al ingrediente más viejo${S.fridge?' (con refrigerador duran 7 días)':' (sin refrigerador duran 2 días)'}.</p>`})()}
   <div class="ck-book">${RECIPES.map(r=>`<article class="ck-rec ${canCook(r)?'':'no'}"><div class="ck-ri">${r.i}</div><div class="ck-rb"><b>${r.n}</b>
     <div class="ck-need">${Object.entries(r.need).map(([k,n])=>`<span class="${have(k)>=n?'ok':'miss'}">${ING[k].i} ${have(k)}/${n}</span>`).join('')}</div>
     <small>${r.food?'Comida +'+r.food:''}${r.food&&r.drink?' · ':''}${r.drink?'Bebida +'+r.drink:''}</small></div>
@@ -5763,7 +5778,8 @@ mash(r){
 knead(r){
   $('#ck-body').innerHTML=stageHTML(`<div class="kn-board"><div class="kn-flour"></div><div class="kn-dough" id="kn-d"></div></div><div class="kn-oven" id="kn-o" hidden><div class="kn-win"><div class="kn-bread" id="kn-b">🍞</div></div><div class="fl-meter"><span class="fl-zone"></span><i id="kn-n"></i></div><button class="btn" id="kn-take">Sacar del horno</button></div>`,'Desliza el dedo de lado a lado sobre la masa para amasarla.');
   const st=$('#ck-stage'),d=$('#kn-d');let lx=null,dist=0,phase='knead',kq=100;
-  st.onpointerdown=e=>{lx=e.clientX;st.setPointerCapture(e.pointerId)};
+  // solo se captura el puntero mientras se amasa: si no, el botón del horno no recibe el clic
+  st.onpointerdown=e=>{if(phase!=='knead'||e.target.closest('button'))return;lx=e.clientX;st.setPointerCapture(e.pointerId)};
   st.onpointerup=st.onpointercancel=()=>{lx=null;d.style.transform=''};
   st.onpointermove=e=>{if(phase!=='knead'||lx==null)return;const dx=e.clientX-lx;lx=e.clientX;dist+=Math.abs(dx);if(Math.abs(dx)>3&&every('kn',180))KS.knead();
     d.style.transform=`scaleX(${1+Math.min(.45,Math.abs(dx)/40)}) scaleY(${1-Math.min(.25,Math.abs(dx)/80)}) rotate(${dx/3}deg)`;
