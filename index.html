@@ -1126,7 +1126,7 @@ function spawnBuyer(it){
   const cheap=clamp(14-Math.log10(Math.max(offer,1))*7,0,10);
   const conv=clamp(Math.round(48-(ratio-1)*6+it.score*10+P.start+cheap-(it.price>m*1.2?8:0)),6,62);
   const city=pick(CITIES);
-  const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:pid==='apurado'?ri(5,6):ri(7,9),city:city[0],dist:city[1],
+  const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:pid==='apurado'?ri(8,10):ri(11,14),city:city[0],dist:city[1],
     msgs:[],status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0};
   b.patMax=b.patience;
   const pc=PERSONA_CONCERNS[pid].slice();const extra=pick(Object.keys(CONCERNS).filter(c=>!pc.includes(c)));
@@ -1571,9 +1571,14 @@ function tick(){
     it.tooHigh=it.price>maxWilling(it)*2.2;
     if(!it.tooHigh&&S.t>=it.nextSpawn&&it.spawned<it.maxBuyers)spawnBuyer(it);
   }
-  for(const b of S.buyers)if(b.status==='open'&&!b.emp&&!b.typing&&b.waitingSince!=null&&S.t-b.waitingSince>110){
-    b.msgs.push({from:'b',text:'Bueno, veo que no contestas. Adiós.'});loseBuyer(b,'Se cansó de esperar tu respuesta.');
-    if(S.cur===b.id)renderChat();
+  const WAIT=b=>b.persona==='apurado'?180:300;
+  for(const b of S.buyers){
+    if(b.status!=='open'||b.emp||b.typing||b.waitingSince==null)continue;
+    /* mientras escribes en su chat, el cliente espera tranquilo */
+    if(S.cur===b.id&&($('#c-input').value.trim()||!$('#camera').hidden||!$('#haggle').hidden||S.t-(window._typingAt||-99)<20)){b.waitingSince=S.t;b.nudged=false;continue}
+    const w=S.t-b.waitingSince;
+    if(w>WAIT(b)*.7&&!b.nudged){b.nudged=true;b.msgs.push({from:'b',text:pick(['¿Sigues ahí?','Hola, ¿me respondes cuando puedas?','Sigo esperando tu respuesta.'])});b.unread=1;dirty=true;if(S.cur===b.id)renderChat(true);else toast(`${b.name} te está esperando`,'',()=>openChat(b.id))}
+    if(w>WAIT(b)){b.msgs.push({from:'b',text:'Bueno, veo que no contestas. Adiós.'});loseBuyer(b,'Se cansó de esperar tu respuesta.');if(S.cur===b.id)renderChat()}
   }
   for(const dl of S.deliveries.filter(x=>S.t>=x.at)){
     const F=FOOD.find(f=>f.id===dl.food);
@@ -2343,7 +2348,7 @@ document.addEventListener('change',e=>{
   if(e.target.id==='auto'){S.auto=e.target.checked;save()}
   if(e.target.id==='ai-toggle'){S.aiOn=e.target.checked;if(S.aiOn&&aiState==='off'&&sampleFn)aiState='ok';renderAIBadge();save()}
 });
-document.addEventListener('input',e=>{if(e.target.id==='e-story')updateEditor();if(e.target.id==='c-input')autosize();if(e.target.closest&&e.target.closest('#cam-controls'))updateCam()});
+document.addEventListener('input',e=>{if(e.target.id==='e-story')updateEditor();if(e.target.id==='c-input'){autosize();window._typingAt=S.t}if(e.target.closest&&e.target.closest('#cam-controls'))updateCam()});
 document.addEventListener('keydown',e=>{
   if(e.target.id==='c-input'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}
   if(e.target.id==='ty-in'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTyping()}
