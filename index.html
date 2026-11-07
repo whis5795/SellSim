@@ -1286,6 +1286,7 @@ body.helper{background:var(--bg)}
 .site-bazarito .em-card,.site-bazarito .em-panel,.site-bazarito .em-tile,.site-bazarito .em-strat,.site-bazarito .em-sell,.site-bazarito .em-friend{color:var(--ink)}
 .site-bazarito .em-tabs a.on{color:var(--ink)}
 .site-bazarito .av{background:hsl(var(--h) 70% 88%)!important;color:hsl(var(--h) 55% 24%)!important}
+.em-tile.other{border-style:dashed}.em-tile.other small{color:#B06A00}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -3469,6 +3470,7 @@ async function publish(){
   }
   if((S.proStories||[]).includes(story))score=Math.max(score,.9+Math.random()*.1);
   for(const s of r.kw)S.lexUse[s]=(S.lexUse[s]||0)+1;
+  if(it.assigned&&typeof empUnassign==='function')empUnassign(it);
   Object.assign(it,{story,price,score,kw:r.kw,listed:true,aiNote:note,spawned:it.spawned||0,maxBuyers:2+Math.round(score*3),nextSpawn:S.t+ri(3,7)});
   drain();
   $('#editor').hidden=true;editing=null;
@@ -3642,7 +3644,7 @@ document.addEventListener('click',e=>{
     case 'bot-pro':if(S.money>=cupPrice('cuentero.ai',70)){S.money-=cupPay('cuentero.ai',70);S.botPro=true;S.botSub=true;flashMoney(-1);toast('¡Ahora tienes Cuentero Pro!','good');dirty=true;save()}break;
     case 'bot-pro-ask':botAsk(`Historia Pro (★) para: ${t.dataset.item}`);break;
     case 'bot-crazy':botAsk(`Ahora una historia loca y absurda para: ${t.dataset.item}`);break;
-    case 'bot-use':{const it=S.inv.find(i=>i.name===t.dataset.item&&!i.listed)||S.inv.find(i=>i.name===t.dataset.item);if(it)openEditor(it.id,t.dataset.story);break}
+    case 'bot-use':{const it=S.inv.find(i=>i.name===t.dataset.item&&!i.listed&&!i.assigned)||S.inv.find(i=>i.name===t.dataset.item&&!i.listed)||S.inv.find(i=>i.name===t.dataset.item);if(it)openEditor(it.id,t.dataset.story);break}
     case 'pay':payBill(+id);break;
     case 'loan':takeLoan(+id);break;
     case 'order':order(id);break;
@@ -4281,7 +4283,7 @@ function empStory(h,it){
 function empPriceFor(it,score,strat){const m=it.base*(1+score*(it.base<60?8:it.base<300?4:it.base<1500?2.6:1.8));
   return Math.max(it.paid+1,niceRound(m*STRATS[strat].k))}
 function empAssign(h,ids,strat){
-  let n=0;for(const id of ids){const it=S.inv.find(i=>i.id===id);if(!it||it.assigned||it.listed)continue;
+  let n=0;for(const id of ids){const it=S.inv.find(i=>i.id===id);if(!it||it.listed||it.assigned===h.id)continue;if(it.assigned){const was=S.hired.find(x=>x.id===it.assigned);empUnassign(it);if(was)it._from=was.name.split(' ')[0]}
     Object.assign(it,{assigned:h.id,strat,empStage:'writing',empAt:S.t+ri(12,30)*({bad:1.4,ok:1.1,good:.9,pro:.7}[h.tier]||1)});n++}
   return n}
 function empUnassign(it){Object.assign(it,{assigned:null,strat:null,empStage:null,empAt:null,empStory:null,empPrice:null,empScore:null,empSrc:null})}
@@ -4323,7 +4325,7 @@ function empPage(){
   if(!S.hired.length)return msgTabs('team')+friendCard()+`<div class="bz-empty"><b>Todavía no tienes empleados.</b><br>Contrata a alguien en EmpleaYa y aquí podrás darle productos para que los publique y los venda solo.<br><br><button class="bz-btn" data-go="empleaya.com">Ir a EmpleaYa</button></div>`;
   if(!S.hired.some(h=>h.id===EMS.sel))EMS.sel=S.hired[0].id;
   const h=S.hired.find(x=>x.id===EMS.sel),fn=h.name.split(' ')[0];
-  const free=S.inv.filter(i=>!i.assigned&&!i.listed);
+  const free=S.inv.filter(i=>!i.listed&&i.assigned!==h.id);
   for(const id of [...EMS.pick])if(!free.some(i=>i.id===id))EMS.pick.delete(id);
   const mine=S.inv.filter(i=>i.assigned===h.id);
   const src=S.botPro?'Usa <b>Cuentero Pro</b>, como tú: historias de 90 % o más.':S.botSub?'Usa <b>Cuentero.ai</b>, el mismo bot que tú.':`Sin Cuentero, ${fn} inventa la historia según su nivel${h.tier==='bad'?' (y escribe bastante mal)':h.tier==='pro'?' (escribe muy bien)':''}.`;
@@ -4333,7 +4335,7 @@ function empPage(){
   const sampleIt=free.find(i=>EMS.pick.has(i.id))||free[0];
   const est=k=>sampleIt?money(empPriceFor(sampleIt,S.botPro?.92:S.botSub?.6:{bad:.25,ok:.45,good:.6,pro:.7}[h.tier]||.45,k)):'—';
   const strat=Object.entries(STRATS).map(([k,s])=>`<button class="em-strat ${EMS.strat===k?'on':''}" data-act="em-strat" data-id="${k}"><b>${k==='fair'?'⚖️':'🚀'} ${s.n}</b><small>${s.d}</small>${sampleIt?`<span class="em-est">${esc(sampleIt.name)}: ~${est(k)}</span>`:''}</button>`).join('');
-  const tiles=free.length?free.map(it=>`<button class="em-tile ${EMS.pick.has(it.id)?'on':''}" data-act="em-pick" data-id="${it.id}" aria-pressed="${EMS.pick.has(it.id)}"><span class="em-chk">✓</span><span class="em-ic" style="--h:${hue(it.name)}">${it.icon}</span><b>${esc(it.name)}</b><small>Pagaste ${money(it.paid)}</small></button>`).join('')
+  const tiles=free.length?free.map(it=>`<button class="em-tile ${EMS.pick.has(it.id)?'on':''} ${it.assigned?'other':''}" data-act="em-pick" data-id="${it.id}" aria-pressed="${EMS.pick.has(it.id)}"><span class="em-chk">✓</span><span class="em-ic" style="--h:${hue(it.name)}">${it.icon}</span><b>${esc(it.name)}</b><small>${it.assigned?`Lo tiene ${esc((S.hired.find(x=>x.id===it.assigned)||{name:'otro'}).name.split(' ')[0])}`:`Pagaste ${money(it.paid)}`}</small></button>`).join('')
     :'<div class="bz-empty sm">No tienes productos sin publicar. Compra en Ofertas (con ×N puedes comprar varios iguales).</div>';
   const nP=EMS.pick.size;
   const selling=mine.length?mine.map(it=>{const S2=STRATS[it.strat||'fair'];const writing=it.empStage!=='listed';
@@ -4356,7 +4358,7 @@ document.addEventListener('click',e=>{
   if(!/^em-/.test(a))return;e.preventDefault();
   if(a==='em-sel'){EMS.sel=t.dataset.id;EMS.pick.clear()}
   if(a==='em-pick'){const id=+t.dataset.id;EMS.pick.has(id)?EMS.pick.delete(id):EMS.pick.add(id)}
-  if(a==='em-all'){const free=S.inv.filter(i=>!i.assigned&&!i.listed);if(EMS.pick.size===free.length)EMS.pick.clear();else free.forEach(i=>EMS.pick.add(i.id))}
+  if(a==='em-all'){const free=S.inv.filter(i=>!i.listed&&i.assigned!==EMS.sel);if(EMS.pick.size===free.length)EMS.pick.clear();else free.forEach(i=>EMS.pick.add(i.id))}
   if(a==='em-strat')EMS.strat=t.dataset.id;
   if(a==='em-assign'){const h=S.hired.find(x=>x.id===EMS.sel);if(!h)return;const n=empAssign(h,[...EMS.pick],EMS.strat);EMS.pick.clear();
     if(n)toast(`${h.name.split(' ')[0]} se encarga de ${n} producto${n>1?'s':''}: primero escribe la historia y después lo publica.`,'good');save()}
@@ -5082,6 +5084,7 @@ function pubExtra(p){if(!p.perm)return {pub:null};
   const est=it=>Math.max(it.paid+1,niceRound(maxWilling(Object.assign({},it,{score:.6}))*.8));
   return {pub:{bot:!!S.botSub,pro:!!S.botPro,items:S.inv.filter(i=>!i.listed&&!i.assigned).slice(0,30).map(i=>({id:i.id,n:i.name,i:i.icon,paid:i.paid,sug:est(i)}))}}}
 function hostPublish(it,story,price,who){
+  if(it.assigned)empUnassign(it);
   const r=storyScore(story,it);let score=r.score;
   if((S.proStories||[]).includes(story))score=Math.max(score,.9+Math.random()*.1);
   for(const s of r.kw)S.lexUse[s]=(S.lexUse[s]||0)+1;
@@ -5093,7 +5096,7 @@ hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
   const say=o=>{try{peer.ch.send(JSON.stringify(o))}catch(e){}};
   if(!hasF('phone'))return say({t:'err',msg:'Tu amigo ya no tiene teléfono móvil.'});
   if(!peer.perm)return say({t:'err',msg:'Tu amigo no te dio permiso para publicar.'});
-  const it=S.inv.find(i=>i.id==m.id&&!i.assigned&&(m.t==='publish'||!i.listed||true));if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
+  const it=S.inv.find(i=>i.id==m.id);if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
   if(m.t==='story'){
     if(!S.botSub)return say({t:'err',msg:'Tu amigo no tiene Cuentero.ai.'});
     const c=catEntry(it);let best=null;
@@ -5298,7 +5301,7 @@ hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
       dirty=true;save();try{renderPage(true)}catch(e){}hostPush(true)}
     else return say(Object.assign({t:'page'},webPage(url),{note:'Eso solo lo puede hacer tu amigo desde su partida.'}));
     return say(Object.assign({t:'page'},webPage(next),{note:notes.join(' · ')}))}
-  if(m.t==='itemd'){const it=m.name?S.inv.find(i=>i.name===m.name&&!i.listed&&!i.assigned):S.inv.find(i=>i.id==m.id);
+  if(m.t==='itemd'){const it=m.name?(S.inv.find(i=>i.name===m.name&&!i.listed&&!i.assigned)||S.inv.find(i=>i.name===m.name&&!i.listed)||S.inv.find(i=>i.name===m.name)):S.inv.find(i=>i.id==m.id);
     if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
     return say({t:'itemd',id:it.id,n:it.name,i:it.icon,g:it.g,base:it.base,paid:it.paid,listed:!!it.listed,sug:Math.max(it.paid+1,niceRound(maxWilling(Object.assign({},it,{score:.6}))*.8)),bot:!!S.botSub,pro:!!S.botPro,story:m.story||(it.listed?it.story:''),price:it.listed?it.price:0})}
   return _hostOnMsgW(peer,raw)};
