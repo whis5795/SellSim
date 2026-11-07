@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="description" content="Juego de reventa: compra barato, inventa historias y convence a los clientes.">
 <meta name="theme-color" content="#14171F">
 <link rel="manifest" href="manifest.webmanifest">
@@ -973,6 +973,8 @@ details.chips[open] summary{display:none}
 .cup-s{opacity:.5;font-weight:500;margin-right:2px}
 .cu-card{background:var(--surface);border-radius:14px;padding:10px;box-shadow:var(--shadow);align-items:center;margin:0 0 10px}.cu-card .cup-txt span{opacity:.75}.cu-meta{font-size:11.5px}
 .cu-card .cup-txt code{background:var(--bg);color:var(--ink)}
+.sheet{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
+body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -1523,6 +1525,42 @@ const GENERIC_Q=[
 ];
 NAMES.push('Carolina','Lorena','Esteban','Mateo','Julia','Renata','Ignacio','Patricia','Fernando','Sara','Bruno','Camila','Adrián','Mónica');
 
+/* Preguntas de los clientes sobre el objeto en sí ({n} = nombre del objeto, {l}/{L} = lo/la) */
+const OBJECT_Q=[
+ {id:'o1',q:'¿Cuánto mide, más o menos?',a:['cm','metro','centimetr','grande','chic','pequen','mediano','alto','ancho','largo','palm','NUM']},
+ {id:'o2',q:'¿Cuánto pesa? Es para calcular el envío.',a:['kilo','gramo','pesa','liviano','livian','pesad','poco','nada','NUM']},
+ {id:'o3',q:'¿De qué material está hecho?',a:['madera','metal','plastic','vidrio','tela','cuero','hierro','acero','oro','plata','bronce','papel','carton','porcelana','ceramica','lana','algodon','goma','piedra','marmol','mimbre']},
+ {id:'o4',q:'¿De qué color es exactamente? En la descripción no queda claro.',a:['rojo','azul','verde','negro','blanco','gris','amarillo','marron','cafe','rosa','dorado','plateado','beige','naranja','violeta','color','oscuro','claro']},
+ {id:'o5',q:'¿Tiene olor a guardado o a humedad?',a:['no','si','olor','huele','nada','limpio','aire','poco']},
+ {id:'o6',q:'¿{L} limpiaste antes de publicar{l}?',a:['si','no','limpi','lave','trapo','pase','todavia']},
+ {id:'o7',q:'¿Viene con caja, estuche o algo más?',a:['caja','estuche','bolsa','funda','no','si','solo','incluye','viene','nada mas']},
+ {id:'o8',q:'¿Lo arreglaron o restauraron alguna vez?',a:['no','nunca','si','restaur','arregl','repar','original','pint','retoc']},
+ {id:'o9',q:'¿Dónde {l} tenías guardad{o}?',a:['caja','placard','armario','sotano','altillo','garage','cajon','vitrina','estante','mesa','cuarto','casa','deposito','bajo la cama']},
+ {id:'o10',q:'¿Hay otro{s} igual{es} o es el único que existe?',a:['unic','solo','pocos','otro','ninguno','igual','no hay','existe']},
+ {id:'o11',q:'¿Qué es lo que más te gusta de {e}?',a:['__any__']},
+ {id:'o12',q:'¿Para qué se usaba originalmente?',a:['para','usaba','servia','decor','trabaj','cocin','jugar','guardar','uso']},
+ {id:'o13',q:'¿Alguna vez se rompió o se cayó?',a:['no','nunca','si','una vez','cayo','rompio','golpe','sano']},
+ {id:'o14',q:'¿Tiene alguna parte suelta o floja?',a:['no','si','suelt','floj','firme','bien','nada','un poco','pata','tornillo']},
+ {id:'o15',q:'¿Funciona todo, o es solo decorativo?',a:['funciona','anda','decor','todo','si','no','sirve','adorno']},
+ {id:'o16',q:'¿Lo usaste tú alguna vez? ¿Cómo fue?',a:['si','no','nunca','use','usaba','vez','__long__']},
+ {id:'o17',q:'¿Lo puedo ver en persona antes de pagar?',a:['si','no','claro','video','foto','en persona','puedes','venir','paso']},
+ {id:'o18',q:'¿Tiene algún defecto que no aparezca en el anuncio?',a:['no','ninguno','nada','si','solo','detalle','pequen','raya','mancha']},
+ {id:'o19',q:'¿Se puede usar todos los días o hay que cuidar{l} mucho?',a:['si','no','cuid','todos los dias','resistente','delicad','tranquilo','normal']},
+ {id:'o20',q:'¿Qué año crees que tiene, más o menos?',a:['ano','anos','decada','siglo','epoca','viej','antig','nuevo','NUM']},
+ {id:'o21',q:'¿Tiene alguna etiqueta, número o inscripción?',a:['etiqueta','numero','inscrip','grabad','sello','marca','no','si','abajo','atras']},
+ {id:'o22',q:'¿Por qué {e} y no otro{s} que vi más barato{s}?',a:['histor','unic','calidad','original','estado','mejor','porque','distinto','especial','barato']},
+ {id:'o23',q:'¿Alguien famoso lo tuvo o lo tocó?',a:['si','no','famos','artista','actor','cantante','jugador','presidente','nadie','que yo sepa']},
+ {id:'o24',q:'¿Hace ruido o se mueve cuando lo usas?',a:['no','si','ruido','silencio','nada','firme','poco','un poco']},
+ {id:'o25',q:'¿Lo tienes en casa ahora mismo?',a:['si','no','aca','aqui','casa','conmigo','deposito','claro']},
+ {id:'o26',q:'¿Qué harías tú con {e} si te lo quedaras?',a:['__any__']},
+ {id:'o27',q:'Si lo pongo en mi sala, ¿queda bien o desentona?',a:['bien','queda','decor','combina','cualquier','si','no','lindo','precioso','elegante']},
+ {id:'o28',q:'¿Tiene valor de colección o es más bien para usar?',a:['coleccion','usar','ambos','valor','inversion','decor','las dos']},
+ {id:'o29',q:'¿Lo compraste tú o te llegó de otra forma?',a:['hered','compr','regal','encontr','famili','abuel','consegu','gan','rob','me llego','me lo dieron','era de','subasta','feria']},
+ {id:'o30',q:'¿Con qué lo limpio para no estropear{l}?',a:['agua','trapo','pano','jabon','seco','humedo','alcohol','nada','suave','cepillo']},
+ {id:'o31',q:'¿Lo tuvieron niños o mascotas cerca?',a:['no','si','nunca','perro','gato','ninos','mascota','nadie']},
+ {id:'o32',q:'¿Hay alguna historia rara o divertida con {e}?',a:['__long__','una vez','historia','me paso','siempre','jaja','cuando']},
+];
+
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -1814,7 +1852,11 @@ function nextQuestion(b,it,topic,text){
   opts.push({id:'fv',q:`¿Por qué debería pagar ${money(b.offer)} por esto?`,a:['histor','unic','raro','tasacion','valor','coleccion','pocos','famos'].concat(it.kw)});
   opts.push({id:'fs',q:'¿En qué estado está?',a:CONDITION.concat(['bien','mal','excelente','bueno','usad'])});
   opts.push({id:'fe',q:'¿Haces envíos?',a:SHIP.concat(['si','no','claro','por supuesto'])});
-  for(const g of [...GENERIC_Q].sort(()=>Math.random()-.5).slice(0,4))opts.push(g);
+  const femQ=s=>it.g!=='f'?s:s.replace(/¿Lo /g,'¿La ').replace(/ lo (tienes|usabas|usaste|usas|tocó|puedo|pongo|limpio|envuelves|podrías|vendieras|compraste|tuvieron|arreglaron|tenías)/g,' la $1').replace(/ él\?/g,' ella?').replace(/de él/g,'de ella').replace(/con él/g,'con ella').replace(/cuando era nuevo/g,'cuando era nueva').replace(/ si no lo /g,' si no la ');
+  for(const g of [...GENERIC_Q].sort(()=>Math.random()-.5).slice(0,4))opts.push(Object.assign({},g,{q:femQ(g.q)}));
+  const fem=it.g==='f',pl=/s$/.test(strip(it.name.split(' ')[0].toLowerCase()));
+  const fill=s=>s.replace(/\{n\}/g,low(it.name)).replace(/\{e\}/g,(fem?'esta ':'este ')+low(it.name)).replace(/\{L\}/g,fem?'¿La':'¿Lo').replace(/¿¿/g,'¿').replace(/\{l\}/g,fem?'la':'lo').replace(/\{o\}/g,fem?'a':'o').replace(/\{s\}/g,'').replace(/\{es\}/g,fem?'es':'es');
+  for(const g of [...OBJECT_Q].sort(()=>Math.random()-.5).slice(0,5)){const q=fill(g.q);opts.push(Object.assign({},g,{q:fem?femQ(q).replace(/\b(Lo|lo) (usaste|puedo|compraste|tienes|tuvieron|limpio|pongo)/g,(m,x,v)=>(x==='Lo'?'La ':'la ')+v).replace(/¿Lo arreglaron/,'¿La arreglaron').replace(/Alguien famoso lo/,'Alguien famoso la').replace(/cuando lo usas/,'cuando la usas'):q}))}
   opts.sort(()=>Math.random()-.5);
   opts.push({id:'fa',q:'¿Algo más que quieras contarme antes de decidir?',a:['__any__']});
   const av=opts.filter(fresh);
@@ -1823,6 +1865,60 @@ function nextQuestion(b,it,topic,text){
 function answers(q,d,text){
   if(!q||q.photo)return false;
   return q.a.some(s=>s==='__any__'?text.trim().length>1:s==='__long__'?text.length>40:s==='NUM'?/\d/.test(d):s==='__name__'?/[a-záéíóúñ,]\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}/.test(text):rx(s).test(d));
+}
+
+/* ====== Reconocimiento de respuestas por intención de la pregunta ====== */
+const INTENT={
+ origin:{q:/(como llego|quien lo tuvo|quien la tuvo|de donde (lo |la )?(sacaste|salio|viene|es|lo tienes)|donde lo (conseguiste|compraste|encontraste)|como lo conseguiste|como la conseguiste|como termina|hasta ti|a tus manos|como lo obtuviste|de quien era)/,
+   s:ORIGIN.concat(['rob','afan','compre','encontre','gane','cambie','canje','regalo','regalaron','me lo dio','me la dio','me lo dieron','me la dieron','me lo paso','era de','era del','era mi','era un','tenia','pertenec','vino','llego','salio','saque','tome','agarre','rescate','recupere','tienda','feria','mercado','museo','casa','calle','basura','internet','remate','amigo','vecin','novi','espos','herman','dueno','coleccionista','de un','de una','del ','de mi','de la','en un','en una','siempre lo','siempre la','lo tengo','la tengo','desde'])},
+ condition:{q:/(estado|golpe|detalle|desgaste|le falta|pieza|funciona|probaste|roto|danad|rayad|esta bien)/,
+   s:CONDITION.concat(['bien','mal','excelente','bueno','buena','usad','como nuevo','coj','raya','mancha','limpi','sucio','gastad','viej','ningun','nada','poco','un poco','algo','pata','tapa','completo','completa','falta','tiene','perfecto','ok','joya','impecable','nuevecito','restaur','arregl','repar'])},
+ ship:{q:/(envi|hacer llegar|haces llegar|llega|tarda|paga el envio|como me lo|entrega|internacional|retirar)/,
+   s:SHIP.concat(['dia','dias','hora','semana','manana','hoy','pronto','rapido','gratis','incluid','pago yo','pagas','lo pago','correo','moto','dron','en mano','busc','te lo llevo','a domicilio','a tu casa','todo el pais','NUM'])},
+ proof:{q:/(prueba|demuestre|demostrar|copia|autentic|falso|falsa|certific|emitio|firmo|como sabes|como se que|original)/,
+   s:PROOF.concat(['marca','firma','sello','grabad','numero','serie','experto','tasad','museo','se nota','se ve','mira','fijate','etiqueta','inscrip','fecha','tengo','te muestro','te mando','papel','ticket','garantia'])},
+ price:{q:/(por que vale|caro|por que deberia pagar|precio|tan especial|vale eso|vale tanto|frente a otros)/,
+   s:['vale','valor','unic','raro','rara','histor','porque','calidad','barato','justo','merece','pocos','pocas','coleccion','inversion','rebaja','descuento','antig','especial','exclusiv','original','famos','nadie','limitad']},
+ trust:{q:/(estafar|estafa|fiar|no es lo que dices|confiar|confio|si llega y|me mientes|seguro que)/,
+   s:['garantia','devol','reembols','confia','honest','palabra','nunca','referen','resen','opinion','calific','contra entrega','en persona','seguro','tranquil','prometo','te juro','comprobante','factura','pagas cuando','al recibir','te devuelvo','video','foto','en vivo','te mando','te muestro','llamada']},
+ feel:{q:/(pena|opina|que siente|que significa|desprenderte|te duele|extranar|que dice)/,
+   s:['si','no','poco','mucho','bastante','algo','pena','duele','necesito','toca','momento','mejor','manos','cuide','alguien','feliz','triste','extran','opina','dice','muri','falleci','acuerdo','sabe','quiere','nada','igual','tranqui']},
+ when:{q:/(cuando|desde cuando|hace cuanto|que ano|que epoca)/,s:['ano','anos','dia','semana','mes','hace','desde','siglo','epoca','antes','despues','ayer','hoy','NUM','decada']},
+};
+const YESNO=/^(si|no|sip|nop|nah|claro|obvio|por supuesto|nunca|jamas|tal vez|quizas|a veces|exacto|correcto|para nada|seguro|desde luego|por ahora|todavia|aun|ya)([^a-z]|$)/;
+function intentOf(q){
+  if(!q)return null;if(q._in!==undefined)return q._in;
+  const qq=norm(q.q||'');let r=null;
+  if(q.concern)r={autenticidad:'proof',procedencia:'origin',estado:'condition',envio:'ship',precio:'price',confianza:'trust'}[q.concern]||null;
+  if(!r)for(const k in INTENT)if(INTENT[k].q.test(qq)){r=k;break}
+  if(!r&&/^(tiene|tienes|lo |la |es |hay|haces|puedes|me |te |sigue|esta |estas|funciona|incluye|acepta|aceptas|seria|podrias)/.test(qq.replace(/^[^a-z]+/,'')))r='yesno';
+  q._in=r||'open';return q._in;
+}
+const words=t=>(norm(t).match(/[a-z0-9]+/g)||[]);
+// ¿Parece una respuesta? Una afirmación (no otra pregunta), sin evasivas, con algo de contenido
+function looksLikeAnswer(text){
+  const t=text.trim();if(!t||/^\W*$/.test(t))return false;
+  const w=words(t);if(!w.length)return false;
+  if(t.endsWith('?')&&w.length<6)return false;
+  return true;
+}
+// 2 = respuesta clara, 1 = respuesta corta o plausible, 0 = no responde
+function answerLevel(q,d,text){
+  if(!q||q.photo)return 0;
+  if(answers(q,d,text))return 2;
+  const k=intentOf(q),w=words(text);
+  if(!looksLikeAnswer(text))return 0;
+  if(['yesno','feel','condition','ship','trust'].includes(k)&&YESNO.test(d.trim()))return 2;
+  const I=INTENT[k];
+  if(I&&I.s.some(s=>s==='NUM'?/\d/.test(d):rx(s).test(d)))return 2;
+  // verbo en primera persona en pasado (robé, compré, conseguí, lo saqué…) o "fue/era…": contesta la pregunta aunque no use nuestras palabras
+  const past=/(^|\s)[a-záéíóúñ]{2,}(é|í)(\s|[.,!]|$)/i.test(text)||/(^|\s)(fue|era|estaba|tenia|tuve|estuvo|hice|traje|di|vi)([^a-z]|$)/.test(d);
+  if(k==='origin'&&(past||w.length>=3))return 2;
+  if(k==='open'&&w.length>=3)return 2;
+  if(past&&w.length>=2)return 1;
+  if(w.length>=4&&!/\?$/.test(text.trim()))return 1;
+  if(w.length>=1&&YESNO.test(d.trim()))return 1;
+  return 0;
 }
 function qType(d){
   if(/(te preocupa|te inquieta|tus dudas|alguna duda|alguna pregunta|que necesitas saber|que te falta|que te haria|que mas necesitas|que te frena|que te detiene|en que te puedo ayudar|que quieres saber)/.test(d))return 'doubt';
@@ -1919,9 +2015,13 @@ function evaluateLocal(text,b,it,form){
     if(q.photo){
       if(/(foto|mando|ahi va|ya va|enseguida|ahora te|en un momento)/.test(d)){f.photoPromise=true;b.photoPromised=true}
       else{add(-6,'No mandaste la foto');f.ignored=true;f.ignoredQ=q.q;q.tries++}
-    }else if(answers(q,d,text)&&!evasive){
-      add(10,'Respondiste su pregunta');f.answered=true;f.answerWord=(q.a.map(s=>s.startsWith('__')||s==='NUM'?null:wordFor(text,s)).find(Boolean))||null;
-      if(q.concern&&!b.resolved.includes(q.concern)){b.resolved.push(q.concern);add(6,'Resolviste: '+CONCERNS[q.concern].label);f.resolvedNow=[q.concern]}
+    }else if(!evasive&&(f.ansLv=answerLevel(q,d,text))>0){
+      if(f.ansLv===2)add(10,'Respondiste su pregunta');else add(5,'Respondiste, aunque sin detalles');f.answered=true;f.answerWord=(q.a.map(s=>s.startsWith('__')||s==='NUM'?null:wordFor(text,s)).find(Boolean))||null;
+      if(q.concern&&!b.resolved.includes(q.concern)){b.resolved.push(q.concern);add(f.ansLv===2?6:3,'Resolviste: '+CONCERNS[q.concern].label);f.resolvedNow=[q.concern]}
+      if(intentOf(q)==='origin'&&/(^|[^a-z])(rob|afan|hurt|me la lleve|me lo lleve|lo saque sin|la saque sin|contraband)/.test(d)){
+        if(['bromista','conspiranoico','influencer'].includes(b.persona)){add(4,'Le divierte lo turbio');f.shady='fun'}
+        else if(['desconfiado','abuelita','detective','tikismikis'].includes(b.persona)){add(-7,'Eso suena a robado');f.shady='bad'}
+        else{add(-3,'Eso suena a robado');f.shady='meh'}}
       b.q=null;
     }else if(evasive){add(Math.round(-9*(P.evadeX||1)),'Esquivaste la pregunta');f.evaded=true;q.tries++}
     else if(text.length>70&&relevant){chips.push({v:0,l:'Respuesta a medias'});f.partial=true;q.tries+=.5}
@@ -1961,7 +2061,7 @@ function evaluateLocal(text,b,it,form){
   /* presión y desvíos */
   if(/(decidete ya|ultima oportunidad|ahora o nunca|si no lo compras|hay otros interesados|otro interesado|se lo vendo a otro)/.test(d)){
     if(b.persona==='apurado')add(3,'Le gusta la rapidez');else{add(b.persona==='desconfiado'?-9:-5,'Lo estás presionando');f.pressure=true}}
-  if(!relevant&&!f.answered&&!f.evaded&&text.length>15&&!f.insult){add(-5,'Se fue del tema');f.offtopic=true}
+  if(!relevant&&!f.answered&&!f.evaded&&!f.ansLv&&text.length>15&&!f.insult){add(-5,'Se fue del tema');f.offtopic=true}
   /* memoria de lo que dijiste */
   for(const y of (text.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/g)||[]))if(!b.facts.years.includes(y))b.facts.years.push(y);
   for(const r in saidRel)if(!b.facts.rel[r])b.facts.rel[r]=saidRel[r];
@@ -2748,16 +2848,38 @@ function openChat(id){
 }
 function closeChat(){S.cur=null;$('#chat').hidden=true;$('#profile').hidden=true;dirty=true;renderPage();renderMini()}
 function renderAIBadge(){const el=$('#c-ai');if(!el)return;const on=aiReady();el.textContent=on?'Cliente con IA':aiState==='checking'?'…':'Motor clásico';el.className='ai-pill '+(on?'on':'')}
+const QR={
+ origin:['Era de mi familia; lo heredé.','Lo compré en una feria hace años.','Me lo regaló un amigo que se mudó.','Lo encontré en una subasta de una casa antigua.','Me lo dio mi abuelo antes de morir.','Lo gané en un sorteo del barrio.','Lo cambié por mi bicicleta, no me arrepiento.','Lo rescaté de una mudanza de mi vecino.'],
+ condition:['Está en muy buen estado, sin golpes.','Tiene un detalle mínimo, nada grave.','Funciona perfecto, lo probé ayer.','Está completo, no le falta ninguna pieza.','Tiene el desgaste normal de los años.','Está como nuevo, casi no se usó.'],
+ ship:['Sí, lo envío a todo el país en pocos días.','Te lo mando mañana y el envío corre por mi cuenta.','Llega en 2 o 3 días, bien embalado.','Puedo enviarlo hoy mismo.','El envío lo pagas al recibirlo.'],
+ proof:['Es original: tengo un certificado.','Tiene una marca grabada abajo, te mando foto.','Lo tasó un experto el año pasado.','Guardo la factura original.','Tiene número de serie, lo puedes verificar.'],
+ price:['Vale eso por su historia: es una pieza única.','Quedan muy pocos así, es difícil de conseguir.','Es original y está bien cuidado, por eso vale eso.','Te lo dejo a un precio justo, es una inversión.','Otros iguales se venden más caros.'],
+ trust:['Tiene garantía de devolución de 7 días.','Puedes pagar al recibirlo, sin riesgo.','Tengo buenas reseñas de otros compradores.','Si no es lo que digo, te devuelvo el dinero.','Te mando foto con tu nombre al lado.'],
+ feel:['Sí, me da pena, pero es momento de soltarlo.','No, prefiero que lo disfrute alguien.','Le pregunté y está de acuerdo.','Me duele un poco, pero lo necesito.'],
+ when:['Lo tengo desde hace unos 10 años.','Es de los años 70, más o menos.','Lo conseguí el año pasado.','Hace mucho, desde que era chico.'],
+ yesno:['Sí, claro.','Sí, sin problema.','No, para nada.','Sí, te lo confirmo.'],
+ open:['Te cuento: es una pieza con mucha historia.','Lo cuidé muchísimo todos estos años.','Es especial, no hay otro igual.']
+};
 function quickReplies(b,it){
   const out=[];const q=b.q;
   if(b.status!=='open'||b.emp)return out;
   if(q&&q.id==='qb')out.push('¡Hola! Sí, sigue disponible. Es tuyo.');
   if(b.pmsgs===0)out.push('¡Hola! Gracias por tu interés.');
   if(q&&q.photo)out.push('📷 Mandar una foto');
-  else if(q&&q.concern){out.push({envio:'Sí, lo envío a todo el país en pocos días.',estado:'Está en muy buen estado, sin golpes.',autenticidad:'Es original: tengo un certificado.',procedencia:'Era de mi familia; lo heredé.',precio:'Vale eso por su historia: es una pieza única.',confianza:'Tiene garantía de devolución de 7 días.',foto:'📷 Mandar una foto'}[q.concern])}
-  else if(q){const qq=strip(q.q.toLowerCase());out.push(/envi|llegar|internacional/.test(qq)?'Sí, hago envíos.':/estado|golpes|detalle/.test(qq)?'Está en muy buen estado.':/cuanto|precio|barato|vale/.test(qq)?'Te lo dejo a un precio justo.':'Sí, claro.')}
-  if(out.length<3)out.push('¿Qué es lo que más te preocupa?');
-  return [...new Set(out)].slice(0,3);
+  else if(q){
+    let list=(QR[intentOf(q)]||QR.open).slice();
+    // personalizar con datos del anuncio: familiares, años
+    const rel=(it&&it.story.match(/(bisabuel[oa]|abuel[oa]|t[ií][oa]|padre|madre)/i)||[])[1];
+    const yr=(it&&it.story.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/)||[])[1];
+    if(intentOf(q)==='origin'&&rel)list.unshift(`Era de mi ${rel.toLowerCase()}, me ${it.g==="f"?"la":"lo"} dejó.`);
+    if(intentOf(q)==='when'&&yr)list.unshift(`Es de ${yr}, como dice el anuncio.`);
+    // orden estable por pregunta (no cambia en cada refresco)
+    let h=0;for(const c of q.q+b.id)h=(h*31+c.charCodeAt(0))>>>0;
+    const first=list.shift();const rest=list.sort((a,c)=>((hue(a)+h)%97)-((hue(c)+h)%97));
+    out.push(...(rel&&intentOf(q)==='origin'||yr&&intentOf(q)==='when'?[first,...rest]:[...rest.slice(0,1),first,...rest.slice(1)]).slice(0,3));
+  }
+  out.push('¿Qué es lo que más te preocupa?');
+  return [...new Set(out)].slice(0,4);
 }
 function renderChat(keepScroll){
   const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const it=itemOf(b);const P=PERSONAS[b.persona]||PERSONAS.amable;
@@ -3561,6 +3683,20 @@ function pkLoop(ts){
   PK.raf=requestAnimationFrame(pkLoop);
 }
 document.addEventListener('input',e=>{if(e.target.id==='pk-bet')$('#pk-betn').textContent=money(e.target.value)});
+
+/* ================= TECLADO VIRTUAL ================= */
+// Las hojas (chat, editor…) ocupan solo la parte visible de la pantalla, así lo que escribes queda siempre sobre el teclado
+(function(){const vv=window.visualViewport;if(!vv)return;const r=document.documentElement;let was=false;
+  function fit(){const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop);
+    r.style.setProperty('--vvh',vv.height+'px');r.style.setProperty('--vvt',vv.offsetTop+'px');
+    const open=kb>80||(vv.height<innerHeight*.8&&/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||''));
+    document.body.classList.toggle('kb-open',open);
+    if(open&&!was){const a=document.activeElement;
+      if(a&&a.id==='c-input'){const l=$('#c-msgs');if(l)l.scrollTop=l.scrollHeight}
+      else if(a&&a.closest&&a.closest('.sheet'))setTimeout(()=>a.scrollIntoView({block:'center',behavior:'smooth'}),60)}
+    was=open}
+  vv.addEventListener('resize',fit);vv.addEventListener('scroll',fit);
+  document.addEventListener('focusin',()=>setTimeout(fit,250));document.addEventListener('focusout',()=>setTimeout(fit,250));fit()})();
 
 /* ================= CUPONES PROMOCIONALES ================= */
 // Aparecen muy rara vez mientras navegas, casi siempre para OTRA página.
