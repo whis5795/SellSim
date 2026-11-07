@@ -2420,12 +2420,14 @@ function openNight(){
     <div class="sum-line ${thirsty?'bad':'ok'}">Bebida ${Math.round(S.drink)} % ${thirsty?'· menos de 70 %: mañana estarás débil':'· bien hidratado'}</div>
     ${(hungry||thirsty)&&(S.starve||0)>=STARVE_DEATH-1?'<div class="sum-line dead">💀 Si duermes así, mueres de inanición y se termina la partida. Come y bebe algo antes de dormir.</div>':(hungry||thirsty)&&(S.starve||0)>=1?`<div class="sum-line bad">Sería tu segundo día seguido mal alimentado. Al ${STARVE_DEATH}.º mueres de inanición.</div>`:''}
     ${due.length?`<div class="sum-line bad">Tienes ${due.length} factura${due.length>1?'s':''} que vence${due.length>1?'n':''} hoy (${money(due.reduce((a,b)=>a+b.amount,0))}). Si no pagas, suben un 10 %${due.some(b=>b.kind==='salary')?' y los empleados sin pago renuncian':''}${due.some(b=>b.kind==='internet')?', y te cortan internet':''}.</div>`:'<div class="sum-line ok">No tienes facturas vencidas.</div>'}
-    ${S.fridgeItems.some(f=>f.day<=S.day-1)?'<div class="sum-line bad">Hay comida en el refrigerador que se pudre esta noche.</div>':''}
+    ${S.fridgeItems.some(f=>f.day<=S.day-FRIDGE_DAYS+1)?'<div class="sum-line bad">Hay comida en el refrigerador que se pudre esta noche.</div>':''}
     ${S.shipments.some(s=>s.pending)?`<div class="sum-line bad">Tienes ${S.shipments.filter(s=>s.pending).length} paquete${S.shipments.filter(s=>s.pending).length>1?'s':''} sin enviar: hasta que no los envíes por la ventana no cobras el resto.</div>`:''}
     ${S.door.length?`<div class="sum-line bad">Dejaste ${S.door.length} pedido${S.door.length>1?'s':''} en la puerta. Sin refrigerador se pudre${S.door.length>1?'n':''} si no lo${S.door.length>1?'s':''} comes.</div>`:''}`;
   $('#night').hidden=false;
 }
-const STARVE_DEATH=3;
+const STARVE_DEATH=3,FRIDGE_DAYS=7;
+const fridgeLeft=fi=>fi.day+FRIDGE_DAYS-S.day; // días que le quedan, contando hoy
+const fridgeState=fi=>{const n=fridgeLeft(fi);return n<=1?'Se pudre esta noche':`Fresco · dura ${n} días más`};
 function gameOver(){
   S.dead=S.day;$('#night').hidden=true;save();
   $('#dead-body').innerHTML=`<div class="sum-grid">
@@ -2446,7 +2448,7 @@ function endDay(){
     else{b.amount=Math.ceil(b.amount*1.1);b.late=true}
   }
   S.day++;S.min=8*60;
-  const rotten=S.fridgeItems.filter(f=>f.day<=S.day-2),rotDoor=S.door.filter(f=>f.day<=S.day-2);
+  const rotten=S.fridgeItems.filter(f=>f.day<=S.day-FRIDGE_DAYS),rotDoor=S.door.filter(f=>f.day<=S.day-2);
   if(rotten.length||rotDoor.length){toast(`Se pudrió: ${[...rotten,...rotDoor].map(r=>r.ing?ING[r.ing].n.toLowerCase():low(FOOD.find(f=>f.id===r.id).name)).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f));S.door=S.door.filter(f=>!rotDoor.includes(f))}
   for(const sh of S.shipments.filter(x=>x.day&&x.day<=S.day))deliverShipment(sh);
   S.food=clamp(S.food-10,0,100);S.drink=clamp(S.drink-10,0,100);
@@ -2844,7 +2846,7 @@ function pageComeYa(){
   const w=pendingFor('junk');
   return {title:'ComeYa · Comida rápida',host:'comeya.com',cls:'altoque',html:`<div class="at-head"><div class="at-in"><div class="at-logo">COME YA</div><p>Comida rápida a domicilio · llega en minutos</p></div></div>
   <div class="at-in at-body">${w!=null?`<div class="at-pend">Tu pedido llega en ${w} s</div>`:''}
-  <p class="at-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes comerlos o guardarlos en el refrigerador.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p>
+  <p class="at-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes comerlos o guardarlos en el refrigerador: ahí duran una semana.':'Sin refrigerador se pudren a los 2 días: cómelos pronto.'}</p>
   ${FOOD.filter(f=>f.kind==='junk').map(f=>foodCard(f,'at')).join('')}</div>`};
 }
 function pageSuper(){
@@ -2855,7 +2857,7 @@ function pageSuper(){
   <h2 class="sp-h2">Ingredientes para cocinar</h2>
   <p class="sp-note">${S.stove?'Llegan a tu puerta y se guardan en la despensa de la cocina.':'Necesitas una cocina para usarlos: se compra en tiendas de muebles.'} Tienes: ${Object.entries(S.pantry||{}).filter(([k,v])=>v>0).map(([k,v])=>ING[k].i+'×'+v).join(' ')||'nada'}.</p>
   <div class="sp-ing">${Object.entries(ING).map(([k,g])=>`<button class="sp-ingb" data-act="order-ing" data-id="${k}" ${S.money<cupPrice('superpronto.com',g.price)?'disabled':''}><span>${g.i}</span><b>${g.n}</b><small>×${g.pack} · ${cupTag('superpronto.com',g.price)}</small></button>`).join('')}</div>
-  <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p></div>`};
+  <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina: ahí duran una semana.':'Sin refrigerador se pudren a los 2 días: cómelos pronto.'}</p></div>`};
 }
 const foodWait=F=>F.kind==='junk'?ri(3,6)+F.price*F.price*2:ri(14,20)+F.price*6;
 const foodEta=F=>F.kind==='junk'?4+F.price*F.price*2:17+F.price*6;
@@ -2874,7 +2876,7 @@ function pageHogar(){
   <div class="ht-in ht-body">
     <div class="ht-hero"><h1>Equipa tu negocio de reventa</h1><p>Cada electrodoméstico suma $5 a tu factura de luz semanal.</p></div>
     <div class="ht-grid">
-    ${card('🧊','Refrigerador con congelador','Guarda comida y bebida para después. Lo que no consumas para el segundo día se pudre.',cupTag('hogartotal.com',FRIDGE_PRICE),S.fridge,S.money>=cupPrice('hogartotal.com',FRIDGE_PRICE)?'buy-fridge':null,S.money<cupPrice('hogartotal.com',FRIDGE_PRICE)&&!S.fridge?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',FRIDGE_PRICE)-S.money)}</p>`:'')}
+    ${card('🧊','Refrigerador con congelador','Mantiene la comida y la bebida frescas una semana entera. Sin él, todo se pudre a los 2 días.',cupTag('hogartotal.com',FRIDGE_PRICE),S.fridge,S.money>=cupPrice('hogartotal.com',FRIDGE_PRICE)?'buy-fridge':null,S.money<cupPrice('hogartotal.com',FRIDGE_PRICE)&&!S.fridge?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',FRIDGE_PRICE)-S.money)}</p>`:'')}
     ${card('🛸','Servicio de drones de entrega','Tus ventas se entregan el mismo día, estén donde estén los clientes, y cobras el resto ese mismo día. Pago inicial de $200 y $50 por semana.',cupTag('hogartotal.com',DRONE_PRICE),S.drone,S.money>=cupPrice('hogartotal.com',DRONE_PRICE)?'buy-drone':null,S.money<cupPrice('hogartotal.com',DRONE_PRICE)&&!S.drone?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',DRONE_PRICE)-S.money)}</p>`:S.drone&&!droneOn()?'<p class="ht-miss">Servicio suspendido: paga la factura de drones.</p>':'')}
     ${card('🍳','Cocina con horno','Cocina recetas con ingredientes del súper: llenan mucho más el hambre y la sed.',cupTag('hogartotal.com',100),S.stove,S.money>=cupPrice('hogartotal.com',100)?'buy-stove':null,S.money<cupPrice('hogartotal.com',100)&&!S.stove?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',100)-S.money)}</p>`:'')}
     ${card('🚐','Camioneta de reparto','Para llevar cosas grandes.','—',false,null)}
@@ -3202,13 +3204,13 @@ function sendTyping(){
 /* ================= ESTADO ================= */
 function renderStats(){
   const bar=(v,label,icon)=>`<div class="st-bar"><div class="st-lab"><span>${icon} ${label}</span><b class="num">${Math.round(v)} %</b></div><div class="bar big"><i style="width:${v}%;background:${v>=70?'var(--good)':v>=DRAIN?'var(--warn)':'var(--bad)'}"></i><span class="tick" style="left:70%"></span></div></div>`;
-  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);const rot=fi.day<=S.day-1;return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${rot?'Se pudre esta noche':'Comprado hoy'} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span></div>`}).join('');
+  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${fridgeState(fi)} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span></div>`}).join('');
   $('#stats-body').innerHTML=`${bar(S.food,'Comida','🍔')}${bar(S.drink,'Bebida','💧')}
   <p class="st-note">Cada venta, anuncio o trabajito tiene 1 posibilidad entre 4 de bajar tu comida un ${DRAIN} % y 1 entre 5 de bajar tu bebida otro ${DRAIN} %. Necesitas al menos 70 % de las dos al terminar el día o mañana amanecerás débil. Por debajo del ${DRAIN} % no puedes trabajar.</p>
   ${S.weak?'<p class="st-weak">Hoy estás débil: convences un 25 % menos.</p>':''}
   ${(S.starve||0)>=1?`<p class="st-weak">💀 Llevas ${S.starve} día${S.starve>1?'s':''} seguido${S.starve>1?'s':''} mal alimentado. Si terminas ${STARVE_DEATH-S.starve>1?STARVE_DEATH-S.starve+' días más':'otro día'} con comida o bebida bajo 70 %, mueres de inanición.</p>`:'<p class="tip">Si terminas 3 días seguidos con comida o bebida bajo 70 %, mueres de inanición.</p>'}
   <h3 class="st-h">Refrigerador</h3>
-  ${S.fridge?(items?items+'<p class="st-note">Para comer, ve a la cocina de tu cuarto.</p>':'<p class="st-note">Vacío. Lo que guardes ahí se pudre si no lo consumes para el segundo día.</p>'):'<p class="st-note">No tienes refrigerador: tu cocina está vacía y los pedidos hay que comerlos al recogerlos en la puerta.</p>'}
+  ${S.fridge?(items?items+'<p class="st-note">Para comer, ve a la cocina de tu cuarto.</p>':'<p class="st-note">Vacío. Lo que guardes ahí dura fresco una semana.</p>'):'<p class="st-note">No tienes refrigerador: tu cocina está vacía y los pedidos hay que comerlos al recogerlos en la puerta.</p>'}
   <h3 class="st-h">Clientes</h3>
   <label class="st-toggle" for="ai-toggle"><span><b>Clientes con IA</b><small>${sampleFn?(aiState==='off'?'No disponible ahora mismo.':'Claude interpreta tus mensajes y responde como el cliente. Usa tu cuenta de Claude.'):'No disponible en esta vista. Se usa el motor clásico.'}</small></span><input type="checkbox" id="ai-toggle" ${S.aiOn?'checked':''} ${sampleFn?'':'disabled'}></label>`;
 }
@@ -3385,8 +3387,8 @@ function pkgChoice(kind){
   roomKey='';renderRoom();save();
 }
 function openFridge(){
-  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);const rot=fi.day<=S.day-1;return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${rot?'Se pudre esta noche':'Fresco'} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span><button class="btn sm" data-act="eat" data-id="${fi.uid}">${F.drink>F.food?'Tomar':'Comer'}</button></div>`}).join('');
-  $('#fridge-body').innerHTML=items||'<p class="st-note">Vacío. Lo que guardes aquí se pudre si no lo consumes para el segundo día.</p>';
+  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${fridgeState(fi)} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span><button class="btn sm" data-act="eat" data-id="${fi.uid}">${F.drink>F.food?'Tomar':'Comer'}</button></div>`}).join('');
+  $('#fridge-body').innerHTML=items||'<p class="st-note">Vacío. Lo que guardes aquí dura fresco una semana.</p>';
   $('#fridge').hidden=false;
 }
 function bag(x,F,uid,old){return `<g class="hot" data-act="pickup" data-id="${uid}" transform="translate(${x} 392)"><title>Recoger ${F.name}</title>
