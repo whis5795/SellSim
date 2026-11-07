@@ -1207,6 +1207,14 @@ body.helper{background:var(--bg)}
 .hw-lab textarea{width:100%;box-sizing:border-box;font:inherit;font-weight:400;font-size:15px;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);resize:vertical}
 .hw-score{display:flex;gap:8px;align-items:center}.hw-score .minibar{flex:1}
 .hw-price{display:flex;align-items:center;gap:6px}.hw-price span{font:800 18px 'JetBrains Mono',monospace}.hw-price input{flex:1;min-width:0;box-sizing:border-box;font:800 18px 'JetBrains Mono',monospace;padding:9px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)}
+
+.bz-chatw,.hp-chatw{position:relative}
+.bz-rej{position:absolute;right:10px;bottom:10px;z-index:2;border:1.5px solid rgba(229,72,77,.45);background:var(--surface,#fff);color:#E5484D;border-radius:999px;min-width:30px;height:28px;padding:0 9px;font:800 12px Figtree,sans-serif;cursor:pointer}
+.bz-rej.armed{background:#E5484D;color:#fff;border-color:#E5484D}
+.bz-chatw .bz-chat{padding-right:54px}.hp-chatw .hp-chat{width:100%;padding-right:54px;box-sizing:border-box}
+.bz-fr{font-size:11px;font-weight:800;color:#1F9D63;background:#E3F7EC;padding:2px 7px;border-radius:999px;white-space:nowrap;align-self:flex-start}
+.cx-friend{margin:0;padding:8px 14px;font-size:12.5px;background:#E3F7EC;color:#135C3A;border-bottom:1px solid #9ADBB8}
+@media (prefers-color-scheme:dark){.cx-friend{background:#123528;color:#9FE8C3;border-color:#1F5C41}.bz-fr{background:#123528;color:#7FE0AE}}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -2952,12 +2960,13 @@ function bzChats(){
   if(!open.length&&!closed.length)return msgTabs('chats')+`<div class="bz-empty"><b>Nadie te escribió todavía.</b><br>Publica algo con una buena historia y llegarán ofertas.</div>`;
   const row=b=>{const it=itemOf(b)||{name:'Artículo vendido'};const last=b.msgs[b.msgs.length-1];
     const st=b.status==='won'?'Vendido':b.status==='lost'?'Cerrado':b.emp?`Lo atiende ${(S.hired.find(h=>h.id===b.emp)||{name:'tu empleado'}).name.split(' ')[0]}`:b.waitingSince!=null?'Esperando tu respuesta':'Escribiendo…';
-    return `<button class="bz-chat ${b.status!=='open'?'closed':''}" data-act="open-chat" data-id="${b.id}">
+    const fr=typeof chatFriend==='function'?chatFriend(b):null;
+    return `<div class="bz-chatw">${b.status==='open'?`<button class="bz-rej" data-act="list-rej" data-id="${b.id}" aria-label="Rechazar la oferta de ${esc(b.name)}">✖</button>`:''}<button class="bz-chat ${b.status!=='open'?'closed':''}" data-act="open-chat" data-id="${b.id}">
       <span class="av" style="--h:${hue(b.name)}">${esc(b.name[0])}</span>
       <span class="bz-ci"><span class="bz-ct"><b>${esc(b.name)}</b><span class="bz-price sm num">${money(b.offer)}</span></span>
       <span class="bz-sub">${esc(it.name)} · ${st}</span>
       ${b.status==='open'?`<span class="minibar"><i style="width:${b.conv}%;background:${convColor(b.conv)}"></i></span>`:`<span class="bz-sub">${esc(last.text||'')}</span>`}</span>
-      ${b.unread&&b.status==='open'?'<span class="dot"></span>':''}</button>`};
+      ${fr?`<span class="bz-fr">📲 ${esc(fr)}</span>`:''}${b.unread&&b.status==='open'?'<span class="dot"></span>':''}</button></div>`};
   return msgTabs('chats')+`${open.length?open.map(row).join(''):'<div class="bz-empty">No hay conversaciones abiertas.</div>'}${closed.length?`<p class="bz-sec">Cerradas</p>${closed.map(row).join('')}`:''}`;
 }
 
@@ -5376,6 +5385,50 @@ const VMORE={
   tikismikis:{good:['Bien escrito, así da gusto.','Clarísimo.'],bad:['Revisa la redacción.','Eso está mal escrito.'],ok:['Correcto.','Entiendo.']},
   decidido:{good:['¡Perfecto!','Me sirve.'],bad:['No, así no.','No me gusta.'],ok:['Ok.','Dale.']}};
 for(const k in VMORE){if(!VOICE[k])VOICE[k]={good:[],bad:[],ok:[]};for(const t of ['good','bad','ok'])VOICE[k][t]=[...new Set([...(VOICE[k][t]||[]),...VMORE[k][t]])]}
+
+/* ================= RECHAZAR DESDE LA LISTA DE CHATS + AVISO DE AYUDANTE EN EL CHAT ================= */
+// qué amigo está con cada cliente: el que tiene ese chat abierto, o el último que le escribió
+function chatFriend(b){if(typeof friendList!=='function')return null;const fr=friendList();
+  const v=fr.find(p=>p.viewing==b.id);if(v)return v.name;
+  if(b.friend&&fr.some(p=>p.name===b.friend)&&b.status==='open')return b.friend;return null}
+// dos toques para rechazar desde la lista (el estado sobrevive a los redibujos)
+const LR={id:null,until:0};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="list-rej"]');if(!t)return;e.preventDefault();e.stopPropagation();
+  const id=+t.dataset.id;
+  if(LR.id===id&&Date.now()<LR.until){LR.until=0;const b=S.buyers.find(x=>x.id===id);if(rejectBuyer(b))toast(`Rechazaste la oferta de ${b.name}.`);try{renderPage(true)}catch(x){}return}
+  LR.id=id;LR.until=Date.now()+3500;t.classList.add('armed');t.textContent='¿Rechazar?';
+  setTimeout(()=>{if(Date.now()>=LR.until)try{renderPage(true)}catch(x){}},3600)},true);
+const _bzChatsLR=bzChats;
+bzChats=function(){let h=_bzChatsLR();if(LR.id!=null&&Date.now()<LR.until)h=h.replace(`class="bz-rej" data-act="list-rej" data-id="${LR.id}"`,`class="bz-rej armed" data-act="list-rej" data-id="${LR.id}"`).replace(new RegExp(`(data-act="list-rej" data-id="${LR.id}"[^>]*>)✖`),'$1¿Rechazar?');return h};
+// el rechazo desde la lista también funciona en el navegador del ayudante (un toque, ya confirma su ✖)
+if(typeof WEB_SAFE!=='undefined')WEB_SAFE.add('list-rej');
+// cartel encima del chat del cliente
+const _renderChatLR=renderChat;
+renderChat=function(keep){_renderChatLR(keep);const b=S.buyers.find(x=>x.id===S.cur);const old=$('#cx-friend');
+  const name=b&&b.status==='open'?chatFriend(b):null;
+  if(!name){if(old)old.remove();return}
+  const txt=`📲 <b>${esc(name)}</b> ya está hablando con ${esc(b.name)} desde su celular. Si escribes tú también, pueden pisarse.`;
+  if(old){if(old.innerHTML!==txt)old.innerHTML=txt;return}
+  const el=document.createElement('div');el.id='cx-friend';el.className='cx-friend';el.innerHTML=txt;
+  const msgs=$('#c-msgs');msgs.parentNode.insertBefore(el,msgs)};
+// el anfitrión recibe qué chat tiene abierto cada amigo
+const _hostOnMsgLR=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t==='viewing'){peer.viewing=m.id;try{if(S.cur!=null)renderChat(true);if(S.view==='pc')renderPage(true)}catch(e){}return}
+  return _hostOnMsgLR(peer,raw)};
+// celular del amigo: avisar qué chat abrió; y botón ✖ en su lista de chats
+let HVsent='x';
+setInterval(()=>{try{if(!HP.ch||HP.ch.readyState!=='open')return;const v=(HP.stage==='live'&&!HW.on)?HP.cur:null;if(String(v)!==HVsent){HVsent=String(v);HP.ch.send(JSON.stringify({t:'viewing',id:v}))}}catch(e){}},700);
+const LRH={id:null,until:0};
+const _hpRenderLR=hpRender;
+hpRender=async function(soft){await _hpRenderLR(soft);if(HP.stage!=='live'||HP.cur!=null||HW.on)return;
+  document.querySelectorAll('#hp .hp-chat[data-act="hp-open"]').forEach(btn=>{if(btn.parentNode.classList.contains('hp-chatw'))return;const id=btn.dataset.id;
+    const w=document.createElement('div');w.className='hp-chatw';btn.parentNode.insertBefore(w,btn);w.appendChild(btn);
+    const armed=LRH.id==id&&Date.now()<LRH.until;w.insertAdjacentHTML('afterbegin',`<button class="bz-rej ${armed?'armed':''}" data-act="hp-list-rej" data-id="${id}" aria-label="Rechazar oferta">${armed?'¿Rechazar?':'✖'}</button>`)})};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hp-list-rej"]');if(!t||!HP.ch)return;e.preventDefault();e.stopImmediatePropagation();
+  const id=t.dataset.id;if(LRH.id==id&&Date.now()<LRH.until){LRH.until=0;HP.ch.send(JSON.stringify({t:'reject',id:+id||id}));hpToast('Rechazaste la oferta.');return}
+  LRH.id=id;LRH.until=Date.now()+3500;t.classList.add('armed');t.textContent='¿Rechazar?';
+  setTimeout(()=>{if(Date.now()>=LRH.until){const b=document.querySelector(`[data-act="hp-list-rej"][data-id="${id}"]`);if(b){b.classList.remove('armed');b.textContent='✖'}}},3600)},true);
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
