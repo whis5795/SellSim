@@ -680,6 +680,12 @@ input.field.price{font:700 18px var(--f-mono)}
 .cam-lq{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:#A3A3B0}.cam-lq b{font-size:16px;color:#fff}
 .cam-hint{margin:0;font-size:13px;color:#E8E8EE}
 
+.bs-fix{margin:0;font-size:15px;color:var(--muted)}.bs-fix a{color:#2B50E8;font-style:italic}
+.ct-bot.crazy{background:#FFF1C9}
+.ct-pre{font-size:12px;opacity:.75;font-style:italic}
+.ct-row{display:flex;gap:6px;flex-wrap:wrap}
+.ct-use.alt{background:transparent;color:var(--ct-bg);border:1.5px solid var(--ct-bg)}
+
 @media (max-width:420px){.tb-stats{width:96px;padding:6px 8px}.tb-stats>span{grid-template-columns:16px 1fr;gap:4px}.tb-stats .num{display:none}.taskbar{gap:6px}.tb-btn{width:36px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -1088,6 +1094,46 @@ const SURVEY_Q=[
 const ATTENTION=['Para demostrar que lees, elige «Azul».','Esta es una pregunta de control: marca «Azul».','Si estás prestando atención, toca «Azul».'];
 const TYPE_PHRASES=['El envío llegará el miércoles por la mañana.','Por favor, confirme la dirección de entrega.','Gracias por su compra; vuelva pronto.','La reunión se pasó para el jueves a las tres.','¿Podría enviarme la factura por correo?','El artículo tiene garantía de treinta días.','Mañana no abrimos porque es feriado.','Hay que regar las plantas después del almuerzo.','El técnico vendrá a revisar el refrigerador.','Ojalá que el autobús no se retrase otra vez.','Mi tía compró una lámpara en el mercado del domingo.','Último aviso: recoja su paquete en la oficina de correos.'];
 
+/* ---------- historias absurdas y exclusivas del bot ---------- */
+const ABSURD=[
+"{Este} {obj} fue testigo clave en el juicio de 1987 contra un pato acusado de robar un queso. Gracias a su silencio, el pato fue absuelto y hoy es alcalde de su pueblo.",
+"{Este} {obj} es el único objeto del mundo con licencia de conducir. Se la dieron por error en 1966 y nunca tuvo una sola multa.",
+"Un astronauta se llevó {este} {obj} a la Luna en 1971, escondid{o} en una bota. Volvió con olor a queso lunar, que según los expertos no existe.",
+"Mi tío abuelo Ezequiel juraba que {este} {obj} le hablaba en francés todas las noches de 1958. Nadie en la familia sabía francés, así que nunca supimos qué decía.",
+"Fue el premio de un torneo de ajedrez entre palomas en 1983. Ganó Coco, una paloma que movía las piezas con el pico y jamás perdió la calma.",
+"En 1992, {este} {obj} se postuló a alcalde de un pueblito de la sierra. Sacó 14 votos, más que el candidato que prometía construir una playa.",
+"La reina de un país que ya no existe {lo} usó como sombrero en su coronación de 1911. Dijo que era «lo más cómodo que se había puesto en la cabeza».",
+"El pirata Barbagris {lo} cambió en 1702 por un loro que solo sabía decir «impuestos». Ninguno de los dos salió ganando.",
+"Durante el gran apagón de 1977, {este} {obj} brilló sol{o} durante tres minutos. Los científicos del museo siguen sin explicarlo y prefieren no hablar del tema.",
+"{Lo} encontraron dentro de una ballena en 1965, junto a un paraguas y una carta de amor sin firma. La ballena estaba perfectamente, solo un poco avergonzada.",
+"{Este} {obj} tiene doble nacionalidad: en 1979 una oficina de aduanas le sacó pasaporte por error y nadie se atrevió a anularlo.",
+"El detective Raúl Barrios {lo} usó para resolver el caso del ladrón de calcetines izquierdos en 1961. El ladrón resultó ser una lavadora.",
+"En 1999, {este} {obj} estuvo a punto de casarse con un reloj de pared. La boda se suspendió porque el reloj siempre llegaba tarde.",
+"El doctor Ulrich Pomelo, un científico excéntrico, intentó clonar{lo} en 1984. Solo consiguió una tostada con mucha personalidad.",
+"Aparece en el fondo de más de 4.000 fotos de turistas de 1970. Nadie sabe cómo llegaba a todas, pero siempre salía bien.",
+"Fue el amuleto de un equipo de fútbol que perdió 300 partidos seguidos entre 1940 y 1952. Lo vendo porque creo que trae suerte a los demás.",
+"Madame Gertrudis, una vidente famosa, predijo en 1955 que quien tuviera {este} {obj} sería «medianamente feliz». Se cumplió con todos sus dueños.",
+"{Este} {obj} sobrevivió a tres mudanzas, dos divorcios y un tornado en 1981. El tornado no tuvo tanta suerte.",
+"En 1968 fue nombrad{o} ciudadan{o} ilustre de un pueblo fundado por error. El diploma lo firmó un alcalde que, técnicamente, era un perro.",
+"Un actor de telenovelas {lo} usó en la escena más dramática de 1989, cuando descubrió que su gemelo malvado era él mismo.",
+"Un monje del siglo XII escribió un poema de 400 versos sobre algo idéntico a {este} {obj}. El poema es malísimo, pero muy sincero.",
+"En 1986 viajó en tren de una punta a la otra del país sin boleto. El inspector no se atrevió a multar{lo} porque, según él, «tenía mirada de inocente».",
+"Estuvo veinte años escondid{o} en el ropero de un espía jubilado que ya no se acordaba de para qué {lo} escondía.",
+"Cuenta la leyenda que si {lo} pones al sol un martes se escucha una banda de mariachis a lo lejos. Ningún mariachi lo ha desmentido.",
+"Una gallina llamada Doña Pocha incubó {este} {obj} durante todo el verano de 1972, convencida de que era su hijo. {Lo} crió con mucho amor.",
+"{Este} {obj} fue a la universidad en 1990 como oyente. No aprobó ningún examen, pero era lo más popular de la clase.",
+"Un mapache {lo} robó en 1984 y {lo} devolvió al día siguiente con una nota de disculpas. Conservo la nota: tiene muy buena letra.",
+"El rey de un pequeño país europeo {lo} perdió en una apuesta de 1931 contra su cocinero. El cocinero gobernó tres días y luego volvió a la cocina, aliviado.",
+"En 1958 {lo} mandaron al cielo atad{o} a un globo meteorológico. Aterrizó en el jardín de una señora que lo tomó como una señal divina.",
+"La abuela Ofelia, campeona de lucha libre en 1964, {lo} usaba como amuleto antes de cada combate. Nunca perdió, y nunca explicó por qué.",
+"Fue protagonista de una película muda de 1923 que nadie vio porque el proyector se incendió en el estreno. Fue lo único que se salvó.",
+"Un fantasma muy educado {lo} usaba en un castillo escocés hasta 1950. Se mudó porque el castillo se puso de moda y había demasiados turistas.",
+"Fue lo más votado en una encuesta de 1993 sobre «qué te llevarías a una isla desierta», por encima del agua potable.",
+"Mi vecino jura que lo abdujeron en 1979 y que los extraterrestres le devolvieron {este} {obj} porque «no combinaba con nada en la nave».",
+"En 1960 dio una conferencia en la universidad sobre la paciencia. El público aplaudió de pie, aunque nadie entendió nada porque no dijo ni una palabra.",
+"Ramón, un elefante de circo, {lo} llevaba en la trompa en cada función de 1957. El público aplaudía más al objeto que al elefante, y Ramón lo aceptó con humildad.",
+];
+
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -1219,8 +1265,8 @@ function storyScore(t,item){
     if(!cats[cat]||cats[cat].fresh<fresh)cats[cat]={stem:s,fresh};
     found.push(s);
   }
-  const catVals=Object.values(cats).sort((a,b)=>b.fresh-a.fresh).slice(0,5);
-  const creative=catVals.reduce((a,c)=>a+c.fresh,0)/5;              // 0..1
+  const catVals=Object.values(cats).sort((a,b)=>b.fresh-a.fresh).slice(0,4);
+  const creative=catVals.reduce((a,c)=>a+c.fresh,0)/4;              // 0..1
   const stale=Object.values(cats).filter(c=>c.fresh<.6).length;
   const years=(t.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/g)||[]);
   const future=years.some(y=>+y>2026);
@@ -1231,9 +1277,9 @@ function storyScore(t,item){
   const sp=spellIssues(t);
   let s=creative*.42
     +Math.min(years.length,1)*.1+Math.min(names,2)*.05
-    +Math.min(conn,3)/3*.12
-    +(sentences>=2&&sentences<=5?.08:sentences===1?.03:.04)
-    +clamp((len-30)/170,0,1)*.13
+    +Math.min(conn,2)/2*.12
+    +(sentences>=2&&sentences<=5?.08:sentences===1?.06:.04)
+    +clamp((len-20)/110,0,1)*.13
     +(words.length>8&&uniq.size/words.length>.72?.05:0)
     +(mentions?.05:-.08)
     -sp.length*.04-(future?.15:0)-(len>520?.06:0);
@@ -1827,12 +1873,22 @@ function search(q){
     let sc=0;
     for(const k of s.kw){
       if(k.includes(' ')){if(d.includes(k.trim()))sc+=2;continue}
-      if(words.some(w=>w.startsWith(k)||(w.length>=4&&k.startsWith(w))))sc+=1;
+      if(words.some(w=>w.startsWith(k)||(w.length>=4&&k.startsWith(w))||(w.length>=5&&k.length>=5&&lev(w.slice(0,k.length),k)<=1)))sc+=1;
     }
     if(words.some(w=>w.length>=4&&s.url.includes(w)))sc+=3;
     return {s,sc};
   }).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc).map(r=>r.s);
 }
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+const SUGGEST=['comprar','vender','tienda','ofertas','usado','trabajo','empleo','empleos','trabajos','empleados','contratar','personal','historias','historia','inventar','inteligencia','artificial','comida','rapida','hamburguesa','delivery','hambre','supermercado','agua','bebida','banco','prestamo','credito','dinero','facturas','pagar','luz','internet','sueldo','deuda','muebles','electrodomesticos','refrigerador','drones','entrega','envio','ortografia','diccionario','rico','encuestas','platos','curriculum','vendedor','bazarito','cuentero'];
+function fixWord(w){
+  if(w.length<3||SUGGEST.includes(w))return w;
+  let best=w,bd=9;const tol=w.length<=4?1:w.length<=7?2:3;
+  for(const s of SUGGEST){const d=s.startsWith(w)&&w.length>=4?.5:Math.min(lev(w,s),lev(w,s.slice(0,w.length+1)));if(d<bd){bd=d;best=s}}
+  return bd<=tol?best:w;
+}
+function fixQuery(q){const words=strip(q.toLowerCase()).split(/[^a-z0-9ñ]+/).filter(Boolean);const fixed=words.map(fixWord);return {fixed:fixed.join(' '),changed:fixed.join(' ')!==words.join(' ')}}
 function route(url){
   const {host,path}=parseUrl(url);
   if(isOffline()&&!ESSENTIAL.includes(host)&&FAV[host])return {title:'Sin conexión',host,cls:'sys',html:pageOffline()};
@@ -1891,9 +1947,11 @@ function pageBuscalo(path){
   if(!q)return {title:'Buscalo',host:'buscalo.com',cls:'buscalo',html:`<div class="bs-home">${logo}
     <form class="bs-form" id="bs-form"><input id="bs-q" type="search" placeholder="Busca lo que necesites" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form>
 </div>`};
-  const res=search(q);
+  let res=search(q);const fx=fixQuery(q);let note='';
+  if(fx.changed){const r2=search(fx.fixed);
+    if(r2.length){res=r2;note=`<p class="bs-fix">Quizás quisiste decir: <a href="#" data-go="buscalo.com/buscar?q=${encodeURIComponent(fx.fixed)}"><b>${esc(fx.fixed)}</b></a>. Mostrando sus resultados.</p>`}}
   return {title:`${q} - Buscalo`,host:'buscalo.com',cls:'buscalo',html:`<div class="bs-top">${logo}<form class="bs-form sm" id="bs-form"><input id="bs-q" type="search" value="${esc(q)}" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form></div>
-  <div class="bs-results"><p class="bs-count">${res.length?`Cerca de ${res.length} resultado${res.length>1?'s':''} (0,${ri(10,60)} segundos)`:''}</p>
+  <div class="bs-results">${note}<p class="bs-count">${res.length?`Cerca de ${res.length} resultado${res.length>1?'s':''} (0,${ri(10,60)} segundos)`:''}</p>
   ${res.length?res.map(s=>{const f=FAV[s.url];return `<article class="bs-res"><div class="bs-url"><span class="fav" style="background:${f[1]}">${f[0]}</span><span>${s.url}</span></div>
   <a href="#" data-go="${s.url}" class="bs-title">${esc(s.title)}</a><p>${esc(typeof s.snip==='function'?s.snip():s.snip)}</p></article>`}).join(''):
   `<div class="bs-none"><h2>No encontramos nada para «${esc(q)}»</h2><p>Prueba con otras palabras.</p></div>`}</div>`};
@@ -1971,7 +2029,7 @@ function pageCuentero(){
   if(!S.botSub)return {title:'Cuentero.ai · Historias que venden',host:'cuentero.ai',cls:'cuentero',html:`<div class="ct-wrap">
     <div class="ct-logo">Cuentero<span>.ai</span></div>
     <h1 class="ct-h1">Todo objeto tiene un pasado. Nosotros se lo inventamos.</h1>
-    <p class="ct-lead">Dile al bot qué quieres vender y te escribe una historia irresistible, con fechas, nombres y leyendas. Más de 150 historias, ninguna repetida.</p>
+    <p class="ct-lead">Dile al bot qué quieres vender y te escribe una historia irresistible, con fechas, nombres y leyendas. Más de 150 historias serias y decenas de historias absurdas exclusivas, ninguna repetida.</p>
     <div class="ct-sample"><span class="ct-who">Ejemplo</span><p>«Esta pluma perteneció a la escritora Elena Quiroga, que escribió con ella su primera novela premiada en 1951.»</p></div>
     <div class="ct-plan"><div><b class="num">$50</b><span>pago único</span></div><ul><li>Historias ilimitadas</li><li>Al menos 3 por objeto</li><li>Listas para pegar en tu anuncio</li></ul>
     <button class="ct-btn" data-act="bot-sub" ${S.money<50?'disabled':''}>${S.money<50?'Te faltan '+money(50-S.money):'Suscribirme'}</button></div></div>`};
@@ -1979,7 +2037,7 @@ function pageCuentero(){
   return {title:'Cuentero.ai · Tu escritor',host:'cuentero.ai',cls:'cuentero',html:`<div class="ct-wrap chat">
     <div class="ct-bar"><div class="ct-logo sm">Cuentero<span>.ai</span></div><span class="ct-on">● Suscrito</span></div>
     <div class="ct-log" id="bot-log">${[{from:'bot',text:'Hola, soy Cuentero. Dime qué objeto quieres vender y te invento un pasado glorioso.'},...S.botMsgs].map(m=>m.from==='me'?`<div class="ct-me">${esc(m.text)}</div>`:
-      `<div class="ct-bot"><span class="ct-who">Cuentero</span><p>${esc(m.text)}</p>${m.story&&m.item?(S.inv.some(i=>i.name===m.item)?`<button class="ct-use" data-act="bot-use" data-item="${esc(m.item)}" data-story="${esc(m.story)}">Usar en el anuncio</button>`:'<span class="ct-note">Compra este objeto para usar la historia.</span>'):''}</div>`).join('')}
+      `<div class="ct-bot ${m.crazy?'crazy':''}"><span class="ct-who">Cuentero${m.crazy?' · 🤪 exclusiva absurda':''}</span>${m.pre?`<p class="ct-pre">${esc(m.pre)}</p>`:''}<p>${esc(m.text)}</p>${m.story&&m.item?`<div class="ct-row">${S.inv.some(i=>i.name===m.item)?`<button class="ct-use" data-act="bot-use" data-item="${esc(m.item)}" data-story="${esc(m.story)}">Usar en el anuncio</button>`:'<span class="ct-note">Compra este objeto para usar la historia.</span>'}<button class="ct-use alt" data-act="bot-crazy" data-item="${esc(m.item)}">Una más loca</button></div>`:''}</div>`).join('')}
       ${botTyping?'<div class="ct-bot typing"><i></i><i></i><i></i></div>':''}</div>
     ${mine.length?`<div class="ct-chips"><span>Tus cosas:</span>${mine.map(n=>`<button data-act="bot-ask" data-item="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}
     <form class="ct-form" id="bot-form"><input id="bot-in" placeholder="Ej: una historia para una tetera" autocomplete="off" aria-label="Pídele una historia"><button class="ct-btn">Pedir</button></form></div>`};
@@ -1993,9 +2051,15 @@ function botAsk(text){
     botTyping=false;
     if(!item)S.botMsgs.push({from:'bot',text:'No conozco ese objeto. Prueba con algo que tengas, por ejemplo: '+CATALOG.slice(0,4).map(c=>low(c[0])).join(', ')+'…'});
     else{
+      const wantsCrazy=/(loca|loco|absurd|gracios|rara|raro|delirant|disparat|exclusiv|chistos)/.test(d);
       const used=S.used[item[0]]||[];const free=item[4].map((s,i)=>i).filter(i=>!used.includes(i));
-      if(!free.length)S.botMsgs.push({from:'bot',text:`Ya te di todas mis historias sobre ${low(item[0])}. Prueba a escribir una propia: los clientes valoran la originalidad.`});
-      else{const i=pick(free);S.used[item[0]]=used.concat(i);S.botMsgs.push({from:'bot',text:item[4][i],story:item[4][i],item:item[0]})}
+      S.absUsed=S.absUsed||[];let freeAbs=ABSURD.map((s,i)=>i).filter(i=>!S.absUsed.includes(i));
+      if(!freeAbs.length){S.absUsed=[];freeAbs=ABSURD.map((s,i)=>i)}
+      if(wantsCrazy||!free.length){
+        const i=pick(freeAbs);S.absUsed.push(i);const f=item[3]==='f';
+        const txt=ABSURD[i].replace(/\{Este\}/g,f?'Esta':'Este').replace(/\{este\}/g,f?'esta':'este').replace(/\{Lo\}/g,f?'La':'Lo').replace(/\{lo\}/g,f?'la':'lo').replace(/\{o\}/g,f?'a':'o').replace(/\{obj\}/g,low(item[0]));
+        S.botMsgs.push({from:'bot',text:txt,story:txt,item:item[0],crazy:true,pre:free.length?'':'Ya usé mis historias serias sobre esto. Esta es exclusiva y un poco más… creativa:'});
+      }else{const i=pick(free);S.used[item[0]]=used.concat(i);S.botMsgs.push({from:'bot',text:item[4][i],story:item[4][i],item:item[0]})}
     }
     S.botMsgs=S.botMsgs.slice(-30);dirty=true;save();
   },ri(1100,1900));
@@ -2472,6 +2536,7 @@ document.addEventListener('click',e=>{
     case 'fire':{const h=S.hired.find(x=>x.id===id);if(h&&!h.busy){S.hired=S.hired.filter(x=>x!==h);toast(`Despediste a ${h.name}.`);dirty=true;save()}else if(h)toast('Espera a que termine la conversación que está atendiendo.');break}
     case 'bot-sub':if(S.money>=50){S.money-=50;S.botSub=true;flashMoney(-1);toast('Te suscribiste a Cuentero.ai.');dirty=true;save()}break;
     case 'bot-ask':botAsk(`Escríbeme una historia para: ${t.dataset.item}`);break;
+    case 'bot-crazy':botAsk(`Ahora una historia loca y absurda para: ${t.dataset.item}`);break;
     case 'bot-use':{const it=S.inv.find(i=>i.name===t.dataset.item&&!i.listed)||S.inv.find(i=>i.name===t.dataset.item);if(it)openEditor(it.id,t.dataset.story);break}
     case 'pay':payBill(+id);break;
     case 'loan':takeLoan(+id);break;
