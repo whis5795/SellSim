@@ -1142,6 +1142,10 @@ body.helper{background:var(--bg)}
 .friend .fr-head{animation:frNod 3.2s ease-in-out infinite;transform-origin:0 250px}@keyframes frNod{0%,70%,100%{transform:none}80%{transform:rotate(-4deg)}90%{transform:rotate(3deg)}}
 .friend .fr-phone{animation:frTap 1.8s ease-in-out infinite}@keyframes frTap{50%{transform:translateY(1.5px)}}
 .friend .fr-bub circle{animation:emDot 1.2s infinite}.friend .fr-bub circle:nth-child(3){animation-delay:.15s}.friend .fr-bub circle:nth-child(4){animation-delay:.3s}
+.bk-wallet{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:16px 0;padding:14px;border-radius:16px;background:linear-gradient(135deg,#FFF6D6,#FFE8A3);color:#3A2A00}
+.bk-wallet>div{display:flex;flex-direction:column;gap:2px}.bk-wl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.bk-wallet b{font-size:24px}.bk-wallet small{font-size:12px;opacity:.8}
+.hp-wal{background:#FFF3CF!important;border-color:#F2C14E!important;color:#5A3D00}
+.hp-walbox{display:flex;flex-direction:column;gap:4px;background:#FFF3CF;color:#5A3D00;border:1px solid #F2C14E;border-radius:14px;padding:12px;font-size:13px}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -3007,6 +3011,7 @@ function pageBanco(){
       <button class="bk-btn" data-act="pay" data-id="${loanBill.id}" ${S.money<loanBill.amount?'disabled':''}>Pagar ahora</button></div>`:`
     <h2 class="bk-h2">Elige cuánto necesitas</h2>
     <div class="bk-grid">${LOANS.map(a=>`<button class="bk-opt" data-act="loan" data-id="${a}" ${a>lim?'disabled':''}><b class="num">${money(a)}</b><span>Devuelves ${money(Math.ceil(a*1.6))} en 7 días</span>${a>lim?'<em>Fuera de tu límite</em>':''}</button>`).join('')}</div>`}
+    ${walletBox()}
     <p class="bk-fine">Tasa fija del 60 % sobre el capital, en un solo pago a 7 días. El préstamo aparece en Cuentas Claras y se puede pagar antes. Tu límite crece con tus ventas, tus días de actividad y tus bienes.</p>
   </div>`};
 }
@@ -4398,7 +4403,7 @@ async function hpJoin(){
     ch.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(x){return}
       if(m.t==='state'){HP.chats=m.chats;HP.day=m.day;hpRender(true)}
       if(m.t==='err'){HP.err=m.msg;hpRender(true);setTimeout(()=>{HP.err='';hpRender(true)},3500)}
-      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(m.cut?`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`:`🎉 ¡Cerraste la venta con ${m.name}! (trabajas gratis)`)}};
+      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;walletAdd(m.cut,m.name);hpToast(m.cut?`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`:`🎉 ¡Cerraste la venta con ${m.name}! (trabajas gratis)`)}};
     ch.onclose=()=>{HP.stage='closed';hpRender()}};
   pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'){HP.stage='failed';hpRender()}};
   await pc.setRemoteDescription({type:'offer',sdp:HP.offer.s});await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);
@@ -4569,7 +4574,7 @@ function hpWire(pc){
     ch.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(x){return}
       if(m.t==='state'){HP.chats=m.chats;HP.day=m.day;hpRender(true)}
       if(m.t==='err'){HP.err=m.msg;hpRender(true);setTimeout(()=>{HP.err='';hpRender(true)},3500)}
-      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(m.cut?`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`:`🎉 ¡Cerraste la venta con ${m.name}! (trabajas gratis)`)}};
+      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;walletAdd(m.cut,m.name);hpToast(m.cut?`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`:`🎉 ¡Cerraste la venta con ${m.name}! (trabajas gratis)`)}};
     ch.onclose=()=>{HP.stage='closed';hpRender()}};
   pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'){HP.stage='failed';hpRender()}}}
 // pantallas del radar dentro del modo ayudante
@@ -4744,6 +4749,31 @@ hpWire=function(pc){_hpWire(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=>
   if(m.t==='state'){HPS.ships=m.ships||[];HPS.drone=m.drone;HPS.van=m.van}
   if(m.t==='shipped')hpToast(`📦 Enviaste ${m.n} paquete${m.n>1?'s':''}. Tu amigo cobra el resto al entregarse.`)}catch(x){}on(ev)}}};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;if(t.dataset.act==='hp-ship'&&HP.ch){HP.ch.send(JSON.stringify({t:'ship'}));t.disabled=true;t.textContent='Enviando…'}});
+
+/* ================= AHORROS DE AYUDANTE ================= */
+// Lo que ganas ayudando a amigos se guarda en este dispositivo y lo puedes pasar a tu propia partida.
+function walletGet(){try{return JSON.parse(localStorage.getItem('lvc-helper-wallet')||'')||{bal:0,total:0,log:[]}}catch(e){return {bal:0,total:0,log:[]}}}
+function walletSet(w){try{localStorage.setItem('lvc-helper-wallet',JSON.stringify(w))}catch(e){}}
+function walletAdd(n,from){n=Math.max(0,Math.round(+n||0));if(!n)return;const w=walletGet();w.bal+=n;w.total+=n;w.log.unshift({n,from:String(from||'').slice(0,24),at:Date.now()});w.log=w.log.slice(0,20);walletSet(w);
+  try{if($('#hp'))hpRender(true)}catch(e){}}
+function walletCashOut(){const w=walletGet();if(!w.bal||!S||S.dead)return 0;const n=w.bal;S.money+=n;S.revenue=S.revenue||0;w.bal=0;w.log.unshift({n:-n,from:'Pasado a tu partida',at:Date.now()});walletSet(w);
+  flashMoney(1);renderTaskbar();save();toast(`💰 Pasaste ${money(n)} de tus ahorros de ayudante a tu partida.`,'good');return n}
+function walletBox(){const w=walletGet();if(!w.total)return '';
+  return `<div class="bk-wallet"><div><span class="bk-wl">Cuenta de ayudante</span><b class="num">${money(w.bal)}</b><small>Ganaste ${money(w.total)} en total ayudando a amigos.</small></div>
+    <button class="bk-btn" data-act="wallet-out" ${w.bal?'':'disabled'}>Pasar a mi partida</button></div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;
+  if(t.dataset.act==='wallet-out'){walletCashOut();try{renderPage(true)}catch(x){}}});
+// al cargar tu partida, avisar si tienes ahorros esperando
+const _afterLoadW=afterLoad;
+afterLoad=function(){_afterLoadW();try{const w=walletGet();if(w.bal>0&&!S.dead)setTimeout(()=>toast(`💰 Tienes ${money(w.bal)} ahorrados como ayudante. Toca para pasarlos a tu partida (o hazlo en Banco Confianza).`,'good',walletCashOut),1500)}catch(e){}};
+// en el modo ayudante: mostrar los ahorros
+const _hpRenderW=hpRender;
+hpRender=async function(soft){await _hpRenderW(soft);const el=$('#hp');if(!el)return;const w=walletGet();
+  const stats=el.querySelector('.hp-stats');
+  if(stats&&!stats.querySelector('.hp-wal'))stats.insertAdjacentHTML('beforeend',`<span class="hp-wal">💰 Ahorros: $${w.bal}</span>`);
+  const main=el.querySelector('.hp-main');
+  if(main&&!main.querySelector('.hp-walbox')&&w.total&&(HP.stage==='radar'||HP.stage==='closed'||HP.stage==='failed'||HP.stage==='name'))
+    main.insertAdjacentHTML('beforeend',`<div class="hp-walbox"><b>💰 Tus ahorros de ayudante: $${w.bal}</b><span>Se guardan en este celular. Gástalos en tu propia partida: toca <b>Mi partida</b> y pásalos desde Banco Confianza.</span></div>`)};
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
