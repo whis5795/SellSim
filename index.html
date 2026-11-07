@@ -1163,6 +1163,23 @@ body.helper{background:var(--bg)}
 .hb-row{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:9px 10px}
 .hb-ic{font-size:26px;width:40px;text-align:center}.hb-i{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.hb-i small{color:var(--muted);font-size:12px}
 .hb-buy{border:0;border-radius:999px;padding:8px 12px;background:#E5484D;color:#fff;font:800 13px 'JetBrains Mono',monospace;cursor:pointer}.hb-buy.alt{background:var(--cobalt)}.hb-buy:disabled{opacity:.4}
+
+.hb-tabs{overflow-x:auto}.hb-tabs button{flex:1 0 auto;white-space:nowrap}
+.hb-bot{margin:0 2px}.hb-pub{flex-wrap:wrap}.hb-pub.open{border-color:var(--cobalt)}
+.hd-ed{flex-basis:100%;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.hd-ed textarea{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);resize:vertical}
+.hd-pop{animation:hdPop .5s ease}@keyframes hdPop{30%{box-shadow:0 0 0 4px color-mix(in srgb,var(--cobalt) 35%,transparent)}}
+.hd-bot{display:flex;gap:6px;flex-wrap:wrap}.hd-row{display:flex;gap:8px;align-items:center}.hd-row label{flex:1;display:flex;align-items:center;gap:6px;font-weight:800}
+.hd-row input{flex:1;min-width:0;font:800 17px 'JetBrains Mono',monospace;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)}
+
+.cx-rej{margin-left:6px;border:1.5px solid rgba(229,72,77,.5);background:transparent;color:#E5484D;border-radius:999px;padding:3px 9px;font:800 11.5px Figtree,sans-serif;cursor:pointer;white-space:nowrap}.cx-rej.armed{background:#E5484D;color:#fff}
+.hp-rej{flex:none;border:1.5px solid rgba(229,72,77,.5);background:transparent;color:#E5484D;border-radius:999px;min-width:34px;height:34px;padding:0 10px;font:800 13px inherit;cursor:pointer}.hp-rej.armed{background:#E5484D;color:#fff}
+.hp-sys{align-self:center;font-size:12px;color:var(--muted);background:var(--surface-2);padding:4px 10px;border-radius:999px}
+.hp-clock{font:700 12px 'JetBrains Mono',monospace;color:#fff;opacity:.85;margin-left:auto;margin-right:10px}
+
+.cx-final{margin:10px 6px;padding:12px;border-radius:16px;background:linear-gradient(135deg,var(--good-soft),var(--surface));border:1.5px solid var(--good);display:flex;flex-direction:column;gap:10px;animation:emIn .35s ease}
+.cxf-t{display:flex;gap:10px;align-items:center}.cxf-t>span{font-size:28px}.cxf-t small{display:block;color:var(--muted);font-size:12.5px}.cxf-a{display:flex;gap:8px;flex-wrap:wrap}
+.hp-final{align-self:stretch;display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:16px;background:var(--good-soft);border:1.5px solid var(--good);margin-top:6px;animation:emIn .35s ease}.hp-final span{font-size:13px;color:var(--muted)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -1233,7 +1250,7 @@ body.helper{background:var(--bg)}
   <div class="cx-deal gut" id="c-deal">
     <div class="thumb-sm" id="c-thumb"></div>
     <div class="cx-di">
-      <div class="cx-dt"><b id="c-sub">—</b><span class="price-tag" id="c-offer">$0</span></div>
+      <div class="cx-dt"><b id="c-sub">—</b><span class="price-tag" id="c-offer">$0</span><button class="cx-rej" id="c-rej2" data-act="reject-ask" title="Rechazar la oferta">✖ Rechazar</button></div>
       <div class="cx-meter"><div class="bar"><i id="c-bar"></i></div><b id="c-pct" class="num">0 %</b><span class="delta" id="c-delta"></span></div>
       <span class="cx-pat">Paciencia <span class="patience" id="c-pat"></span></span>
     </div>
@@ -3189,7 +3206,7 @@ function renderChat(keepScroll){
   if(!keepScroll||atBottom)box.scrollTop=box.scrollHeight;
   const open=b.status==='open'&&!b.emp;
   ['#c-input','#c-send','#c-cam','#c-hag','#c-plus'].forEach(s=>$(s).disabled=!open||b.typing);
-  $('#c-reject').hidden=b.status!=='open';
+  $('#c-reject').hidden=b.status!=='open';{const r2=$('#c-rej2');if(r2){r2.hidden=b.status!=='open';if(!r2.dataset.armed)r2.textContent='✖ Rechazar'}}
   $('#c-qr').innerHTML=open&&!b.typing?quickReplies(b,it).map(t=>`<button class="cx-q" data-act="qr" data-t="${esc(t)}">${esc(t)}</button>`).join(''):'';
   $('#c-hint').textContent=b.status==='won'?'Venta cerrada. Envíalo por la ventana de tu cuarto.':b.status==='lost'?'Este cliente se fue.':b.emp?'Tu empleado está negociando…':b.q&&b.q.photo?'Te pidió una foto: toca + y luego Foto.':b.q?'Responde su pregunta.':'';
 }
@@ -3197,7 +3214,8 @@ function finishTurn(b,delta,reply,delay){
   b.conv=clamp(b.conv+delta,0,100);window._lastDelta=delta;
   setTimeout(()=>{
     b.typing=false;if(b.status!=='open')return renderChat();
-    if(b.conv>=100)winBuyer(b);
+    if(b.conv>=100&&!b.final){b.final=true;b.msgs.push({from:'b',text:pick([`¡Me convenciste! Mi oferta final es ${money(b.offer)}. ¿Aceptas?`,`Listo, lo quiero. Te doy ${money(b.offer)}, ¿cerramos?`,`Trato: ${money(b.offer)} y es mío. ¿Lo aceptas?`])});b.waitingSince=S.t}
+    else if(b.conv>=100){b.msgs.push({from:'b',text:reply+' Mi oferta sigue en pie: '+money(b.offer)+'.'});b.waitingSince=S.t}
     else if(b.conv<=0){b.msgs.push({from:'b',text:pick(['No, gracias. Lo dejo aquí.','Adiós, suerte vendiéndolo.','Paso. No me inspiras confianza.'])});loseBuyer(b,'Perdiste al cliente.')}
     else if(b.patience<=0){b.msgs.push({from:'b',text:'Bueno, ya me cansé. Lo pienso y cualquier cosa te escribo.'});loseBuyer(b,'Se le acabó la paciencia.')}
     else{b.msgs.push({from:'b',text:reply});if(b.pendingPhoto){b.msgs.push(b.pendingPhoto);b.pendingPhoto=null}b.waitingSince=S.t}
@@ -4703,7 +4721,7 @@ hpRender=async function(soft){
   const ms0=$('#hp-msgs');const atBottom=!ms0||ms0.scrollHeight-ms0.scrollTop-ms0.clientHeight<60;const st=ms0?ms0.scrollTop:0;
   const pats=Array.from({length:Math.min(14,c.patMax||10)},(_,i)=>`<i class="${i<c.pat?'on':''}"></i>`).join('');
   const chipH=m=>m.c?`<div class="hp-chips">${m.c.map(([v,l])=>`<span class="${v>=0?'up':'dn'}">${v>0?'+':''}${v} ${esc(l)}</span>`).join('')}</div>`:'';
-  const msg=m=>{const me=m.f!=='b';const who=me&&m.w?`<small>${esc(m.w)}${m.f==='emp'?' (empleado)':''}</small>`:'';
+  const msg=m=>{if(m.f==='sys')return `<div class="hp-sys">${esc(m.t)}</div>`;const me=m.f!=='b';const who=me&&m.w?`<small>${esc(m.w)}${m.f==='emp'?' (empleado)':''}</small>`:'';
     if(m.ph)return `<div class="hp-m me ph">${who}<div class="hp-photo" style="--h:${m.ph.h}"><span style="filter:blur(${m.ph.blur}px) brightness(${m.ph.br});transform:scale(${m.ph.sc})">${m.ph.icon}</span><b>${m.ph.q} %</b></div></div>${chipH(m)}`;
     if(m.bph)return `<div class="hp-m them ph"><div class="hp-photo" style="--h:${m.bph.h}"><span>${m.bph.icon}</span></div>${esc(m.bph.cap)}</div>`;
     if(m.offer)return `<div class="hp-m me">${who}💲 Propongo <b>$${m.offer}</b></div>${chipH(m)}`;
@@ -4776,7 +4794,7 @@ hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
   return _hostOnMsg3(peer,raw)};
 hostPush=function(force){const ps=friendList();if(!ps.length)return;
   const ships=S.shipments.filter(s=>s.pending).map(s=>({n:s.name,i:s.icon,b:s.buyer,c:s.city,r:s.rest}));
-  const base={t:'state',day:S.day,money:Math.round(S.money),chats:snapshot(),ships,drone:droneOn(),van:!!(S.furn&&S.furn.van)};
+  const base={t:'state',min:S.min,day:S.day,money:Math.round(S.money),chats:snapshot(),ships,drone:droneOn(),van:!!(S.furn&&S.furn.van)};
   for(const p of ps){const data=JSON.stringify(Object.assign({cut:p.cut!=null?Math.round(p.cut*100):10},base));if(force||p.last!==data){p.last=data;try{p.ch.send(data)}catch(e){}}}};
 // en la lista de amigos conectados mostrar cuánto cobra cada uno
 const _friendCard=friendCard;
@@ -4877,19 +4895,19 @@ hostPush=function(force){const ps=friendList();if(!ps.length)return;
   // reutiliza el envío normal y agrega permiso + tienda por amigo
   for(const p of ps){const base=JSON.parse(JSON.stringify({perm:!!p.perm,shop:p._shop,money:Math.round(S.money)}));p._extra=base}
   const send=Object.getOwnPropertyDescriptor(RTCDataChannel.prototype,'send');
-  for(const p of ps){if(!p._wrapped){const ch=p.ch,orig=ch.send.bind(ch);ch.send=d=>{try{const o=JSON.parse(d);if(o.t==='state'&&p._extra){Object.assign(o,p._extra);d=JSON.stringify(o)}}catch(e){}return orig(d)};p._wrapped=true}}
+  for(const p of ps){if(!p._wrapped){const ch=p.ch,orig=ch.send.bind(ch);ch.send=d=>{try{const o=JSON.parse(d);if(o.t==='state'&&p._extra){Object.assign(o,p._extra,typeof pubExtra==='function'?pubExtra(p):{});d=JSON.stringify(o)}}catch(e){}return orig(d)};p._wrapped=true}}
   _hostPush4(force)};
 // permiso: botón en la ventana de amigos
 const _renderPair4=renderPair;
 renderPair=async function(){await _renderPair4();const box=$('.pr-friends');if(!box)return;
   box.innerHTML=friendList().map(p=>`<span class="pr-f">🟢 ${esc(p.name)} <span class="pr-cut">${p.cut===0?'gratis':Math.round((p.cut!=null?p.cut:FRIEND_CUT)*100)+' %'}</span>
-    <button class="pr-perm ${p.perm?'on':''}" data-act="pr-perm" data-id="${p.id}">${p.perm?'🛒 Puede comprar':'🔒 Sin compras'}</button>${p.spent?`<small>gastó ${money(p.spent)}</small>`:''}</span>`).join('')};
+    <button class="pr-perm ${p.perm?'on':''}" data-act="pr-perm" data-id="${p.id}">${p.perm?'✅ Compra y publica':'🔒 Sin permisos'}</button>${p.spent?`<small>gastó ${money(p.spent)}</small>`:''}</span>`).join('')};
 const _friendCard4=friendCard;
 friendCard=function(){let h=_friendCard4();const fr=friendList();if(!fr.length)return h;
-  return h.replace('</div>\n    ',`<span class="em-perms">${fr.map(p=>`<button class="pr-perm ${p.perm?'on':''}" data-act="pr-perm" data-id="${p.id}">${esc(p.name)}: ${p.perm?'🛒 puede comprar':'🔒 sin compras'}</button>`).join('')}</span></div>\n    `)};
+  return h.replace('</div>\n    ',`<span class="em-perms">${fr.map(p=>`<button class="pr-perm ${p.perm?'on':''}" data-act="pr-perm" data-id="${p.id}">${esc(p.name)}: ${p.perm?'✅ compra y publica':'🔒 sin permisos'}</button>`).join('')}</span></div>\n    `)};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t||t.dataset.act!=='pr-perm')return;
   const p=LK.peers.find(x=>x.id===t.dataset.id);if(!p)return;p.perm=!p.perm;
-  toast(p.perm?`${p.name} ahora puede comprar comida y ofertas con tu dinero.`:`${p.name} ya no puede comprar.`);renderPair();try{renderPage(true)}catch(x){}hostPush(true)});
+  toast(p.perm?`${p.name} ahora puede comprar con tu dinero y publicar tus objetos.`:`${p.name} ya no puede comprar ni publicar.`);renderPair();try{renderPage(true)}catch(x){}hostPush(true)});
 
 /* ---- celular del amigo: pestaña de compras ---- */
 const HB={tab:'food',view:false};
@@ -4900,16 +4918,16 @@ hpWire=function(pc){_hpWire4(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=
 const _hpRender4=hpRender;
 hpRender=async function(soft){
   if(!(HP.stage==='live'&&HP.cur==null&&HB.view&&HB.perm&&HB.shop)){await _hpRender4(soft);
-    const st=$('#hp .hp-stats');if(st&&HP.stage==='live'&&HP.cur==null&&!st.querySelector('.hp-shopbtn'))st.insertAdjacentHTML('afterend',HB.perm?`<button class="hp-btn hp-shopbtn" data-act="hb-open">🛒 Comprar para tu amigo · tiene $${HB.money}</button>`:'<p class="hp-small">🔒 Tu amigo no te dio permiso para comprar. Puede dártelo en su partida (ventana de amigos).</p>');return}
+    const st=$('#hp .hp-stats');if(st&&HP.stage==='live'&&HP.cur==null&&!st.querySelector('.hp-shopbtn'))st.insertAdjacentHTML('afterend',HB.perm?`<button class="hp-btn hp-shopbtn" data-act="hb-open">🛒 Comprar y publicar para tu amigo · tiene $${HB.money}</button>`:'<p class="hp-small">🔒 Tu amigo no te dio permiso para comprar ni publicar. Puede dártelo en su partida (ventana de amigos).</p>');return}
   const s=HB.shop,el=$('#hp');const keepScroll=$('#hb-list')?$('#hb-list').scrollTop:0;
-  const tabs=[['food','🍔 Comida'],['ing','🥕 Ingredientes'],['items','🏷️ Ofertas']];
+  const tabs=[['food','🍔 Comida'],['ing','🥕 Ingredientes'],['items','🏷️ Ofertas'],['pub','📦 Publicar']];
   const row=(k,x)=>{const can=HB.money>=x.p;
     if(k==='food')return `<div class="hb-row"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>${x.k==='junk'?'ComeYa':'SuperPronto'} · ${x.fo?'comida +'+x.fo:''}${x.fo&&x.dr?' · ':''}${x.dr?'bebida +'+x.dr:''} · ⏱ ${x.eta} s</small></span><button class="hb-buy" data-act="hb-buy" data-k="food" data-id="${x.id}" ${can?'':'disabled'}>$${x.p}</button></div>`;
     if(k==='ing')return `<div class="hb-row"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>×${x.pk} · tiene ${x.have}</small></span><button class="hb-buy" data-act="hb-buy" data-k="ing" data-id="${x.id}" ${can?'':'disabled'}>$${x.p}</button></div>`;
     return `<div class="hb-row"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>${x.q>1?'Quedan '+x.q+' · ':''}se va en ${Math.ceil(x.left/60)} min</small></span><button class="hb-buy" data-act="hb-buy" data-k="item" data-id="${x.id}" ${can?'':'disabled'}>$${x.p}</button>${x.q>1?`<button class="hb-buy alt" data-act="hb-buy" data-k="item" data-all="1" data-id="${x.id}" ${HB.money>=x.p*x.q?'':'disabled'}>×${x.q}</button>`:''}</div>`};
-  const list=HB.tab==='ing'&&!s.ing.length?'<div class="hp-empty">Tu amigo todavía no tiene cocina, así que no hay ingredientes para comprar.</div>':(s[HB.tab]||[]).map(x=>row(HB.tab,x)).join('')||'<div class="hp-empty">No hay nada por ahora.</div>';
+  const list=HB.tab==='pub'?pubList():HB.tab==='ing'&&!s.ing.length?'<div class="hp-empty">Tu amigo todavía no tiene cocina, así que no hay ingredientes para comprar.</div>':(s[HB.tab]||[]).map(x=>row(HB.tab,x)).join('')||'<div class="hp-empty">No hay nada por ahora.</div>';
   el.innerHTML=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">💳 $${HB.money}</span></header>
-  <div class="hp-chatv"><div class="hp-ch"><button class="hp-back" data-act="hb-close" aria-label="Volver">‹</button><div class="hp-cht"><b>Comprar para tu amigo</b><small>Usa su dinero. Lo que compres llega a su puerta o a su inventario.</small></div></div>
+  <div class="hp-chatv"><div class="hp-ch"><button class="hp-back" data-act="hb-close" aria-label="Volver">‹</button><div class="hp-cht"><b>${HB.tab==='pub'?'Publicar sus objetos':'Comprar para tu amigo'}</b><small>${HB.tab==='pub'?'Escribe la historia (o usa su Cuentero) y ponle precio.':'Usa su dinero. Lo que compres llega a su puerta o a su inventario.'}</small></div></div>
     <div class="hb-stat"><span>🍔 ${s.food$.food} %</span><span>💧 ${s.food$.drink} %</span><span>${s.food$.fridge?'🧊 con refrigerador':'sin refrigerador'}</span></div>
     <div class="hb-tabs">${tabs.map(([k,l])=>`<button class="${HB.tab===k?'on':''}" data-act="hb-tab" data-id="${k}">${l}</button>`).join('')}</div>
     <div class="hb-list" id="hb-list">${list}</div></div>`;
@@ -4919,6 +4937,123 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   if(a==='hb-close'){HB.view=false;hpRender()}
   if(a==='hb-tab'){HB.tab=t.dataset.id;hpRender()}
   if(a==='hb-buy'&&HP.ch){HP.ch.send(JSON.stringify({t:'buy',k:t.dataset.k,id:t.dataset.k==='item'?+t.dataset.id||t.dataset.id:t.dataset.id,all:!!t.dataset.all}));t.disabled=true}});
+
+/* ================= AYUDANTE: PUBLICAR OBJETOS Y ESCRIBIR HISTORIAS ================= */
+// ---- anfitrión ----
+function pubExtra(p){if(!p.perm)return {pub:null};
+  const est=it=>Math.max(it.paid+1,niceRound(maxWilling(Object.assign({},it,{score:.6}))*.8));
+  return {pub:{bot:!!S.botSub,pro:!!S.botPro,items:S.inv.filter(i=>!i.listed&&!i.assigned).slice(0,30).map(i=>({id:i.id,n:i.name,i:i.icon,paid:i.paid,sug:est(i)}))}}}
+function hostPublish(it,story,price,who){
+  const r=storyScore(story,it);let score=r.score;
+  if((S.proStories||[]).includes(story))score=Math.max(score,.9+Math.random()*.1);
+  for(const s of r.kw)S.lexUse[s]=(S.lexUse[s]||0)+1;
+  Object.assign(it,{story,price,score,kw:r.kw,listed:true,aiNote:'',spawned:it.spawned||0,maxBuyers:2+Math.round(score*3),nextSpawn:S.t+ri(3,7),pubBy:who});
+  dirty=true;save();try{if(S.view==='pc')renderPage(true)}catch(e){}return score}
+const _hostOnMsg5=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t!=='story'&&m.t!=='publish')return _hostOnMsg5(peer,raw);
+  const say=o=>{try{peer.ch.send(JSON.stringify(o))}catch(e){}};
+  if(!hasF('phone'))return say({t:'err',msg:'Tu amigo ya no tiene teléfono móvil.'});
+  if(!peer.perm)return say({t:'err',msg:'Tu amigo no te dio permiso para publicar.'});
+  const it=S.inv.find(i=>i.id==m.id&&!i.listed&&!i.assigned);if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
+  if(m.t==='story'){
+    if(!S.botSub)return say({t:'err',msg:'Tu amigo no tiene Cuentero.ai.'});
+    const c=catEntry(it);let best=null;
+    if(S.botPro&&!m.crazy){for(let i=0;i<30;i++){const s=genStory(c,true,Math.floor(Math.random()*1e9)),sc=storyScore(s,it).score;if(!best||sc>best.sc)best={s,sc};if(sc>=.9)break}
+      S.proStories=S.proStories||[];S.proStories.push(best.s);if(S.proStories.length>60)S.proStories.shift()}
+    else if(m.crazy&&typeof ABSURD!=='undefined'){const f=it.g==='f',obj=low(it.name);const t=pick(ABSURD);best={s:t.replace(/\{Este\}/g,f?'Esta':'Este').replace(/\{este\}/g,f?'esta':'este').replace(/\{Lo\}/g,f?'La':'Lo').replace(/\{lo\}/g,f?'la':'lo').replace(/\{o\}/g,f?'a':'o').replace(/\{obj\}/g,obj)}}
+    else{const s=genStory(c,false,Math.floor(Math.random()*1e9));best={s}}
+    return say({t:'story',id:it.id,text:best.s,pro:!!(S.botPro&&!m.crazy)})}
+  const story=String(m.story||'').trim().slice(0,700),price=Math.round(+m.price);
+  if(story.length<10)return say({t:'err',msg:'La historia tiene que tener al menos una oración.'});
+  if(!(price>0))return say({t:'err',msg:'Pon un precio mayor que cero.'});
+  const sc=hostPublish(it,story,price,peer.name);
+  toast(`📦 ${peer.name} publicó ${low(it.name)} a ${money(price)} · gancho ${Math.round(sc*100)} %.`,'good',()=>{if(S.view!=='pc')enterPC();go('bazarito.com/mis-cosas')});
+  say({t:'published',id:it.id,n:it.name,score:Math.round(sc*100)});hostPush(true)};
+
+// ---- celular del amigo ----
+const HD={drafts:{},open:null};
+function pubList(){const P=HB.shop&&HB.pub;if(!P)return '<div class="hp-empty">Cargando…</div>';
+  if(!P.items.length)return '<div class="hp-empty">Tu amigo no tiene objetos sin publicar. Cuando compre algo (o lo compres tú en Ofertas), aparece aquí.</div>';
+  return (P.bot?`<p class="hp-small hb-bot">${P.pro?'★ Tu amigo tiene <b>Cuentero Pro</b>: historias de 90 % o más.':'✍️ Tu amigo tiene <b>Cuentero.ai</b>: puedes pedirle historias.'}</p>`:'<p class="hp-small hb-bot">Tu amigo no tiene Cuentero.ai: escribe tú la historia. Fechas, nombres y detalles suman.</p>')+
+  P.items.map(x=>{const d=HD.drafts[x.id]||(HD.drafts[x.id]={story:'',price:x.sug});const open=HD.open==x.id;
+    return `<div class="hb-row hb-pub ${open?'open':''}"><span class="hb-ic">${x.i}</span><span class="hb-i"><b>${esc(x.n)}</b><small>Pagó $${x.paid} · sugerido ~$${x.sug}</small></span>${open?'':`<button class="hb-buy alt" data-act="hd-open" data-id="${x.id}">Publicar</button>`}
+    ${open?`<div class="hd-ed"><textarea id="hd-story" rows="4" maxlength="700" placeholder="Cuenta su historia: de quién fue, de qué año, qué le pasó…">${esc(d.story)}</textarea>
+      ${P.bot?`<div class="hd-bot"><button class="hp-qrb ph" data-act="hd-bot" data-id="${x.id}">${P.pro?'★ Historia Pro':'✍️ Pedir historia al bot'}</button><button class="hp-qrb" data-act="hd-bot" data-crazy="1" data-id="${x.id}">🤪 Una más loca</button></div>`:''}
+      <div class="hd-row"><label>Precio $<input id="hd-price" type="number" inputmode="numeric" min="1" value="${d.price}"></label><button class="hp-btn" data-act="hd-pub" data-id="${x.id}">Publicar</button><button class="hp-btn ghost" data-act="hd-close">×</button></div></div>`:''}</div>`}).join('')}
+// copiar el estado nuevo (objetos publicables) al recibirlo
+const _hpWire5=hpWire;
+hpWire=function(pc){_hpWire5(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=>{prev(e);const ch=e.channel,on=ch.onmessage;ch.onmessage=ev=>{let skip=false;try{const m=JSON.parse(ev.data);
+  if(m.t==='state')HB.pub=m.pub||null;
+  if(m.t==='story'){const d=HD.drafts[m.id]=HD.drafts[m.id]||{};d.story=m.text;const ta=$('#hd-story');if(ta&&HD.open==m.id){ta.value=m.text;ta.classList.remove('hd-pop');void ta.offsetWidth;ta.classList.add('hd-pop')}hpToast(m.pro?'★ Historia Pro lista':'✍️ Historia lista: edítala si quieres');skip=true}
+  if(m.t==='published'){delete HD.drafts[m.id];HD.open=null;hpToast(`📦 Publicaste ${m.n} · gancho ${m.score} %`);setTimeout(()=>hpRender(),50);skip=true}}catch(x){}if(!skip)on(ev)}}};
+// no redibujar mientras escribe la historia o el precio
+const _hpRender5=hpRender;
+hpRender=function(soft){const a=document.activeElement;if(soft&&a&&(a.id==='hd-story'||a.id==='hd-price'))return;return _hpRender5(soft)};
+document.addEventListener('input',e=>{if(HD.open==null)return;const d=HD.drafts[HD.open]=HD.drafts[HD.open]||{};if(e.target.id==='hd-story')d.story=e.target.value;if(e.target.id==='hd-price')d.price=e.target.value});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='hd-open'){HD.open=+t.dataset.id||t.dataset.id;hpRender();setTimeout(()=>$('#hd-story')&&$('#hd-story').focus(),60)}
+  if(a==='hd-close'){HD.open=null;hpRender()}
+  if(a==='hd-bot'&&HP.ch){HP.ch.send(JSON.stringify({t:'story',id:HD.open,crazy:!!t.dataset.crazy}));t.textContent='Escribiendo…'}
+  if(a==='hd-pub'&&HP.ch){const d=HD.drafts[HD.open]||{};HP.ch.send(JSON.stringify({t:'publish',id:HD.open,story:($('#hd-story')||{}).value||d.story,price:+(($('#hd-price')||{}).value||d.price)}));t.disabled=true;t.textContent='Publicando…'}});
+
+/* ================= RECHAZAR OFERTAS (anfitrión y ayudante) + HORA DEL AYUDANTE ================= */
+function rejectBuyer(b,who){if(!b||b.status!=='open')return false;
+  b.msgs.push({from:'sys',cls:'lose',text:who?`${who} rechazó la oferta.`:'Rechazaste la oferta.'});
+  if(!b.typing)b.msgs.push({from:'b',text:pick(['Bueno, una lástima. Suerte con la venta.','Está bien, entiendo. Adiós.','Ok, buscaré en otro lado.'])});
+  b.status='lost';b.typing=false;if(S.cur===b.id)renderChat();dirty=true;save();return true}
+// confirmación en dos toques para no rechazar sin querer
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="reject-ask"]');if(!t)return;
+  if(t.dataset.armed){delete t.dataset.armed;clearTimeout(t._tm);const b=S.buyers.find(x=>x.id===S.cur);if(rejectBuyer(b))toast('Rechazaste la oferta.');return}
+  t.dataset.armed='1';t.textContent='¿Seguro? Toca otra vez';t.classList.add('armed');t._tm=setTimeout(()=>{delete t.dataset.armed;t.classList.remove('armed');t.textContent='✖ Rechazar'},3000)});
+const _hostOnMsgR=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t!=='reject')return _hostOnMsgR(peer,raw);
+  const b=S.buyers.find(x=>x.id===m.id);if(!hasF('phone'))return;
+  if(rejectBuyer(b,peer.name)){toast(`✖ ${peer.name} rechazó la oferta de ${b.name}.`);hostPush(true)}};
+// ---- celular del amigo ----
+const _hpWireR=hpWire;
+hpWire=function(pc){_hpWireR(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=>{prev(e);const ch=e.channel,on=ch.onmessage;ch.onmessage=ev=>{try{const m=JSON.parse(ev.data);if(m.t==='state'&&m.min!=null){HP.min=m.min;HP.day=m.day}}catch(x){}on(ev)}}};
+const hpClock=()=>HP.min==null?'':`Día ${HP.day} · ${String(Math.floor(HP.min/60)).padStart(2,'0')}:${String(HP.min%60).padStart(2,'0')}`;
+const _hpRenderR=hpRender;
+hpRender=async function(soft){await _hpRenderR(soft);const el=$('#hp');if(!el)return;
+  // hora en la barra superior
+  const head=el.querySelector('.hp-head');if(head&&HP.stage==='live'){let c=head.querySelector('.hp-clock');if(!c){c=document.createElement('span');c.className='hp-clock';head.querySelector('.hp-logo').after(c)}c.textContent='🕒 '+hpClock()}
+  // botón de rechazar en el chat abierto
+  const ch=el.querySelector('.hp-ch');const cur=HP.chats.find(x=>x.id==HP.cur);
+  if(ch&&cur&&!ch.querySelector('.hp-rej'))ch.insertAdjacentHTML('beforeend',`<button class="hp-rej" data-act="hp-rej">✖</button>`)};
+setInterval(()=>{const c=$('#hp .hp-clock');if(c)c.textContent='🕒 '+hpClock()},1000);
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hp-rej"]');if(!t||!HP.ch)return;
+  if(t.dataset.armed){HP.ch.send(JSON.stringify({t:'reject',id:HP.cur}));hpToast('Rechazaste la oferta.');HP.cur=null;setTimeout(()=>hpRender(),300);return}
+  t.dataset.armed='1';t.textContent='¿Rechazar?';t.classList.add('armed');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='✖';t.classList.remove('armed')}},3000)});
+
+/* ================= OFERTA FINAL: aceptar o rechazar cuando la barra se llena ================= */
+function finalCard(b){return `<div class="cx-final" id="cx-final"><div class="cxf-t"><span>🤝</span><div><b>Oferta final de ${esc(b.name)}</b><small>Te paga ${money(b.offer)} por ${esc((itemOf(b)||{}).name||'el artículo')}</small></div></div>
+  <div class="cxf-a"><button class="btn" data-act="final-yes">Aceptar venta · ${money(b.offer)}</button><button class="btn ghost" data-act="reject-ask">✖ Rechazar</button></div></div>`}
+const _renderChatF=renderChat;
+renderChat=function(keep){_renderChatF(keep);const b=S.buyers.find(x=>x.id===S.cur);const box=$('#c-list');if(!b||!box)return;
+  const old=$('#cx-final');if(old)old.remove();
+  if(b.status==='open'&&b.final&&b.conv>=100&&!b.typing){box.insertAdjacentHTML('beforeend',finalCard(b));const sc=$('#c-msgs')||box;sc.scrollTop=sc.scrollHeight}
+  if(b.final&&b.conv<100)b.final=false};
+function acceptFinal(b,who){if(!b||b.status!=='open'||!b.final)return false;if(who)b.friend=who;winBuyer(b,who);if(S.cur===b.id)renderChat();dirty=true;save();return true}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="final-yes"]');if(!t)return;acceptFinal(S.buyers.find(x=>x.id===S.cur))});
+// anfitrión recibe la decisión del amigo
+const _hostOnMsgF=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t!=='final')return _hostOnMsgF(peer,raw);
+  if(!hasF('phone'))return;const b=S.buyers.find(x=>x.id===m.id);
+  if(m.ok){if(acceptFinal(b,peer.name))toast(`🤝 ${peer.name} aceptó la oferta final de ${b.name}.`,'good')}
+  else if(rejectBuyer(b,peer.name))toast(`✖ ${peer.name} rechazó la oferta final de ${b.name}.`);hostPush(true)};
+const _snapF=snapshot;
+snapshot=function(){const list=_snapF();for(const c of list){const b=S.buyers.find(x=>x.id===c.id);c.final=!!(b&&b.final&&b.conv>=100);if(c.final){c.q=null;c.qr=[]}}return list};
+// celular del amigo
+const _hpRenderF=hpRender;
+hpRender=async function(soft){await _hpRenderF(soft);const c=HP.chats.find(x=>x.id==HP.cur);const ms=$('#hp-msgs');
+  if(!c||!ms||!c.final||c.typing||HP.stage!=='live')return;
+  if(!ms.querySelector('.hp-final')){ms.insertAdjacentHTML('beforeend',`<div class="hp-final"><b>🤝 Oferta final: $${c.offer}</b><span>${esc(c.name)} ya está convencido. ¿Cierras la venta?</span>
+    <div class="hp-acts"><button class="hp-btn" data-act="hp-final" data-ok="1">Aceptar · $${c.offer}</button><button class="hp-btn ghost" data-act="hp-final">✖ Rechazar</button></div></div>`);ms.scrollTop=ms.scrollHeight}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hp-final"]');if(!t||!HP.ch)return;
+  HP.ch.send(JSON.stringify({t:'final',id:HP.cur,ok:!!t.dataset.ok}));hpToast(t.dataset.ok?'🤝 ¡Venta cerrada!':'Rechazaste la oferta final.');HP.cur=null;setTimeout(()=>hpRender(),300)});
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
