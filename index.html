@@ -1048,6 +1048,7 @@ body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
 
 /* emparejar amigos */
 .em-friend{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--cobalt) 14%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--cobalt) 35%,var(--line));border-radius:16px;padding:12px;margin-bottom:12px;flex-wrap:wrap}
+.em-lock{color:var(--warn)!important;font-weight:700}
 .em-fi{font-size:28px}.em-fb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px}.em-fb span{font-size:12.5px;color:var(--muted)}.em-fb .em-fl{color:var(--good);font-weight:700}
 .pr-box{position:relative;max-height:calc(var(--vvh,100vh) - 32px);overflow-y:auto}
 .pr-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:24px;color:var(--muted);cursor:pointer}
@@ -4040,7 +4041,8 @@ function msgTabs(on){const n=S.hired.length,w=S.inv.filter(i=>i.assigned).length
 function friendCard(){const fr=friendList(),st=S.friends||{};
   return `<div class="em-friend"><div class="em-fi">📲</div><div class="em-fb"><b>Contrata a tus amigos</b><span>Empareja su celular con tu partida: ven tus chats y responden a tus clientes desde su teléfono. Se llevan un ${Math.round(FRIEND_CUT*100)} % de cada venta que cierran.</span>
     ${fr.length?`<span class="em-fl">${fr.map(p=>`🟢 ${esc(p.name)}${st[p.name]?` · ${st[p.name].sold} venta${st[p.name].sold>1?'s':''}`:''}`).join(' · ')}</span>`:''}</div>
-    <button class="bz-btn" data-act="pair-open">${fr.length?'Invitar a otro':'Invitar a un amigo'}</button></div>`}
+    ${hasF('phone')?'':'<span class="em-lock">🔒 Necesitas un teléfono móvil para emparejarte. Cómpralo en Hogar Total.</span>'}</div>
+    ${hasF('phone')?`<button class="bz-btn" data-act="pair-open">${fr.length?'Invitar a otro':'Invitar a un amigo'}</button>`:'<button class="bz-btn ghost" data-go="hogartotal.com">Ir a Hogar Total</button>'}</div>`}
 function empPage(){
   if(!S.hired.length)return msgTabs('team')+friendCard()+`<div class="bz-empty"><b>Todavía no tienes empleados.</b><br>Contrata a alguien en EmpleaYa y aquí podrás darle productos para que los publique y los venda solo.<br><br><button class="bz-btn" data-go="empleaya.com">Ir a EmpleaYa</button></div>`;
   if(!S.hired.some(h=>h.id===EMS.sel))EMS.sel=S.hired[0].id;
@@ -4161,7 +4163,7 @@ const FURN=[
   {k:'chair',cat:'Escritorio',i:'🪑',n:'Silla ergonómica',d:'Trabajas cómodo: el hambre y la sed bajan un 25 % menos seguido.',p:()=>120,ok:'Silla ergonómica instalada. Te cansas menos.'},
   {k:'keyboard',cat:'Escritorio',i:'⌨️',n:'Teclado mecánico',d:'Respondes más rápido: los clientes te esperan un 30 % más antes de irse.',p:()=>90,ok:'Teclado nuevo: los clientes te tienen más paciencia.'},
   {k:'ring',cat:'Escritorio',i:'💡',n:'Aro de luz para fotos',d:'Luz de estudio: tus fotos salen con +12 % de calidad.',p:()=>110,elec:1,ok:'Aro de luz instalado: tus fotos se ven mejor.'},
-  {k:'phone',cat:'Escritorio',i:'📱',n:'Teléfono móvil',d:'Lleva tus mensajes contigo: abre los chats desde cualquier parte del cuarto, sin ir a la computadora, y te avisa cuando te escriben.',p:()=>250,elec:1,ok:'¡Teléfono nuevo! Tócalo arriba a la derecha de tu cuarto.'},
+  {k:'phone',cat:'Escritorio',i:'📱',n:'Teléfono móvil',d:'Lleva tus mensajes contigo: abre los chats desde cualquier parte del cuarto y te avisa cuando te escriben. Además te deja emparejar el celular de tus amigos para que respondan a tus clientes.',p:()=>250,elec:1,ok:'¡Teléfono nuevo! Tócalo arriba a la derecha de tu cuarto.'},
   {k:'courier',cat:'Logística',i:'🧑‍✈️',n:'Repartidor propio',d:`Lleva tus pedidos y paquetes: entregas un 25 % más rápido. Contratación ${'$'}${COURIER_PRICE} y ${'$'}${COURIER_WEEK} de sueldo por semana.`,p:()=>COURIER_PRICE,ok:'Contrataste un repartidor: todo llega un 25 % antes.'},
   {k:'van',cat:'Logística',i:'🚐',n:'Camioneta para el repartidor',d:'Tu repartidor deja la bici: las entregas tardan un 60 % menos. Los envíos cercanos llegan el mismo día.',p:()=>VAN_PRICE,need:'courier',ok:'¡Camioneta nueva! Las entregas tardan un 60 % menos.'},
   {k:'drone',cat:'Logística',i:'🛸',n:'Servicio de drones de entrega',d:'Entrega instantánea: tus ventas llegan el mismo día, estén donde estén, y cobras ese mismo día. $50 por semana de servicio.',p:()=>DRONE_PRICE,elec:1,legacy:1,ok:'Drones activados: tus envíos llegan el mismo día.'},
@@ -4261,6 +4263,7 @@ function hostPush(force){const ps=friendList();if(!ps.length)return;
 function hostOnMsg(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
   if(m.t==='hi'){peer.name=String(m.n||peer.name).slice(0,20);renderPair();return}
   if(m.t==='send'){const b=S.buyers.find(x=>x.id===m.id);const err=t=>peer.ch.send(JSON.stringify({t:'err',msg:t}));
+    if(!hasF('phone'))return err('Tu amigo ya no tiene teléfono móvil: no puedes contestar.');
     if(!b||b.status!=='open')return err('Ese chat ya se cerró.');
     if(b.typing)return err(`${b.name} está escribiendo, espera su respuesta.`);
     if(b.emp)return err('Ese chat lo atiende un empleado.');
@@ -4273,7 +4276,7 @@ winBuyer=function(b,by){const was=b.status;_winBuyer(b,by);
   if(was==='open'&&b.status==='won'&&b.friend){const cut=Math.max(1,Math.round(b.offer*FRIEND_CUT));S.money-=cut;S.friends=S.friends||{};const f=S.friends[b.friend]=S.friends[b.friend]||{sold:0,paid:0};f.sold++;f.paid+=cut;
     toast(`🤝 ${b.friend} cerró la venta con ${b.name}. Su comisión: ${money(cut)}.`,'good');for(const p of friendList())if(p.name===b.friend)try{p.ch.send(JSON.stringify({t:'won',name:b.name,cut}))}catch(e){}}};
 
-function openPair(){$('#pair').hidden=false;if(!LK.pending)hostInvite();renderPair()}
+function openPair(){if(!hasF('phone')){toast('Necesitas un teléfono móvil: cómpralo en Hogar Total.','',()=>go('hogartotal.com'));return}$('#pair').hidden=false;if(!LK.pending)hostInvite();renderPair()}
 async function renderPair(){const el=$('#pr-body');if(!el||$('#pair').hidden)return;const p=LK.pending;
   const conn=friendList();
   const list=conn.length?`<div class="pr-friends">${conn.map(x=>`<span class="pr-f">🟢 ${esc(x.name)}</span>`).join('')}</div>`:'';
