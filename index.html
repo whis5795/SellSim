@@ -4701,7 +4701,7 @@ snapshot=function(){
     return {id:b.id,name:b.name,item:it.name,icon:it.icon,h:hue(it.name||''),ask:it.price,offer:b.offer,conv:Math.round(b.conv),pat:b.patience,patMax:b.patMax||P.pat||10,typing:!!b.typing,emp:!!b.emp,
       ai:aiReady(),q:b.q?{t:b.q.q||'',photo:!!b.q.photo}:null,qr,story:it.story||'',
       pf:{handle:pf.handle,bio:pf.bio,trait:b.followed||b.pfSeen?P.desc||'':''},
-      msgs:b.msgs.slice(-40).map(m=>{const o={f:m.from,t:m.text||'',w:m.who||''};
+      msgs:b.msgs.slice(-80).map(m=>{const o={f:m.from,t:m.text||'',w:m.who||''};
         if(m.photo)o.ph={icon:m.photo.icon,h:m.photo.h,blur:m.photo.blur,br:m.photo.br,sc:m.photo.sc,q:m.photo.q};
         if(m.bphoto)o.bph={icon:m.bphoto.icon,h:m.bphoto.h,cap:m.bphoto.cap};
         if(m.offer)o.offer=m.offer;
@@ -4729,9 +4729,12 @@ const HX={cam:null,pf:false,hag:false};
 const _hpRender2=hpRender;
 hpRender=async function(soft){
   if(HP.stage!=='live'||HP.cur==null)return _hpRender2(soft);
-  const el=$('#hp');const c=HP.chats.find(x=>x.id==HP.cur);if(!c){HP.cur=null;return _hpRender2(soft)}
+  const el=$('#hp');const c=HP.chats.find(x=>x.id==HP.cur);if(!c){HP.cur=null;HX.sig=null;return _hpRender2(soft)}
+  // si nada del chat cambió, no redibujar: así el scroll se queda exactamente donde lo dejaste
+  const sig=JSON.stringify([c,HP.err,HX.pf,HX.hag,!!HX.cam,HP.name,HP.sold,HP.earned]);
+  if(soft&&sig===HX.sig&&$('#hp-msgs'))return;HX.sig=sig;
   const keep=$('#hp-in')?$('#hp-in').value:'';const focus=document.activeElement&&document.activeElement.id==='hp-in';
-  const ms0=$('#hp-msgs');const atBottom=!ms0||ms0.scrollHeight-ms0.scrollTop-ms0.clientHeight<60;const st=ms0?ms0.scrollTop:0;
+  const ms0=$('#hp-msgs');const atBottom=!ms0||ms0.scrollHeight-ms0.scrollTop-ms0.clientHeight<60;const st=ms0?ms0.scrollTop:0;const firstOld=ms0&&ms0.dataset.first;
   const pats=Array.from({length:Math.min(14,c.patMax||10)},(_,i)=>`<i class="${i<c.pat?'on':''}"></i>`).join('');
   const chipH=m=>m.c?`<div class="hp-chips">${m.c.map(([v,l])=>`<span class="${v>=0?'up':'dn'}">${v>0?'+':''}${v} ${esc(l)}</span>`).join('')}</div>`:'';
   const msg=m=>{if(m.f==='sys')return `<div class="hp-sys">${esc(m.t)}</div>`;const me=m.f!=='b';const who=me&&m.w?`<small>${esc(m.w)}${m.f==='emp'?' (empleado)':''}</small>`:'';
@@ -4747,7 +4750,7 @@ hpRender=async function(soft){
       <span class="hp-offer">$${c.offer}</span></div>
     ${HX.pf?`<div class="hp-pf"><b>@${esc(c.pf.handle)}</b><p>${esc(c.pf.bio)}</p>${c.pf.trait?`<p class="hp-trait">💡 ${esc(c.pf.trait)}</p>`:''}<p class="hp-story"><b>Tu anuncio:</b> «${esc(c.story)}»</p></div>`:''}
     <div class="hp-bar"><span class="minibar"><i style="width:${c.conv}%;background:${convColor(c.conv)}"></i></span><b>${c.conv} %</b><span class="hp-pat" title="Paciencia">${pats}</span></div>
-    <div class="hp-msgs" id="hp-msgs">${c.msgs.map(msg).join('')}${c.typing?'<div class="hp-m them typing"><i></i><i></i><i></i></div>':''}</div>
+    <div class="hp-msgs" id="hp-msgs" data-first="${esc((c.msgs[0]||{}).t||'').slice(0,40)}" data-n="${c.msgs.length}">${c.msgs.map(msg).join('')}${c.typing?'<div class="hp-m them typing"><i></i><i></i><i></i></div>':''}</div>
     ${HP.err?`<p class="hp-err">${esc(HP.err)}</p>`:''}
     ${c.q&&!c.typing?`<div class="hp-q">❓ ${c.q.photo?'Te pidió una foto':'Pregunta: '+esc(c.q.t)}</div>`:''}
     ${!c.typing&&!c.emp&&(c.qr.length||c.q&&c.q.photo)?`<div class="hp-qr">${c.q&&c.q.photo?'<button class="hp-qrb ph" data-act="hp-cam">📷 Mandar foto</button>':''}${c.qr.filter(x=>!/^📷/.test(x)).map(x=>`<button class="hp-qrb" data-act="hp-qr" data-t="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:''}
@@ -4755,7 +4758,8 @@ hpRender=async function(soft){
     <form class="hp-form" data-hp="send"><button type="button" class="hp-tool" data-act="hp-cam" aria-label="Sacar foto" ${c.typing?'disabled':''}>📷</button><button type="button" class="hp-tool" data-act="hp-hag" aria-label="Proponer precio" ${c.typing?'disabled':''}>💲</button>
       <textarea id="hp-in" rows="1" placeholder="${c.typing?'Espera su respuesta…':'Responde al cliente…'}">${esc(keep)}</textarea><button class="hp-send" aria-label="Enviar">➤</button></form></div>
   ${cam?camHTML(c):''}`;
-  const ms=$('#hp-msgs');ms.scrollTop=atBottom?ms.scrollHeight:st;
+  const ms=$('#hp-msgs');
+  if(atBottom&&!HX.keepUp)ms.scrollTop=ms.scrollHeight;else ms.scrollTop=st;
   if(focus){const i=$('#hp-in');i.focus();i.setSelectionRange(i.value.length,i.value.length)}
   if(cam)camUpdate()};
 // cámara del amigo: mismo minijuego (enfoque, luz y zoom)
@@ -4790,6 +4794,12 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
 // mientras la cámara está abierta, no redibujar con cada actualización
 const _hpWireRender=hpRender;
 hpRender=function(soft){if(soft&&HX.cam&&$('#hx-f'))return;return _hpWireRender(soft)};
+
+// si el usuario está tocando o desplazando la lista, no tocar el scroll hasta que suelte
+document.addEventListener('touchstart',e=>{if(e.target.closest&&e.target.closest('#hp-msgs'))HX.touch=true},{passive:true});
+document.addEventListener('touchend',()=>{HX.touch=false},{passive:true});
+const _hpRenderT=hpRender;
+hpRender=function(soft){if(soft&&HX.touch&&$('#hp-msgs'))return;return _hpRenderT(soft)};
 
 /* ================= AYUDANTE: comisión elegible (0–20 %) y despacho de paquetes ================= */
 HP.cut=(()=>{try{const v=localStorage.getItem('lvc-helper-cut');return v==null?10:clamp(+v,0,20)}catch(e){return 10}})();
