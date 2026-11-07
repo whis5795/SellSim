@@ -952,6 +952,27 @@ details.chips[open] summary{display:none}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mgrid .mcard{flex-direction:column;align-items:flex-start;gap:8px}
 .mapp{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.mpill{background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:13px;padding:8px 14px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25);cursor:pointer;font-family:inherit}.mpill:hover{background:rgba(255,255,255,.22)}
+
+/* cupones */
+.cup-pop{position:fixed;left:0;right:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));margin:0 auto;z-index:30;width:min(380px,calc(100% - 24px));z-index:6;background:#FFF8E6;color:#2B1D00;border-radius:16px;box-shadow:0 14px 40px rgba(0,0,0,.28),0 0 0 2px #F2C14E;padding:10px 12px 12px;font-family:Figtree,system-ui,sans-serif;animation:cupIn .5s cubic-bezier(.2,1.4,.4,1)}
+.cup-pop.gone{animation:cupOut .3s ease-in forwards}.cup-pop.saved{animation:cupSave .45s ease-in forwards}
+@keyframes cupIn{from{transform:translateY(40px) rotate(-4deg) scale(.8);opacity:0}}
+@keyframes cupOut{to{transform:translateY(30px);opacity:0}}
+@keyframes cupSave{40%{transform:scale(1.05)}to{transform:translate(40%,120px) scale(.2);opacity:0}}
+.cup-tick{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#A26A00}
+.cup-x{background:none;border:0;font-size:20px;line-height:1;color:#A26A00;cursor:pointer;padding:0 4px}
+.cup-main,.cu-card{display:flex;gap:10px;align-items:stretch;margin-top:6px}
+.cup-stub{flex:none;width:76px;border-radius:10px;background:repeating-linear-gradient(135deg,#F2C14E 0 8px,#F5CD69 8px 16px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px;position:relative;color:#2B1D00}
+.cup-stub::after{content:"";position:absolute;right:-6px;top:6px;bottom:6px;border-right:2px dashed rgba(43,29,0,.35)}
+.cup-stub b{font:800 17px/1.05 'Bricolage Grotesque',sans-serif}.cup-stub small{font-size:10px;font-weight:700;margin-top:3px;opacity:.8}
+.cup-txt{display:flex;flex-direction:column;gap:2px;min-width:0;padding-left:4px}.cup-txt b{font-size:14px}.cup-txt span{font-size:12px;opacity:.8}
+.cup-txt code{font:700 12px 'JetBrains Mono',monospace;background:rgba(162,106,0,.12);padding:2px 6px;border-radius:6px;align-self:flex-start;margin-top:3px}
+.cup-act{display:flex;align-items:center;gap:10px;margin-top:10px}.cup-left{flex:1;height:4px;border-radius:4px;background:rgba(162,106,0,.18);overflow:hidden}.cup-left i{display:block;height:100%;background:#E08A00;transition:width 1s linear}
+.cup-save{background:#2B1D00;color:#FFF8E6;border:0;border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+.cup-bar{background:#FFF3CF;color:#5A3D00;font-size:12.5px;padding:7px 14px;text-align:center;border-bottom:1px solid #F2C14E}
+.cup-s{opacity:.5;font-weight:500;margin-right:2px}
+.cu-card{background:var(--surface);border-radius:14px;padding:10px;box-shadow:var(--shadow);align-items:center;margin:0 0 10px}.cu-card .cup-txt span{opacity:.75}.cu-meta{font-size:11.5px}
+.cu-card .cup-txt code{background:var(--bg);color:var(--ink)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -981,6 +1002,7 @@ details.chips[open] summary{display:none}
   <div class="tb-money"><span id="money">$0</span><span id="clock">Día 1</span></div>
   <button class="tb-stats" data-act="stats" aria-label="Comida, bebida y refrigerador"><span>🍔<span class="minibar"><i id="tb-food"></i></span><b class="num" id="tb-food-n">100</b></span><span>💧<span class="minibar"><i id="tb-drink"></i></span><b class="num" id="tb-drink-n">100</b></span></button>
   <button class="tb-btn" data-act="msgs" aria-label="Mensajes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="tb-badge" id="tb-badge" hidden>0</span><span class="tb-badge" id="tb-bills" hidden style="left:-4px;right:auto;background:var(--warn)">$</span></button>
+  <button class="tb-btn" id="tb-cup" data-act="cups" aria-label="Cupones" hidden><span style="font-size:17px">🎟️</span><span class="tb-badge" id="tb-cup-n" style="background:var(--good)">0</span></button>
   <button class="tb-end" id="tb-end" data-act="leave-pc">Levantarse</button>
   <button class="tb-btn" id="tb-menu" data-act="menu" aria-label="Menú y partidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </footer>
@@ -1052,6 +1074,10 @@ details.chips[open] summary{display:none}
 <section class="sheet z2" id="assign" hidden>
   <div class="sh-head gut"><button class="back" data-act="as-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Asignar productos</b><span>Tus empleados venden y envían solos</span></div></div>
   <div class="sh-body"><div class="sh-in gut" id="as-body"></div></div>
+</section>
+<section class="sheet z2" id="cups" hidden>
+  <div class="sh-head gut"><button class="back" data-act="cu-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Mis cupones</b><span>Descuentos que encontraste navegando</span></div></div>
+  <div class="sh-body"><div class="sh-in gut" id="cu-body"></div></div>
 </section>
 <section class="sheet z2" id="profile" hidden>
   <div class="sh-head gut"><button class="back" data-act="pf-close" aria-label="Volver al chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b id="pf-handle">@</b><span>Perfil</span></div></div>
@@ -2464,7 +2490,7 @@ function pageBazarito(path){
 }
 function buyBtns(l){
   const multi=S.hired.length&&l.qty>1;
-  return `<button class="bz-btn" data-act="buy" data-id="${l.id}" ${S.money<l.price?'disabled':''}>Comprar</button>${multi?`<button class="bz-btn alt" data-act="buy-all" data-id="${l.id}" ${S.money<l.price*l.qty?'disabled':''}>×${l.qty}</button>`:''}`;
+  return `<button class="bz-btn" data-act="buy" data-id="${l.id}" ${S.money<cupPrice(curHost(),l.price)?'disabled':''}>Comprar</button>${multi?`<button class="bz-btn alt" data-act="buy-all" data-id="${l.id}" ${S.money<cupPrice(curHost(),l.price*l.qty)?'disabled':''}>×${l.qty}</button>`:''}`;
 }
 function productCard(l){return `<article class="bz-card ${l.type}">
       ${l.type==='flash'?'<span class="bz-rib">−50 %</span>':l.type==='mystery'?'<span class="bz-rib mys">Misterio</span>':''}
@@ -2541,11 +2567,11 @@ function pageCuentero(){
     <p class="ct-lead">Dile al bot qué quieres vender y te escribe una historia irresistible, con fechas, nombres y leyendas. Más de 150 historias serias y decenas de historias absurdas exclusivas, ninguna repetida.</p>
     <div class="ct-sample"><span class="ct-who">Ejemplo</span><p>«Esta pluma perteneció a la escritora Elena Quiroga, que escribió con ella su primera novela premiada en 1951.»</p></div>
     <div class="ct-plan"><div><b class="num">$50</b><span>pago único</span></div><ul><li>Historias ilimitadas</li><li>Al menos 3 por objeto</li><li>Listas para pegar en tu anuncio</li></ul>
-    <button class="ct-btn" data-act="bot-sub" ${S.money<50?'disabled':''}>${S.money<50?'Te faltan '+money(50-S.money):'Suscribirme'}</button></div></div>`};
+    <button class="ct-btn" data-act="bot-sub" ${S.money<cupPrice('cuentero.ai',50)?'disabled':''}>${S.money<cupPrice('cuentero.ai',50)?'Te faltan '+money(cupPrice('cuentero.ai',50)-S.money):'Suscribirme'+(cupPrice('cuentero.ai',50)<50?' · '+money(cupPrice('cuentero.ai',50)):'')}</button></div></div>`};
   const mine=[...new Set(S.inv.map(i=>i.name))];
   return {title:'Cuentero.ai · Tu escritor',host:'cuentero.ai',cls:'cuentero',html:`<div class="ct-wrap chat">
     <div class="ct-bar"><div class="ct-logo sm">Cuentero<span>.ai</span></div><span class="ct-on">● ${S.botPro?'Pro':'Suscrito'}</span></div>
-    ${S.botPro?'':`<div class="ct-pro"><div><b>Cuentero Pro</b><span>Historias de 90 % o más de gancho, a medida.</span></div><button class="ct-btn" data-act="bot-pro" ${S.money<70?'disabled':''}>${S.money<70?'Te faltan '+money(70-S.money):'Mejorar · $70'}</button></div>`}
+    ${S.botPro?'':`<div class="ct-pro"><div><b>Cuentero Pro</b><span>Historias de 90 % o más de gancho, a medida.</span></div><button class="ct-btn" data-act="bot-pro" ${S.money<cupPrice('cuentero.ai',70)?'disabled':''}>${S.money<cupPrice('cuentero.ai',70)?'Te faltan '+money(cupPrice('cuentero.ai',70)-S.money):'Mejorar · '+money(cupPrice('cuentero.ai',70))}</button></div>`}
     <div class="ct-log" id="bot-log">${[{from:'bot',text:'Hola, soy Cuentero. Dime qué objeto quieres vender y te invento un pasado glorioso.'},...S.botMsgs].map(m=>m.from==='me'?`<div class="ct-me">${esc(m.text)}</div>`:
       `<div class="ct-bot ${m.crazy?'crazy':''} ${m.pro?'pro':''}"><span class="ct-who">Cuentero${m.crazy?' · 🤪 exclusiva absurda':m.pro?' · ★ Pro (90 %+)':''}</span>${m.pre?`<p class="ct-pre">${esc(m.pre)}</p>`:''}<p>${esc(m.text)}</p>${m.story&&m.item?`<div class="ct-row">${S.inv.some(i=>i.name===m.item)?`<button class="ct-use" data-act="bot-use" data-item="${esc(m.item)}" data-story="${esc(m.story)}">Usar en el anuncio</button>`:'<span class="ct-note">Compra este objeto para usar la historia.</span>'}<button class="ct-use alt" data-act="bot-crazy" data-item="${esc(m.item)}">Una más loca</button></div>`:''}</div>`).join('')}
       ${botTyping?'<div class="ct-bot typing"><i></i><i></i><i></i></div>':''}</div>
@@ -2598,8 +2624,8 @@ function pageEmplea(path){
       <ul class="lb-exp">${c.exp.map(e=>`<li>${esc(e)}</li>`).join('')}</ul>
       <div class="lb-skills">${Object.entries(c.skills).map(([k,v])=>`<div><span>${k}</span><i><b style="width:${v}%"></b></i></div>`).join('')}</div>
       <p class="lb-q">«${esc(c.quote)}»</p>
-      <div class="lb-row"><span>Contratar <b class="num">${money(c.cost)}</b> · sueldo <b class="num">${money(c.salary)}</b>/día</span>
-      ${hired?'<span class="lb-ok">Contratado</span>':`<button class="lb-btn" data-act="hire" data-id="${c.id}" ${S.money<c.cost?'disabled':''}>Contratar</button>`}</div></article>`}).join('')}</div></div>`};
+      <div class="lb-row"><span>Contratar <b class="num">${cupTag('empleaya.com',c.cost)}</b> · sueldo <b class="num">${money(c.salary)}</b>/día</span>
+      ${hired?'<span class="lb-ok">Contratado</span>':`<button class="lb-btn" data-act="hire" data-id="${c.id}" ${S.money<cupPrice('empleaya.com',c.cost)?'disabled':''}>Contratar</button>`}</div></article>`}).join('')}</div></div>`};
 }
 
 /* ---------- Trabajitos ---------- */
@@ -2657,7 +2683,7 @@ function pageBanco(){
 /* ---------- Comida y hogar ---------- */
 function foodCard(F,site){return `<article class="${site}-item"><div class="${site}-ic">${F.icon}</div><div class="${site}-ii"><h3>${F.name}</h3><p>${F.desc}</p>
   <div class="${site}-st">${F.food?`<span>Comida +${F.food}</span>`:''}${F.drink?`<span>Bebida +${F.drink}</span>`:''}</div></div>
-  <div class="${site}-buy"><b class="num">${money(F.price)}</b><button data-act="order" data-id="${F.id}" ${S.money<F.price?'disabled':''}>Pedir</button></div></article>`}
+  <div class="${site}-buy"><b class="num">${cupTag(foodHost(F),F.price)}</b><button data-act="order" data-id="${F.id}" ${S.money<cupPrice(foodHost(F),F.price)?'disabled':''}>Pedir</button></div></article>`}
 function pendingFor(kind){const p=S.deliveries.filter(d=>d.food&&FOOD.find(f=>f.id===d.food).kind===kind);return p.length?Math.max(0,Math.min(...p.map(d=>d.at))-S.t):null}
 function pageComeYa(){
   const w=pendingFor('junk');
@@ -2673,12 +2699,13 @@ function pageSuper(){
   <h2 class="sp-h2">Despensa y bebidas</h2>${FOOD.filter(f=>f.kind==='super').map(f=>foodCard(f,'sp')).join('')}
   <h2 class="sp-h2">Ingredientes para cocinar</h2>
   <p class="sp-note">${S.stove?'Llegan a tu puerta y se guardan en la despensa de la cocina.':'Necesitas una cocina para usarlos: se compra en tiendas de muebles.'} Tienes: ${Object.entries(S.pantry||{}).filter(([k,v])=>v>0).map(([k,v])=>ING[k].i+'×'+v).join(' ')||'nada'}.</p>
-  <div class="sp-ing">${Object.entries(ING).map(([k,g])=>`<button class="sp-ingb" data-act="order-ing" data-id="${k}" ${S.money<g.price?'disabled':''}><span>${g.i}</span><b>${g.n}</b><small>×${g.pack} · ${money(g.price)}</small></button>`).join('')}</div>
+  <div class="sp-ing">${Object.entries(ING).map(([k,g])=>`<button class="sp-ingb" data-act="order-ing" data-id="${k}" ${S.money<cupPrice('superpronto.com',g.price)?'disabled':''}><span>${g.i}</span><b>${g.n}</b><small>×${g.pack} · ${cupTag('superpronto.com',g.price)}</small></button>`).join('')}</div>
   <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p></div>`};
 }
+const foodHost=F=>F.kind==='junk'?'comeya.com':'superpronto.com';
 function order(id){
-  const F=FOOD.find(f=>f.id===id);if(!F||S.money<F.price)return;
-  S.money-=F.price;S.day$.spent+=F.price;flashMoney(-1);
+  const F=FOOD.find(f=>f.id===id);if(!F||S.money<cupPrice(foodHost(F),F.price))return;
+  const pay=cupPay(foodHost(F),F.price);S.money-=pay;S.day$.spent+=pay;flashMoney(-1);
   const wait=F.kind==='junk'?ri(4,8):ri(18,30);
   S.deliveries.push({food:F.id,at:S.t+wait});
   toast(`Pediste ${low(F.name)}. Llega en ${wait} segundos.`);dirty=true;save();
@@ -2690,9 +2717,9 @@ function pageHogar(){
   <div class="ht-in ht-body">
     <div class="ht-hero"><h1>Equipa tu negocio de reventa</h1><p>Cada electrodoméstico suma $5 a tu factura de luz semanal.</p></div>
     <div class="ht-grid">
-    ${card('🧊','Refrigerador con congelador','Guarda comida y bebida para después. Lo que no consumas para el segundo día se pudre.',money(FRIDGE_PRICE),S.fridge,S.money>=FRIDGE_PRICE?'buy-fridge':null,S.money<FRIDGE_PRICE&&!S.fridge?`<p class="ht-miss">Te faltan ${money(FRIDGE_PRICE-S.money)}</p>`:'')}
-    ${card('🛸','Servicio de drones de entrega','Tus ventas se entregan el mismo día, estén donde estén los clientes, y cobras el resto ese mismo día. Pago inicial de $200 y $50 por semana.',money(DRONE_PRICE),S.drone,S.money>=DRONE_PRICE?'buy-drone':null,S.money<DRONE_PRICE&&!S.drone?`<p class="ht-miss">Te faltan ${money(DRONE_PRICE-S.money)}</p>`:S.drone&&!droneOn()?'<p class="ht-miss">Servicio suspendido: paga la factura de drones.</p>':'')}
-    ${card('🍳','Cocina con horno','Cocina recetas con ingredientes del súper: llenan mucho más el hambre y la sed.',money(100),S.stove,S.money>=100?'buy-stove':null,S.money<100&&!S.stove?`<p class="ht-miss">Te faltan ${money(100-S.money)}</p>`:'')}
+    ${card('🧊','Refrigerador con congelador','Guarda comida y bebida para después. Lo que no consumas para el segundo día se pudre.',cupTag('hogartotal.com',FRIDGE_PRICE),S.fridge,S.money>=cupPrice('hogartotal.com',FRIDGE_PRICE)?'buy-fridge':null,S.money<cupPrice('hogartotal.com',FRIDGE_PRICE)&&!S.fridge?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',FRIDGE_PRICE)-S.money)}</p>`:'')}
+    ${card('🛸','Servicio de drones de entrega','Tus ventas se entregan el mismo día, estén donde estén los clientes, y cobras el resto ese mismo día. Pago inicial de $200 y $50 por semana.',cupTag('hogartotal.com',DRONE_PRICE),S.drone,S.money>=cupPrice('hogartotal.com',DRONE_PRICE)?'buy-drone':null,S.money<cupPrice('hogartotal.com',DRONE_PRICE)&&!S.drone?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',DRONE_PRICE)-S.money)}</p>`:S.drone&&!droneOn()?'<p class="ht-miss">Servicio suspendido: paga la factura de drones.</p>':'')}
+    ${card('🍳','Cocina con horno','Cocina recetas con ingredientes del súper: llenan mucho más el hambre y la sed.',cupTag('hogartotal.com',100),S.stove,S.money>=cupPrice('hogartotal.com',100)?'buy-stove':null,S.money<cupPrice('hogartotal.com',100)&&!S.stove?`<p class="ht-miss">Te faltan ${money(cupPrice('hogartotal.com',100)-S.money)}</p>`:'')}
     ${card('🚐','Camioneta de reparto','Para llevar cosas grandes.','—',false,null)}
     ${card('🏬','Bodega','Más espacio para guardar mercancía.','—',false,null)}
     </div></div>`};
@@ -3055,8 +3082,8 @@ document.addEventListener('click',e=>{
     case 'back':{const tb=curTab();if(tb.back.length){tb.fwd.push(tb.url);tb.url=tb.back.pop();renderPage(true)}break}
     case 'fwd':{const tb=curTab();if(tb.fwd.length){tb.back.push(tb.url);tb.url=tb.fwd.pop();renderPage(true)}break}
     case 'buy':case 'buy-all':{const l=allListings().find(x=>x.id==id);if(!l||l.bought)break;
-      const n=a==='buy-all'?l.qty:1;if(S.money<l.price*n)break;
-      S.money-=l.price*n;S.day$.spent+=l.price*n;l.qty=(l.qty||1)-n;if(l.qty<=0)l.bought=true;flashMoney(-1);
+      const n=a==='buy-all'?l.qty:1;if(S.money<cupPrice(curHost(),l.price*n))break;
+      const pay=cupPay(curHost(),l.price*n);S.money-=pay;S.day$.spent+=pay;l.qty=(l.qty||1)-n;if(l.qty<=0)l.bought=true;flashMoney(-1);
       let c=[l.name,l.icon,l.base,l.g];if(l.type==='mystery')c=pick(CATALOG);
       for(let k=0;k<n;k++)S.inv.push({id:S.nextId++,name:c[0],icon:c[1],g:c[3],base:c[2],paid:l.price,listed:false,price:0,story:'',score:0,kw:[],spawned:0});
       if(n>1){toast(`Compraste ${n} × ${low(c[0])}. Asígnalos a un empleado en Mis cosas.`,'',()=>go('bazarito.com/mis-cosas'));dirty=true;save();break}
@@ -3080,24 +3107,24 @@ document.addEventListener('click',e=>{
     case 'cam-retry':$('#cam-result').hidden=true;$('#cam-controls').hidden=false;break;
     case 'cam-send':sendPhoto();break;
     case 'mini':if(S.lastChat)openChat(S.lastChat);break;
-    case 'hire':{const c=S.cands.find(x=>x.id===id);if(c&&S.money>=c.cost&&!S.hired.some(h=>h.id===id)){S.money-=c.cost;S.day$.spent+=c.cost;S.hired.push(Object.assign({},c,{busy:null,until:0}));flashMoney(-1);toast(`Contrataste a ${c.name}.`);dirty=true;save()}break}
+    case 'hire':{const c=S.cands.find(x=>x.id===id);if(c&&S.money>=cupPrice('empleaya.com',c.cost)&&!S.hired.some(h=>h.id===id)){const pay=cupPay('empleaya.com',c.cost);S.money-=pay;S.day$.spent+=pay;S.hired.push(Object.assign({},c,{busy:null,until:0}));flashMoney(-1);toast(`Contrataste a ${c.name}.`);dirty=true;save()}break}
     case 'fire':{const h=S.hired.find(x=>x.id===id);if(h&&!h.busy){S.hired=S.hired.filter(x=>x!==h);toast(`Despediste a ${h.name}.`);dirty=true;save()}else if(h)toast('Espera a que termine la conversación que está atendiendo.');break}
-    case 'bot-sub':if(S.money>=50){S.money-=50;S.botSub=true;flashMoney(-1);toast('Te suscribiste a Cuentero.ai.');dirty=true;save()}break;
+    case 'bot-sub':if(S.money>=cupPrice('cuentero.ai',50)){S.money-=cupPay('cuentero.ai',50);S.botSub=true;flashMoney(-1);toast('Te suscribiste a Cuentero.ai.');dirty=true;save()}break;
     case 'bot-ask':botAsk(`Escríbeme una historia para: ${t.dataset.item}`);break;
-    case 'bot-pro':if(S.money>=70){S.money-=70;S.botPro=true;S.botSub=true;flashMoney(-1);toast('¡Ahora tienes Cuentero Pro!','good');dirty=true;save()}break;
+    case 'bot-pro':if(S.money>=cupPrice('cuentero.ai',70)){S.money-=cupPay('cuentero.ai',70);S.botPro=true;S.botSub=true;flashMoney(-1);toast('¡Ahora tienes Cuentero Pro!','good');dirty=true;save()}break;
     case 'bot-pro-ask':botAsk(`Historia Pro (★) para: ${t.dataset.item}`);break;
     case 'bot-crazy':botAsk(`Ahora una historia loca y absurda para: ${t.dataset.item}`);break;
     case 'bot-use':{const it=S.inv.find(i=>i.name===t.dataset.item&&!i.listed)||S.inv.find(i=>i.name===t.dataset.item);if(it)openEditor(it.id,t.dataset.story);break}
     case 'pay':payBill(+id);break;
     case 'loan':takeLoan(+id);break;
     case 'order':order(id);break;
-    case 'buy-stove':if(!S.stove&&S.money>=100){S.money-=100;S.stove=true;flashMoney(-1);toast('¡Cocina instalada! Ve a la cocina de tu cuarto.','good');dirty=true;save()}break;
-    case 'order-ing':{const g=ING[id];if(!g||S.money<g.price)break;S.money-=g.price;S.day$.spent+=g.price;flashMoney(-1);const w=ri(15,25);S.deliveries.push({ing:id,at:S.t+w});toast(`Pediste ${g.n.toLowerCase()}. Llega en ${w} s a tu puerta.`);dirty=true;save();break}
+    case 'buy-stove':if(!S.stove&&S.money>=cupPrice('hogartotal.com',100)){S.money-=cupPay('hogartotal.com',100);S.stove=true;flashMoney(-1);toast('¡Cocina instalada! Ve a la cocina de tu cuarto.','good');dirty=true;save()}break;
+    case 'order-ing':{const g=ING[id];if(!g||S.money<cupPrice('superpronto.com',g.price))break;{const pay=cupPay('superpronto.com',g.price);S.money-=pay;S.day$.spent+=pay}flashMoney(-1);const w=ri(15,25);S.deliveries.push({ing:id,at:S.t+w});toast(`Pediste ${g.n.toLowerCase()}. Llega en ${w} s a tu puerta.`);dirty=true;save();break}
     case 'assign-open':openAssign();break;
     case 'unassign':{const it=S.inv.find(i=>i.id==id);if(it){it.assigned=null;dirty=true;save()}break}
     case 'pk-drop':plinkoDrop();break;
-    case 'buy-fridge':if(!S.fridge&&S.money>=FRIDGE_PRICE){S.money-=FRIDGE_PRICE;S.fridge=true;flashMoney(-1);toast('¡Refrigerador nuevo! Ahora la comida se guarda.');dirty=true;save()}break;
-    case 'buy-drone':if(!S.drone&&S.money>=DRONE_PRICE){S.money-=DRONE_PRICE;S.drone=true;S.droneDay=S.day;flashMoney(-1);toast('Drones activados: tus ventas se entregan en el día.');dirty=true;save()}break;
+    case 'buy-fridge':if(!S.fridge&&S.money>=cupPrice('hogartotal.com',FRIDGE_PRICE)){S.money-=cupPay('hogartotal.com',FRIDGE_PRICE);S.fridge=true;flashMoney(-1);toast('¡Refrigerador nuevo! Ahora la comida se guarda.');dirty=true;save()}break;
+    case 'buy-drone':if(!S.drone&&S.money>=cupPrice('hogartotal.com',DRONE_PRICE)){S.money-=cupPay('hogartotal.com',DRONE_PRICE);S.drone=true;S.droneDay=S.day;flashMoney(-1);toast('Drones activados: tus ventas se entregan en el día.');dirty=true;save()}break;
     case 'job':openJob(id);break;
     case 'job-close':closeJob();break;
     case 'job-again':{const k=job.kind;if(!canAct())break;if(k==='plates')startPlate();else if(k==='survey')startSurvey();else startTyping();break}
@@ -3506,8 +3533,8 @@ const PK={rows:10,mult:[10,4,2,1.2,.6,.3,.6,1.2,2,4,10],balls:[],flash:-1,raf:nu
 function pkGeom(cv){const w=cv.width,h=cv.height,top=40,gap=(h-110)/PK.rows,sx=w/(PK.rows+2);return {w,h,top,gap,sx}}
 function pkPeg(r,i,g){return {x:g.w/2+(i-r/2)*g.sx,y:g.top+r*g.gap}}
 function plinkoDrop(){
-  const bet=+($('#pk-bet')||{value:20}).value;if(S.money<bet){toast('No te alcanza para esa apuesta.');return}
-  S.money-=bet;flashMoney(-1);renderTaskbar();
+  const bet=+($('#pk-bet')||{value:20}).value;if(S.money<cupPrice('bolitas.com',bet)){toast('No te alcanza para esa apuesta.');return}
+  S.money-=cupPay('bolitas.com',bet);flashMoney(-1);renderTaskbar();
   const path=[];let k=0;for(let r=0;r<PK.rows;r++){path.push(k);if(Math.random()<.5)k++}
   PK.balls.push({path,slot:k,bet,t:0,hue:ri(0,360)});
   if(!PK.raf)PK.raf=requestAnimationFrame(pkLoop);
@@ -3534,6 +3561,102 @@ function pkLoop(ts){
   PK.raf=requestAnimationFrame(pkLoop);
 }
 document.addEventListener('input',e=>{if(e.target.id==='pk-bet')$('#pk-betn').textContent=money(e.target.value)});
+
+/* ================= CUPONES PROMOCIONALES ================= */
+// Aparecen muy rara vez mientras navegas, casi siempre para OTRA página.
+const CUPONES={
+  come2:  {host:'comeya.com',      kind:'pct',v:100,uses:2,code:'COMEGRATIS',t:'2 comidas gratis en ComeYa',      d:'Tus próximos 2 pedidos de comida rápida no cuestan nada.',w:5},
+  come50: {host:'comeya.com',      kind:'pct',v:50, uses:3,code:'MITADYA',   t:'3 pedidos a mitad de precio en ComeYa',d:'Los próximos 3 pedidos en ComeYa cuestan la mitad.',w:5},
+  super30:{host:'superpronto.com', kind:'pct',v:30, uses:3,code:'DESPENSA30',t:'30 % en SuperPronto',              d:'Descuento en tus próximas 3 compras del súper (comida o ingredientes).',w:5},
+  bazar25:{host:'bazarito.com',    kind:'pct',v:25, uses:1,code:'BAZAR25',   t:'25 % en tu próxima compra de Bazarito',d:'Vale para una compra, aunque sea de varias unidades.',w:6},
+  bazar5: {host:'bazarito.com',    kind:'off',v:5,  uses:2,code:'CINCOMENOS',t:'$5 menos en 2 compras de Bazarito',d:'Descuenta $5 en cada una de tus próximas 2 compras.',w:5},
+  hogar30:{host:'hogartotal.com',  kind:'pct',v:30, uses:1,code:'HOGAR30',   t:'30 % en Hogar Total',              d:'Para un mueble, electrodoméstico o servicio de la tienda.',w:3},
+  cuent50:{host:'cuentero.ai',     kind:'pct',v:50, uses:1,code:'CUENTO50',  t:'50 % en Cuentero.ai',              d:'La mitad de precio al suscribirte o al pasarte a Pro.',w:3},
+  empl40: {host:'empleaya.com',    kind:'pct',v:40, uses:1,code:'TALENTO40', t:'40 % al contratar en EmpleaYa',    d:'Descuento en la tarifa de contratación de un empleado.',w:3},
+  bola:   {host:'bolitas.com',     kind:'off',v:20, uses:1,code:'BOLITAGRATIS',t:'1 bolita gratis en Bolitas',      d:'Te paga $20 de la próxima bolita que sueltes.',w:3},
+  vint15: {host:'vitrinavintage.com',kind:'pct',v:15,uses:1,code:'VINTAGE15',t:'15 % en Vitrina Vintage',           d:'Para una compra en la tienda vintage.',w:2,need:'vitrina'},
+};
+const CUP_CHANCE=.045, CUP_GAP=150, CUP_LIFE=25, CUP_DAYS=2;
+const SITE_NAME={'comeya.com':'ComeYa','superpronto.com':'SuperPronto','bazarito.com':'Bazarito','hogartotal.com':'Hogar Total','cuentero.ai':'Cuentero.ai','empleaya.com':'EmpleaYa','bolitas.com':'Bolitas','vitrinavintage.com':'Vitrina Vintage'};
+// Cómo lo anuncia cada página donde aparece
+const CUP_FLAVOR={
+  'buscalo.com':'Anuncio patrocinado','bazarito.com':'Regalo de un vendedor','cuentero.ai':'Cuentero te dejó un regalo',
+  'empleaya.com':'Beneficio para empleadores','trabajitos.com':'Premio por trabajador del día','cuentasclaras.com':'Promo de un socio',
+  'bancoconfianza.com':'Beneficio de tarjeta','comeya.com':'Raspa y gana','superpronto.com':'Cupón en tu ticket',
+  'hogartotal.com':'Sorteo de clientes','dicciomundo.org':'Patrocinador del día','comoserrico.net':'Oferta exclusiva para lectores','bolitas.com':'Bolita dorada'};
+
+const curHost=()=>parseUrl(curTab().url).host;
+function myCups(){S.coupons=(S.coupons||[]).filter(c=>c.uses>0&&c.exp>=S.day&&CUPONES[c.key]);return S.coupons}
+function cupFor(host){return myCups().find(c=>CUPONES[c.key].host===host)||null}
+function cupPrice(host,p){const c=cupFor(host);if(!c||p<=0)return p;const D=CUPONES[c.key];
+  return D.kind==='pct'?Math.max(0,Math.round(p*(100-D.v))/100):Math.max(0,p-D.v)}
+// Cobra el precio con el cupón (si hay) y gasta un uso
+function cupPay(host,p){const v=cupPrice(host,p);if(v<p){const c=cupFor(host);c.uses--;
+  toast(`🎟️ Cupón ${c.code}: ahorraste ${money(p-v)}${c.uses>0?` · te quedan ${c.uses} uso${c.uses>1?'s':''}`:''}.`,'good');myCups();setTimeout(()=>{renderTaskbar();if(S.view==='pc')renderPage(true)},0)}
+  return v}
+function cupTag(host,p){const v=cupPrice(host,p);return v<p?`<s class="cup-s">${money(p)}</s> ${money(v)}`:money(p)}
+function cupLabel(D){return D.kind==='pct'?(D.v>=100?'GRATIS':`−${D.v} %`):`−${money(D.v)}`}
+
+let cupOffer=null; // {key,code,host,until}
+function cupRoll(host){
+  if(TUT||cupOffer||!host)return;
+  if(S.t-(S.cupLast??-CUP_GAP)<CUP_GAP)return;
+  if(myCups().length>=4)return;
+  if(Math.random()>CUP_CHANCE)return;
+  let pool=Object.entries(CUPONES).filter(([k,D])=>(!D.need||(S.unlocked||[]).includes(D.need))&&!myCups().some(c=>c.key===k));
+  const other=pool.filter(([k,D])=>D.host!==host);
+  if(other.length&&Math.random()<.8)pool=other; // casi siempre es para otra página
+  if(!pool.length)return;
+  let r=Math.random()*pool.reduce((s,[,D])=>s+D.w,0),key=pool[0][0];
+  for(const [k,D] of pool){r-=D.w;if(r<=0){key=k;break}}
+  S.cupLast=S.t;
+  cupOffer={key,host,code:CUPONES[key].code+'-'+Math.random().toString(36).slice(2,5).toUpperCase(),until:S.t+CUP_LIFE};
+  renderCupOffer();
+}
+function renderCupOffer(){
+  let el=$('#cup-pop');
+  if(!cupOffer||S.view!=='pc'||curHost()!==cupOffer.host){if(el)el.remove();if(cupOffer&&(S.t>cupOffer.until||curHost()!==cupOffer.host))cupOffer=null;return}
+  const D=CUPONES[cupOffer.key],left=Math.max(0,cupOffer.until-S.t);
+  if(!el){el=document.createElement('div');el.id='cup-pop';el.className='cup-pop';$('#viewport').appendChild(el);
+    el.innerHTML=`<div class="cup-tick"><span class="cup-flv">${esc(CUP_FLAVOR[cupOffer.host]||'¡Cupón encontrado!')}</span><button class="cup-x" data-act="cup-close" aria-label="Descartar">×</button></div>
+    <div class="cup-main"><div class="cup-stub"><b>${cupLabel(D)}</b><small>${esc(SITE_NAME[D.host]||D.host)}</small></div>
+    <div class="cup-txt"><b>${esc(D.t)}</b><span>${esc(D.d)}</span><code>${esc(cupOffer.code)}</code></div></div>
+    <div class="cup-act"><span class="cup-left"><i></i></span><button class="cup-save" data-act="cup-save">Guardar cupón</button></div>`}
+  el.querySelector('.cup-left i').style.width=(left/CUP_LIFE*100)+'%';
+  if(left<=0){el.classList.add('gone');cupOffer=null;setTimeout(()=>el.remove(),300)}
+}
+function cupBar(){const c=cupFor(curHost());const old=$('#cup-bar');if(!c){if(old)old.remove();return}
+  const D=CUPONES[c.key],html=`🎟️ <b>Cupón activo:</b> ${esc(D.t)} · ${c.uses} uso${c.uses>1?'s':''} · se aplica solo al pagar`;
+  if(old){if(old.innerHTML!==html)old.innerHTML=html;if(old.parentNode!==$('#page'))$('#page').prepend(old);return}
+  const b=document.createElement('div');b.id='cup-bar';b.className='cup-bar';b.innerHTML=html;$('#page').prepend(b)}
+
+// Envolver el render de páginas: aparición de cupones y aviso del cupón activo
+const _renderPage=renderPage;
+renderPage=function(force){const prev=lastRenderedUrl;_renderPage(force);
+  try{cupBar();if(curTab().url!==prev)cupRoll(curHost());renderCupOffer()}catch(e){console.warn(e)}};
+const _renderTaskbar=renderTaskbar;
+renderTaskbar=function(){_renderTaskbar();const n=myCups().length,b=$('#tb-cup');if(b){b.hidden=!n;$('#tb-cup-n').textContent=n}};
+setInterval(()=>{try{renderCupOffer()}catch(e){}},1000);
+
+function openCups(){renderCups();$('#cups').hidden=false}
+function renderCups(){const list=myCups();
+  $('#cu-body').innerHTML=list.length?list.map(c=>{const D=CUPONES[c.key],d=c.exp-S.day;return `<div class="cu-card"><div class="cup-stub"><b>${cupLabel(D)}</b><small>${esc(SITE_NAME[D.host]||D.host)}</small></div>
+    <div class="cup-txt"><b>${esc(D.t)}</b><span>${esc(D.d)}</span><span class="cu-meta"><code>${esc(c.code)}</code> · ${c.uses} uso${c.uses>1?'s':''} · ${d<=0?'vence hoy':'vence en '+d+' día'+(d>1?'s':'')}</span></div>
+    <button class="btn sm" data-act="cup-go" data-host="${D.host}">Ir</button></div>`}).join('')
+  :'<div class="bz-empty">No tienes cupones. Aparecen muy de vez en cuando en las páginas que visitas: estate atento.</div>';
+  $('#cu-body').insertAdjacentHTML('afterbegin','<p class="tip">Los cupones se aplican solos cuando pagas en la página correspondiente. Duran unos días, así que úsalos pronto.</p>')}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='cup-save'&&cupOffer){const D=CUPONES[cupOffer.key];
+    (S.coupons=S.coupons||[]).push({key:cupOffer.key,code:cupOffer.code,uses:D.uses,exp:S.day+CUP_DAYS});
+    cupOffer=null;const el=$('#cup-pop');if(el){el.classList.add('saved');setTimeout(()=>el.remove(),450)}
+    toast(`🎟️ Guardaste «${D.t}». Se aplica solo al pagar.`,'good',openCups);renderTaskbar();save()}
+  if(a==='cup-close'){cupOffer=null;const el=$('#cup-pop');if(el){el.classList.add('gone');setTimeout(()=>el.remove(),300)}}
+  if(a==='cups')openCups();
+  if(a==='cu-close')$('#cups').hidden=true;
+  if(a==='cup-go'){$('#cups').hidden=true;if(S.view!=='pc')enterPC();go(t.dataset.host)}
+});
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
@@ -3596,7 +3719,7 @@ function renderMenu(){
 }
 /* completa los datos que no existían en partidas guardadas con versiones anteriores */
 function upgradeSave(st){
-  const d={shop:[],tshop:{},inv:[],buyers:[],hired:[],cands:[],bills:[],shipments:[],deliveries:[],door:[],fridgeItems:[],botMsgs:[],used:{},lexUse:{},pantry:{},unlocked:[],proStories:[],absUsed:[],
+  const d={shop:[],tshop:{},inv:[],buyers:[],hired:[],cands:[],bills:[],shipments:[],deliveries:[],door:[],fridgeItems:[],botMsgs:[],used:{},lexUse:{},pantry:{},unlocked:[],proStories:[],absUsed:[],coupons:[],
     jobsDone:{plates:0,surveys:0,typing:0},day$:{sales:0,profit:0,jobs:0,spent:0},revenue:0,stove:false,fridge:false,drone:false,botSub:false,botPro:false,restock2:false,aiOn:true,auto:true,view:'room',wall:0,food:100,drink:100,sales:0,earned:0,nextId:1,t:0,day:1,min:480,money:20};
   for(const k in d)if(st[k]===undefined||st[k]===null)st[k]=JSON.parse(JSON.stringify(d[k]));
   if(!Array.isArray(st.tabs)||!st.tabs.length){const id=st.nextId++;st.tabs=[{id,url:'buscalo.com',back:[],fwd:[]}];st.tab=id}
