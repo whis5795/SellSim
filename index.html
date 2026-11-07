@@ -2026,7 +2026,7 @@ function spawnBuyer(it){
   let q=nextQuestion(b,it,null);
   if(bP.quick){q={id:'qb',q:'¿Sigue disponible? Si me lo confirmas, lo compro ahora mismo.',a:['si','disponible','claro','confirm','trato','tuyo','por supuesto','hecho','vale','sigue']};b.conv=Math.max(b.conv,60)}
   const hello=b.returning?pick(['¡Hola de nuevo! Soy yo otra vez.','¡Hola otra vez! Me acuerdo de ti.','¡Volví! Ahora me interesa otra cosa.']):(bP.open||'');
-  b.msgs.push({from:'b',text:(hello?hello+' ':'')+opening(b,it)+' '+q.q});b.q=q;
+  b.msgs.push({from:'b',text:openMsg(b,it,q)});b.q=q;
   S.buyers.push(b);
   it.nextSpawn=S.t+Math.round(rand(10,22)/(.45+attract(it)));
   toast(`${b.name} ofrece ${money(offer)} por tu ${low(it.name)}`,'',()=>openChat(b.id));
@@ -2073,7 +2073,7 @@ const CONCERNS={
  procedencia:{label:'de dónde salió',asks:()=>['¿Cómo llegó a tus manos?','¿Quién lo tuvo antes que tú?'],stems:ORIGIN},
  estado:{label:'el estado en que está',asks:()=>['¿En qué estado está, de verdad?','¿Tiene golpes o le falta alguna pieza?'],stems:CONDITION.concat(['completo','falta','pieza','limpi','restaur'])},
  envio:{label:'cómo me llega',asks:b=>[`¿Cómo me lo haces llegar a ${b.city}?`,'¿Cuánto tarda el envío y quién lo paga?'],stems:SHIP.concat(['dia','manana','semana','gratis','incluid','dron'])},
- precio:{label:'el precio',asks:b=>[`¿Por qué vale ${money(b.offer)}?`,'¿No es un poco caro para lo que es?'],stems:['vale','valor','precio','tasacion','unic','raro','pocos','inversion','descuento','rebaja','justo','ganga','barato']},
+ precio:{label:'el precio',asks:b=>{const it=itemOf(b);const p=it?money(it.price):'tanto';return [`¿Por qué pides ${p}?`,'¿No es un poco caro para lo que es?',`¿Qué tiene de especial para costar ${p}?`,'¿Por qué debería pagar eso y no menos?','¿Cómo llegaste a ese precio?']},stems:['vale','valor','precio','tasacion','unic','raro','pocos','inversion','descuento','rebaja','justo','ganga','barato']},
  confianza:{label:'que seas de fiar',asks:()=>['¿Cómo sé que no me vas a estafar?','¿Qué pasa si llega y no es lo que dices?'],stems:['garantia','devol','reembols','referencia','opinion','calificac','resena','honest','pago al recibir','contra entrega','en persona','comprobante','factura']},
  foto:{label:'verlo con mis propios ojos',asks:()=>['¿Me mandas una foto?','¿Puedo ver una foto antes de decidir?'],photo:true},
 };
@@ -3246,7 +3246,7 @@ function finishTurn(b,delta,reply,delay){
     else if(b.conv>=100){b.msgs.push({from:'b',text:reply+' Mi oferta sigue en pie: '+money(b.offer)+'.'});b.waitingSince=S.t}
     else if(b.conv<=0){b.msgs.push({from:'b',text:pick(['No, gracias. Lo dejo aquí.','Adiós, suerte vendiéndolo.','Paso. No me inspiras confianza.'])});loseBuyer(b,'Perdiste al cliente.')}
     else if(b.patience<=0){b.msgs.push({from:'b',text:'Bueno, ya me cansé. Lo pienso y cualquier cosa te escribo.'});loseBuyer(b,'Se le acabó la paciencia.')}
-    else{b.msgs.push({from:'b',text:reply});if(b.pendingPhoto){b.msgs.push(b.pendingPhoto);b.pendingPhoto=null}b.waitingSince=S.t}
+    else{b.msgs.push({from:'b',text:vary(b,reply)});if(b.pendingPhoto){b.msgs.push(b.pendingPhoto);b.pendingPhoto=null}b.waitingSince=S.t}
     if(S.cur===b.id){b.unread=0;renderChat()}else b.unread=1;
     dirty=true;save();
   },delay);
@@ -5284,6 +5284,98 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   if(a==='hwe-pub'&&HP.ch){hwEdScore();HP.ch.send(JSON.stringify({t:'publish',id:HW.ed.id,story:HW.ed.story,price:HW.ed.price}));t.disabled=true;t.textContent='Publicando…'}});
 // el botón de la pantalla de chats abre el navegador
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hb-open"],[data-act="hw-open"]');if(!t)return;e.stopImmediatePropagation();hwOpen()},true);
+
+/* ================= CLIENTES MÁS VIVOS: variantes de mensajes y sin saludos repetidos ================= */
+const VX=a=>a[Math.floor(Math.random()*a.length)];
+// --- primer mensaje: un solo saludo, cuerpo variado y oferta natural ---
+const GREET={
+  amable:['¡Hola!','¡Hola, qué tal!','¡Buenas! Espero que estés bien.','Hola, ¿cómo va?'],
+  coleccionista:['Buenas.','Hola, qué tal.','Buenas tardes.','Saludos.'],
+  desconfiado:['Hola.','Buenas.','Hola, a ver…'],
+  apurado:['Hola, rápido:','Buenas, voy rápido:','Hola, ando con prisa:'],
+  decidido:['¡Hola!','Buenas.','Hola, qué tal.'],
+  tikismikis:['Buenas tardes.','Buenos días.','Saludos cordiales.'],
+  regateador:['Hola. Voy directo:','Buenas, hablemos de números.','Hola, amigo.'],
+  nostalgico:['Hola… ¡qué recuerdos me trajo tu anuncio!','Buenas. Ay, este anuncio…','Hola, perdón la emoción.'],
+  influencer:['¡Holaaa! 😍','¡Hola, hola! ✨','¡Holiii! 💅'],
+  conspiranoico:['Hola. Seré breve: puede que nos estén leyendo.','Buenas. Hablemos con cuidado.','Hola. No digas mi nombre en voz alta.'],
+  abuelita:['Hola, querido. Espero no molestar.','Buenas tardes, mi vida.','Hola, tesoro, ¿cómo estás?'],
+  revendedor:['Buenas. Vamos al grano.','Hola. Negocio rápido, ¿sí?','Buenas, jefe.'],
+  poeta:['Saludos, alma vendedora.','Buenas noches, aunque sea de día.','Hola, guardián de objetos.'],
+  detective:['Buenas tardes. Tengo algunas preguntas.','Hola. Quiero revisar unos detalles.','Buenas. Seré minucioso.'],
+  fan:['¡¡Hola!! Vi tu anuncio y casi me desmayo.','¡Hola! ¡No lo puedo creer!','¡¡Holaaa!! ¿Es real?'],
+  bromista:['¡Hola! ¿Vendes o regalas? Jaja, es broma.','¡Buenas! Vengo en son de paz… y de compras.','¡Hola! Prometo no hacerte perder el tiempo (mucho).'],
+  turista:['Hello! Hola.','¡Hola! Perdón, mi español es poco.','Hi! Buenas.']};
+const RETURN_G=['¡Hola de nuevo! Soy yo otra vez.','¡Hola otra vez! Me acuerdo de ti.','¡Volví! Ahora me interesa otra cosa.','¡Ey, otra vez yo!','¡Hola! Ya te compré antes, ¿te acuerdas?','Buenas, soy el de la otra vez.'];
+function openMsg(b,it,q){
+  const n=`${art(it)} ${low(it.name)}`,o=money(b.offer);
+  const g=b.returning?VX(RETURN_G):VX(GREET[b.persona]||GREET.amable);
+  const hook=it.kw&&it.kw.length?VX(['La historia me llamó mucho la atención.','Me encantó lo que contaste en el anuncio.','La historia que cuentas me dejó pensando.','Leí tu anuncio dos veces, lo confieso.','Esa historia no se ve todos los días.','Me quedé enganchado con la historia.']):'';
+  const ask=b.offer<it.price?VX([`Pides ${money(it.price)}, pero yo puedo pagar ${o}.`,`Vi que pides ${money(it.price)}; yo llego a ${o}.`,`Mi presupuesto es ${o}, aunque pides ${money(it.price)}.`,`¿Te sirve ${o}? Sé que pides ${money(it.price)}.`]):VX([`Te ofrezco ${o}.`,`Te pago ${o}.`,`Por ${o} lo quiero.`]);
+  let body;
+  if(b.conv>=50)body=VX([`Vi ${n}.`,`Me encantó ${n}.`,`Me interesa mucho ${n}.`,`Estoy buscando justo algo como ${n}.`,`¡Qué lindo ${n}!`]);
+  else if(b.conv>=30)body=VX([`Me interesa ${n}, pero quiero estar seguro de lo que dice el anuncio.`,`Me llamó la atención ${n}, aunque tengo algunas dudas.`,`Estoy viendo ${n} y quiero entender bien qué compro.`]);
+  else body=VX([`Me interesa ${n}, aunque esa historia me parece demasiado buena para ser verdad.`,`Te soy sincero: la historia de ${n} me suena a cuento.`,`Vi ${n}, pero no me termino de creer el anuncio.`]);
+  const parts=[g,body,hook&&b.conv>=30?hook:'',ask,q.q].filter(Boolean);
+  return tidy(parts.join(' '),true)}
+// --- pequeñas reacciones naturales al empezar una respuesta ---
+const LEAD={
+  amable:['¡Ah, qué bien!','Mira vos.','Ay, gracias.','Ok, ok.'],influencer:['Omg 😱','Ay sí 💖','Literal 🔥','Okey 👀'],
+  abuelita:['Ay, mi vida.','Qué cosa, ¿no?','Ay, tesoro.'],bromista:['Jaja.','Uy, uy.','Ajá, ajá.'],
+  desconfiado:['Mmm.','A ver…','Hmm.'],detective:['Anotado.','Interesante.','Ya veo.'],regateador:['Bueno.','Ajá.','Mirá…'],
+  conspiranoico:['Lo sabía.','Shh…','Interesante…'],poeta:['Ah…','Qué belleza.','Mmm, sí.'],fan:['¡¿En serio?!','¡Wow!','¡No puede ser!'],
+  turista:['Oh!','Ok!','Wow.'],nostalgico:['Ay…','Qué tiempos.','Mmm…'],apurado:['Ok.','Dale.','Bien.'],revendedor:['Ok.','Bien.','Ajá.']};
+// --- sinónimos para frases fijas que se repetían mucho ---
+const SYN=[
+  [/Eso responde mi duda\./g,['Eso responde mi duda.','Listo, duda resuelta.','Ah, perfecto, era eso lo que quería saber.','Buenísimo, me quedó claro.','Ok, eso me sirve.']],
+  [/Vale, eso me cuadra\./g,['Vale, eso me cuadra.','Tiene sentido.','Me cierra.','Ok, eso encaja.']],
+  [/Perfecto, gracias por aclararlo\./g,['Perfecto, gracias por aclararlo.','Gracias, ahora entiendo mejor.','Genial, gracias por explicarlo.']],
+  [/Te repito la pregunta:/g,['Te repito la pregunta:','Vuelvo a lo mío:','Pero insisto:','Lo que te pregunté:','No me respondiste:']],
+  [/Eso no es una respuesta\./g,['Eso no es una respuesta.','Me esquivaste la pregunta.','Eso no me dice nada.','Ajá… pero no me respondiste.']],
+  [/¿Y eso qué tiene que ver con el objeto\?/g,['¿Y eso qué tiene que ver con el objeto?','Me perdí, ¿qué tiene que ver eso?','Ok… pero hablemos del artículo.','No entiendo a qué viene eso.']],
+  [/Con eso ya no me quedan dudas importantes\./g,['Con eso ya no me quedan dudas importantes.','Ya casi no tengo dudas.','Creo que ya me aclaraste todo.','Con eso me quedo tranquilo.']],
+  [/Te aviso que no tengo todo el día\./g,['Te aviso que no tengo todo el día.','Ojo que se me acaba la paciencia.','Voy a tener que decidir pronto.','No me hagas esperar mucho más.']],
+  [/Me suena muy exagerado, la verdad\./g,['Me suena muy exagerado, la verdad.','Eso suena a exageración.','Mmm, me parece que estás inflando la historia.']],
+  [/No me presiones, por favor\./g,['No me presiones, por favor.','Tranquilo, sin presión.','Dame un respiro, ¿sí?']],
+  [/Ah, entiendo\./g,['Ah, entiendo.','Ah, ya veo.','Ahh, ok.','Entendido.']],
+  [/De acuerdo, espero la foto\./g,['De acuerdo, espero la foto.','Dale, mándamela.','Ok, quedo atento a la foto.']],
+  [/¿Nada más\? Esperaba algo más\./g,['¿Nada más? Esperaba algo más.','¿Y? Cuéntame un poco más.','Muy cortito… dame algún detalle.']]];
+// --- limpiar mensajes: un solo saludo, sin frases repetidas ---
+const GREET_RX=/(^|[.!?¡¿]\s*)(¡+\s*)?(hola+|holi+|buenas( tardes| noches)?|buenos d[ií]as|saludos( cordiales)?|hello|hi)\b[^.!?]*[.!?]+\s*/gi;
+function tidy(t,first){
+  if(!t)return t;let seen=0;
+  t=t.replace(GREET_RX,(m,pre)=>{seen++;return (first&&seen===1)?m:pre}).trim();
+  // frases duplicadas dentro del mismo mensaje
+  const sents=t.match(/[^.!?]+[.!?]+(\s|$)|[^.!?]+$/g)||[t];const out=[],keys=new Set();
+  for(const s of sents){const k=norm(s).replace(/[^a-z0-9]/g,'');if(k.length>3&&keys.has(k))continue;keys.add(k);out.push(s.trim())}
+  return out.join(' ').replace(/\s{2,}/g,' ').replace(/^[,;:]\s*/,'').trim()}
+function vary(b,t){if(!t)return t;
+  for(const [rx,alts] of SYN)t=t.replace(rx,()=>VX(alts));
+  t=tidy(t,false);
+  if(Math.random()<.22&&LEAD[b.persona]&&!/^(¡|¿|jaja)/i.test(t)){const l=VX(LEAD[b.persona]);if(!t.startsWith(l))t=l+' '+t}
+  // no repetir exactamente el último mensaje del cliente
+  const last=[...b.msgs].reverse().find(m=>m.from==='b'&&m.text);if(last&&norm(last.text)===norm(t)){t=VX(['Como te decía:','Insisto:','Te lo vuelvo a decir:'])+' '+t}
+  return t}
+// --- más frases de tono por personaje ---
+const VMORE={
+  amable:{good:['¡Qué lindo lo que me cuentas!','Me estás convenciendo, eh.','Así da gusto comprar.'],bad:['Uy, no sé…','Eso me dejó un poco frío.'],ok:['Ok, te sigo.','Claro, claro.','Mhm.']},
+  coleccionista:{good:['Eso le da valor de colección.','Justo lo que buscaba para mi vitrina.','Pieza interesante, sin duda.'],bad:['Para un coleccionista eso no alcanza.','Necesito datos más concretos.'],ok:['Tomo nota.','Ajá, sigue.']},
+  desconfiado:{good:['Bueno… eso suena creíble.','Vale, empiezo a creerte.'],bad:['No me convence nada.','Esto huele raro.','Demasiado lindo para ser cierto.'],ok:['Ajá.','Puede ser.','Veremos.']},
+  apurado:{good:['¡Bien, así me gusta!','Perfecto, avancemos.'],bad:['Vamos, que no tengo tiempo.','Muy largo todo.'],ok:['Ok, ¿y?','Sigue, sigue.']},
+  regateador:{good:['Eso suma puntos.','Ahora sí hablamos.'],bad:['Con eso no vale tanto.','Me estás subiendo el precio con cuentos.'],ok:['Mmm.','Puede ser.']},
+  nostalgico:{good:['Me recordaste a mi infancia.','Esas cosas ya no se hacen.','Se me piantó un lagrimón.'],bad:['Le falta alma a esa historia.','Esperaba más recuerdos.'],ok:['Qué tiempos aquellos.','Ay, sí.']},
+  influencer:{good:['Esto se va a hacer viral 📈','Mis seguidores van a enloquecer 🤩','¡Es tan estético! ✨'],bad:['Nah, eso es cringe 😬','No da para un post 😕'],ok:['Mmm ok 💭','Interesante 👀']},
+  conspiranoico:{good:['Esto es más grande de lo que parece.','Ahora todo encaja.'],bad:['Eso es lo que quieren que creamos.','Demasiado oficial, no me fío.'],ok:['Mmm, sigue.','Anotado en mi libreta.']},
+  abuelita:{good:['Qué chico tan educado.','Me recuerdas a mi nieto.','Ay, qué amor.'],bad:['Ay, no me hables así.','Uy, no entiendo esas cosas.'],ok:['Sí, sí, te escucho.','Qué cosa, ¿no?']},
+  revendedor:{good:['Con eso lo puedo revender.','Buen margen, me gusta.'],bad:['Así no me sirve.','No le saco ganancia.'],ok:['Ok.','Sigue.']},
+  poeta:{good:['Qué versos tiene ese objeto.','Me inspiraste un poema.'],bad:['Le falta poesía.','Prosa muy fría.'],ok:['Mmm…','Sigue, que te escucho.']},
+  detective:{good:['Coincide con lo que investigué.','Los detalles cuadran.'],bad:['Hay algo que no encaja.','Eso no coincide con el anuncio.'],ok:['Anotado.','Continúa.']},
+  fan:{good:['¡¡Necesito esto en mi vida!!','¡Me muero!'],bad:['Ay, no sé si es auténtico…','Eso me bajó el entusiasmo.'],ok:['¡Cuéntame más!','¿Y qué más?']},
+  bromista:{good:['Jaja, me caes bien.','Eres un crack.'],bad:['Uy, qué serio todo.','Aburrido, aburrido.'],ok:['Jaja ok.','Dale, sigue.']},
+  turista:{good:['Very nice! Muy bonito.','Me gusta mucho!'],bad:['No entiendo bien…','Hmm, not sure.'],ok:['Ok, ok.','Sí, sí.']},
+  tikismikis:{good:['Bien escrito, así da gusto.','Clarísimo.'],bad:['Revisa la redacción.','Eso está mal escrito.'],ok:['Correcto.','Entiendo.']},
+  decidido:{good:['¡Perfecto!','Me sirve.'],bad:['No, así no.','No me gusta.'],ok:['Ok.','Dale.']}};
+for(const k in VMORE){if(!VOICE[k])VOICE[k]={good:[],bad:[],ok:[]};for(const t of ['good','bad','ok'])VOICE[k][t]=[...new Set([...(VOICE[k][t]||[]),...VMORE[k][t]])]}
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
