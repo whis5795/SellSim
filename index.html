@@ -1190,6 +1190,23 @@ body.helper{background:var(--bg)}
 .bs-pinx{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:#F1F3F4;color:#5F6368;font-size:14px;cursor:pointer;line-height:1}
 .bs-pinhint{font-size:13px;color:#70757A;margin:0}
 .bs-pinr{margin-left:8px;border:1px solid #DADCE0;background:#fff;color:#5F6368;border-radius:999px;padding:2px 9px;font:600 11.5px inherit;cursor:pointer;vertical-align:middle}.bs-pinr.on{border-color:#2B50E8;color:#2B50E8}
+
+.hw-bar{display:flex;gap:6px;align-items:center;padding:8px 10px;background:var(--chrome);border-bottom:1px solid var(--line)}
+.hw-bar input{flex:1;min-width:0;font:15px inherit;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.hw-bar .hp-back:disabled{opacity:.35}
+.hw-note{margin:0;padding:8px 14px;font-size:13px;font-weight:700;background:#FFF3CF;color:#5A3D00;border-bottom:1px solid #F2C14E}
+.hw-scroll{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;background:var(--surface);-webkit-overflow-scrolling:touch}
+.hw-page{min-height:100%}
+.hw-busy{position:sticky;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--cobalt),transparent);background-size:200% 100%;animation:hwLoad 1s linear infinite}@keyframes hwLoad{to{background-position:-200% 0}}
+.hw-tap{opacity:.55;transform:scale(.97)}
+.hw-ed{position:fixed;inset:0;z-index:115;background:rgba(3,5,12,.6);display:flex;align-items:flex-end;justify-content:center;animation:phIn .2s}
+.hw-edb{width:100%;max-width:560px;max-height:calc(var(--vvh,100vh) - 20px);overflow-y:auto;box-sizing:border-box;background:var(--surface);border-radius:22px 22px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;animation:phUp .3s cubic-bezier(.2,1.2,.4,1)}
+.hw-edh{display:flex;gap:10px;align-items:center}.hw-edh b{font-size:17px}
+.hw-edi{display:flex;gap:10px;align-items:center;background:var(--surface-2);border-radius:14px;padding:8px 10px}.hw-edi small{display:block;color:var(--muted);font-size:12px}
+.hw-lab{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:13px;min-width:0}
+.hw-lab textarea{width:100%;box-sizing:border-box;font:inherit;font-weight:400;font-size:15px;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);resize:vertical}
+.hw-score{display:flex;gap:8px;align-items:center}.hw-score .minibar{flex:1}
+.hw-price{display:flex;align-items:center;gap:6px}.hw-price span{font:800 18px 'JetBrains Mono',monospace}.hw-price input{flex:1;min-width:0;box-sizing:border-box;font:800 18px 'JetBrains Mono',monospace;padding:9px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -3852,7 +3869,8 @@ document.addEventListener('click',e=>{
 
 /* ================= COCINA: RECETAS Y MINIJUEGOS ================= */
 let CK=null;
-const have=(k)=>(S.pantry||{})[k]||0;
+const doorIng=k=>(S.door||[]).filter(p=>p.ing===k).length*((ING[k]||{}).pack||0);
+const have=(k)=>((S.pantry||{})[k]||0)+doorIng(k);
 const canCook=r=>Object.entries(r.need).every(([k,n])=>have(k)>=n);
 function openCook(){CK=null;$('#cook').hidden=false;renderBook()}
 function closeCook(){KS.stopAll();CK=null;$('#cook').hidden=true;roomKey='';renderRoom()}
@@ -3867,6 +3885,8 @@ function renderBook(){
 }
 function startRecipe(id){
   const r=RECIPES.find(x=>x.id===id);if(!r||!canCook(r))return;
+  // si los ingredientes siguen en la puerta, se guardan solos en la despensa al cocinar
+  for(const k of Object.keys(r.need)){const ps=S.door.filter(p=>p.ing===k);for(const p of ps){S.pantry[k]=(S.pantry[k]||0)+ING[k].pack}S.door=S.door.filter(p=>p.ing!==k)}
   for(const [k,n] of Object.entries(r.need))S.pantry[k]-=n;save();
   CK={r,t0:performance.now(),q:100};$('#ck-title').textContent=r.n;
   GAMES[r.game](r);
@@ -4911,7 +4931,7 @@ const _hostPush4=hostPush;
 hostPush=function(force){const ps=friendList();if(!ps.length)return;
   const shop=ps.some(p=>p.perm)?{
     food:FOOD.map(F=>({id:F.id,n:F.name,i:F.icon,k:F.kind,p:cupPrice(foodHost(F),F.price),fo:F.food,dr:F.drink,eta:foodEta(F)})),
-    ing:S.stove?Object.entries(ING).map(([k,g])=>({id:k,n:g.n,i:g.i,p:cupPrice('superpronto.com',g.price),pk:g.pack,have:(S.pantry||{})[k]||0})):[],
+    ing:S.stove?Object.entries(ING).map(([k,g])=>({id:k,n:g.n,i:g.i,p:cupPrice('superpronto.com',g.price),pk:g.pack,have:((S.pantry||{})[k]||0)+(S.door||[]).filter(p=>p.ing===k).length*g.pack+S.deliveries.filter(d=>d.ing===k).length*g.pack})):[],
     items:allListings().filter(l=>!l.bought&&l.exp>S.t).slice(0,30).map(l=>({id:l.id,n:l.name,i:l.icon,p:l.price,q:l.qty||1,left:Math.max(0,l.exp-S.t)})),
     food$:{food:Math.round(S.food),drink:Math.round(S.drink),fridge:!!S.fridge}}:null;
   for(const p of ps){p._shop=p.perm?shop:null}
@@ -4941,7 +4961,7 @@ hpWire=function(pc){_hpWire4(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=
 const _hpRender4=hpRender;
 hpRender=async function(soft){
   if(!(HP.stage==='live'&&HP.cur==null&&HB.view&&HB.perm&&HB.shop)){await _hpRender4(soft);
-    const st=$('#hp .hp-stats');if(st&&HP.stage==='live'&&HP.cur==null&&!st.querySelector('.hp-shopbtn'))st.insertAdjacentHTML('afterend',HB.perm?`<button class="hp-btn hp-shopbtn" data-act="hb-open">🛒 Comprar y publicar para tu amigo · tiene $${HB.money}</button>`:'<p class="hp-small">🔒 Tu amigo no te dio permiso para comprar ni publicar. Puede dártelo en su partida (ventana de amigos).</p>');return}
+    const st=$('#hp .hp-stats');if(st&&HP.stage==='live'&&HP.cur==null&&!$('#hp .hp-shopbtn'))st.insertAdjacentHTML('afterend',`<button class="hp-btn hp-shopbtn" data-act="hw-open">🌐 Abrir el navegador de tu amigo · tiene $${HB.money}</button>`+(HB.perm?'':'<p class="hp-small">🔒 Puedes mirar las páginas, pero para comprar o publicar tu amigo tiene que darte permiso (ventana de amigos).</p>'));return}
   const s=HB.shop,el=$('#hp');const keepScroll=$('#hb-list')?$('#hb-list').scrollTop:0;
   const tabs=[['food','🍔 Comida'],['ing','🥕 Ingredientes'],['items','🏷️ Ofertas'],['pub','📦 Publicar']];
   const row=(k,x)=>{const can=HB.money>=x.p;
@@ -4978,7 +4998,7 @@ hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
   const say=o=>{try{peer.ch.send(JSON.stringify(o))}catch(e){}};
   if(!hasF('phone'))return say({t:'err',msg:'Tu amigo ya no tiene teléfono móvil.'});
   if(!peer.perm)return say({t:'err',msg:'Tu amigo no te dio permiso para publicar.'});
-  const it=S.inv.find(i=>i.id==m.id&&!i.listed&&!i.assigned);if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
+  const it=S.inv.find(i=>i.id==m.id&&!i.assigned&&(m.t==='publish'||!i.listed||true));if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
   if(m.t==='story'){
     if(!S.botSub)return say({t:'err',msg:'Tu amigo no tiene Cuentero.ai.'});
     const c=catEntry(it);let best=null;
@@ -5124,6 +5144,134 @@ hpRender=async function(soft){
 };
 // al cerrar el teclado, dibujar lo que haya quedado pendiente
 document.addEventListener('focusout',e=>{if(!$('#hp')||!$('#hp').contains(e.target))return;setTimeout(()=>{if(!typingIn()&&HX.pendingFull){HX.pendingFull=false;hpRender(true)}},150)});
+
+/* ================= NAVEGADOR DEL AYUDANTE: las mismas páginas web que el anfitrión ================= */
+// El anfitrión dibuja la página con su partida y se la manda; los toques del amigo se ejecutan en la partida del anfitrión.
+const WEB_SAFE=new Set(['buy','buy-all','order','order-ing','buy-furn','buy-stove','buy-fridge','buy-drone','pay','loan','hire','fire','bot-sub','bot-pro','bot-ask','bot-crazy','bot-pro-ask','unassign','pin-res','pin-del','em-sel','em-pick','em-all','em-strat','em-assign','em-unassign','sv','cup-close']);
+function remoteRun(url,fn){
+  const real=S.tab,tab={id:'__rw',url,back:[],fwd:[],title:'',host:parseUrl(url).host};S.tabs.push(tab);S.tab='__rw';
+  const rp=renderPage,rc=renderChrome,gg=go,tt=toast,notes=[];let out;
+  renderPage=()=>{};renderChrome=()=>{};go=u=>{tab.url=u};toast=(t)=>{notes.push(String(t))};
+  try{out=fn(tab)}catch(e){console.warn(e)}
+  finally{S.tabs=S.tabs.filter(x=>x!==tab);S.tab=real;renderPage=rp;renderChrome=rc;go=gg;toast=tt}
+  return {tab,notes,out}}
+function webPage(url){const r=remoteRun(url,tab=>route(tab.url)).out||{title:'Error',cls:'',html:'<p>No se pudo abrir.</p>'};
+  return {url,title:r.title||url,cls:r.cls||'',host:r.host||parseUrl(url).host,html:r.html,st:S.t}}
+const _hostOnMsgW=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  const say=o=>{try{peer.ch.send(JSON.stringify(o))}catch(e){}};
+  if(m.t==='web'){if(!hasF('phone'))return say({t:'err',msg:'Tu amigo ya no tiene teléfono móvil.'});
+    if(isOffline()&&!ESSENTIAL.includes(parseUrl(m.url).host))return say(Object.assign({t:'page'},webPage('cuentasclaras.com'),{note:'Tu amigo no tiene internet: solo abren las páginas esenciales.'}));
+    return say(Object.assign({t:'page'},webPage(String(m.url||'buscalo.com'))))}
+  if(m.t==='webact'){
+    if(!hasF('phone'))return say({t:'err',msg:'Tu amigo ya no tiene teléfono móvil.'});
+    const url=String(m.url||'buscalo.com');let notes=[],next=url;
+    if(m.form==='bot-form'||WEB_SAFE.has(m.act)){
+      if(!peer.perm)return say(Object.assign({t:'page'},webPage(url),{note:'🔒 Tu amigo no te dio permiso para comprar ni publicar. Puede dártelo en su ventana de amigos.'}));
+      const m0=S.money;
+      const r=remoteRun(url,tab=>{
+        if(m.form==='bot-form'){botAsk(String(m.value||'').slice(0,200));return}
+        const b=document.createElement('button');for(const [k,v] of Object.entries(m.ds||{}))if(/^[a-z][a-zA-Z0-9]*$/.test(k))b.dataset[k]=String(v);b.hidden=true;document.body.appendChild(b);b.click();b.remove()});
+      notes=r.notes;next=r.tab.url;const spent=Math.round((m0-S.money)*100)/100;
+      if(spent>0){peer.spent=(peer.spent||0)+spent;tt0(`🛒 ${peer.name}: ${notes[0]||'gastó '+money(spent)}`)}
+      else if(notes[0])tt0(`📲 ${peer.name}: ${notes[0]}`);
+      dirty=true;save();try{renderPage(true)}catch(e){}hostPush(true)}
+    else return say(Object.assign({t:'page'},webPage(url),{note:'Eso solo lo puede hacer tu amigo desde su partida.'}));
+    return say(Object.assign({t:'page'},webPage(next),{note:notes.join(' · ')}))}
+  if(m.t==='itemd'){const it=m.name?S.inv.find(i=>i.name===m.name&&!i.listed&&!i.assigned):S.inv.find(i=>i.id==m.id);
+    if(!it)return say({t:'err',msg:'Ese objeto ya no está disponible.'});
+    return say({t:'itemd',id:it.id,n:it.name,i:it.icon,g:it.g,base:it.base,paid:it.paid,listed:!!it.listed,sug:Math.max(it.paid+1,niceRound(maxWilling(Object.assign({},it,{score:.6}))*.8)),bot:!!S.botSub,pro:!!S.botPro,story:m.story||(it.listed?it.story:''),price:it.listed?it.price:0})}
+  return _hostOnMsgW(peer,raw)};
+const tt0=(t)=>toast(t,'good');
+
+/* ---------- celular del amigo ---------- */
+const HW={on:false,url:'buscalo.com',page:null,back:[],note:'',busy:false,ed:null};
+function hwGo(url,push=true){if(!HP.ch)return;if(push&&HW.page&&HW.page.url!==url)HW.back.push(HW.page.url);HW.url=url;HW.busy=true;HW.scroll=0;HP.ch.send(JSON.stringify({t:'web',url}));hwRender()}
+function hwOpen(){HW.on=true;hwGo(HW.url,false)}
+function hwRender(){const el=$('#hp');if(!el||!HW.on)return;
+  const sc=$('#hw-scroll');const keep=sc&&HW.page&&sc.dataset.url===HW.page.url?sc.scrollTop:HW.scroll||0;
+  const p=HW.page;
+  el.innerHTML=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-clock"></span><span class="hp-role">💳 $${HB.money!=null?HB.money:'—'}</span></header>
+  <form class="hw-bar" data-hp="hw-addr"><button type="button" class="hp-back" data-act="hw-close" aria-label="Volver a los chats">✕</button><button type="button" class="hp-back" data-act="hw-back" aria-label="Atrás" ${HW.back.length?'':'disabled'}>‹</button>
+    <input id="hw-addr" value="${esc(p?p.url:HW.url)}" autocomplete="off" spellcheck="false" aria-label="Dirección o búsqueda"><button type="button" class="hp-back" data-act="hw-reload" aria-label="Recargar">⟳</button></form>
+  ${HW.note?`<p class="hw-note">${esc(HW.note)}</p>`:''}
+  <div class="hw-scroll" id="hw-scroll" data-url="${esc(p?p.url:'')}">${p?`<div class="page site-${esc(p.cls)} hw-page" id="hw-page">${p.html}</div>`:'<p class="hp-empty">Cargando…</p>'}${HW.busy&&p?'<div class="hw-busy"></div>':''}</div>
+  ${HW.ed?hwEditorHTML():''}`;
+  const s2=$('#hw-scroll');if(s2)s2.scrollTop=keep;
+  // las páginas tienen temporizadores y campos que el amigo no debería ver congelados
+  el.querySelectorAll('#hw-page input:not([type=search]):not([type=range]),#hw-page textarea').forEach(x=>{if(x.id!=='bs-q'&&x.id!=='bot-in')x.disabled=true});
+  HW.tAt=Date.now();hwTimers();
+  if(HW.ed)hwEdScore()}
+// los temporizadores de las ofertas siguen corriendo en el celular del amigo
+function hwTimers(){const p=HW.page;if(!p||p.st==null)return;const now=p.st+Math.floor((Date.now()-(HW.tAt||Date.now()))/1000);
+  document.querySelectorAll('#hw-page [data-exp]').forEach(el=>{const left=Math.max(0,+el.dataset.exp-now),life=+el.dataset.life||1;const t=el.querySelector('.t');if(t)t.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;const bar=el.querySelector('i');if(bar)bar.style.width=(left/life*100)+'%';el.classList.toggle('urgent',left<12)})}
+setInterval(()=>{if(HW.on)hwTimers()},1000);
+// recibir páginas
+const _hpWireW=hpWire;
+hpWire=function(pc){_hpWireW(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=>{prev(e);const ch=e.channel,on=ch.onmessage;ch.onmessage=ev=>{let skip=false;try{const m=JSON.parse(ev.data);
+  if(m.t==='page'){const same=HW.page&&HW.page.url===m.url&&HW.page.html===m.html;HW.page=m;HW.url=m.url;HW.busy=false;if(m.note)HW.note=m.note;else if(!same)HW.note='';
+    if(HW.on&&!(same&&!m.note)&&!(document.activeElement&&/hw-addr|hwe-/.test(document.activeElement.id||'')))hwRender();skip=true}
+  if(m.t==='itemd'){HW.ed=Object.assign({},m,{story:m.story||'',price:m.price||m.sug});hwRender();skip=true}
+  if(m.t==='story'&&HW.ed&&HW.ed.id==m.id){HW.ed.story=m.text;const ta=$('#hwe-story');if(ta){ta.value=m.text;ta.classList.remove('hd-pop');void ta.offsetWidth;ta.classList.add('hd-pop')}hwEdScore();hpToast(m.pro?'★ Historia Pro lista':'✍️ Historia lista');skip=true}
+  if(m.t==='published'&&HW.ed){HW.ed=null;hpToast(`📦 Publicaste ${m.n} · gancho ${m.score} %`);if(HW.on)hwGo(HW.url,false);skip=true}
+  if(m.t==='err'&&HW.on){HW.note=m.msg;HW.busy=false;hwRender();skip=true}}catch(x){}if(!skip)on(ev)}}};
+// refrescar la página abierta cada pocos segundos (precios, temporizadores, mensajes)
+setInterval(()=>{if(HW.on&&HP.ch&&HP.ch.readyState==='open'&&!HW.busy&&!HW.ed&&!(document.activeElement&&/^(hw-addr|bs-q|bot-in)$/.test(document.activeElement.id||'')))HP.ch.send(JSON.stringify({t:'web',url:HW.url}))},3000);
+// mientras el navegador está abierto, mostrarlo en vez de los chats
+const _hpRenderW2=hpRender;
+hpRender=async function(soft){if(HW.on&&HP.stage==='live'){if(!soft)hwRender();return}
+  // conservar el scroll de todas las listas del modo ayudante
+  const keys=['.hp-list','.hp-main','.hb-list','.hp-found'];const view=[HP.stage,HP.cur,HB.view,HB.tab].join('|');const pos={};
+  if(view===HW.lastView)for(const k of keys){const x=document.querySelector('#hp '+k);if(x)pos[k]=x.scrollTop}
+  const winY=window.scrollY;
+  await _hpRenderW2(soft);HW.lastView=view;
+  for(const k in pos){const x=document.querySelector('#hp '+k);if(x)x.scrollTop=pos[k]}
+  if(winY)window.scrollTo(0,winY)};
+// toques dentro de la página: se mandan a la partida del anfitrión
+document.addEventListener('click',e=>{if(!HW.on)return;const pg=e.target.closest('#hw-page');
+  const t=e.target.closest('[data-act]');
+  if(!pg){if(!t)return;const a=t.dataset.act;
+    if(a==='hw-close'){HW.on=false;HW.ed=null;hpRender()}
+    if(a==='hw-back'&&HW.back.length)hwGo(HW.back.pop(),false);
+    if(a==='hw-reload')hwGo(HW.url,false);
+    return}
+  e.preventDefault();e.stopImmediatePropagation();
+  const g=e.target.closest('[data-go]');if(g&&(!t||g.contains(t))){hwGo(g.dataset.go);return}
+  if(!t)return;const a=t.dataset.act,ds=Object.assign({},t.dataset);
+  if(a==='open-chat'){HW.on=false;HP.cur=+ds.id||ds.id;hpRender();return}
+  if(a==='edit'){HP.ch.send(JSON.stringify({t:'itemd',id:+ds.id}));return}
+  if(a==='bot-use'){HP.ch.send(JSON.stringify({t:'itemd',name:ds.item,story:ds.story}));return}
+  if(t.disabled)return;HW.busy=true;HW.note='';const sc=$('#hw-scroll');HW.scroll=sc?sc.scrollTop:0;
+  HP.ch.send(JSON.stringify({t:'webact',url:HW.url,act:a,ds}));t.classList.add('hw-tap')},true);
+document.addEventListener('submit',e=>{if(!HW.on)return;const f=e.target;
+  if(f.dataset.hp==='hw-addr'){e.preventDefault();e.stopImmediatePropagation();const v=$('#hw-addr').value.trim();if(!v)return;const p=parseUrl(v);
+    hwGo(/^[a-z0-9-]+\.[a-z.]{2,}$/.test(p.host)&&!/\s/.test(v)?v.toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,''):'buscalo.com/buscar?q='+encodeURIComponent(v));$('#hw-addr').blur();return}
+  if(!f.closest('#hw-page'))return;e.preventDefault();e.stopImmediatePropagation();
+  if(f.id==='bs-form'){const q=(f.querySelector('#bs-q')||{}).value||'';if(q.trim())hwGo('buscalo.com/buscar?q='+encodeURIComponent(q.trim()));return}
+  if(f.id==='bot-form'){const v=(f.querySelector('#bot-in')||{}).value||'';if(v.trim()){HW.busy=true;HP.ch.send(JSON.stringify({t:'webact',url:HW.url,form:'bot-form',value:v.trim()}))}}},true);
+
+/* ---- editor de anuncios del amigo (como el del anfitrión) ---- */
+function hwEditorHTML(){const d=HW.ed;return `<div class="hw-ed"><div class="hw-edb">
+  <div class="hw-edh"><button class="hp-back" data-act="hwe-close" aria-label="Cerrar">✕</button><b>${d.listed?'Editar anuncio':'Publicar en Bazarito'}</b></div>
+  <div class="hw-edi"><span class="hb-ic">${d.i}</span><div><b>${esc(d.n)}</b><small>Pagó $${d.paid} · sugerido ~$${d.sug}</small></div></div>
+  <label class="hw-lab">Historia<textarea id="hwe-story" rows="6" maxlength="700" placeholder="Cuenta su historia: de quién fue, de qué año, qué le pasó…">${esc(d.story)}</textarea></label>
+  <div class="hw-score"><span class="minibar"><i id="hwe-bar"></i></span><b id="hwe-pct">0 %</b></div><p class="hp-small" id="hwe-tip"></p>
+  ${d.bot?`<div class="hd-bot"><button class="hp-qrb ph" data-act="hwe-bot">${d.pro?'★ Historia Pro':'✍️ Pedir historia al bot'}</button><button class="hp-qrb" data-act="hwe-bot" data-crazy="1">🤪 Una más loca</button></div>`:'<p class="hp-small">Tu amigo no tiene Cuentero.ai: escríbela tú. Fechas, nombres y detalles suman.</p>'}
+  <label class="hw-lab">Precio<div class="hw-price"><span>$</span><input id="hwe-price" type="number" inputmode="numeric" min="1" value="${d.price}"></div></label><p class="hp-small" id="hwe-est"></p>
+  <button class="hp-btn" data-act="hwe-pub">${d.listed?'Guardar':'Publicar anuncio'}</button></div></div>`}
+function hwEdScore(){const d=HW.ed,ta=$('#hwe-story');if(!d||!ta)return;d.story=ta.value;d.price=+($('#hwe-price')||{}).value||d.price;
+  try{if(typeof S==='undefined'||!S)window.__hpS=true;const fake=!S;if(fake)S={lexUse:{}};const it={name:d.n,g:d.g,base:d.base,paid:d.paid};const r=storyScore(d.story,it);const sc=Math.round(r.score*100);
+    if(fake)S=undefined;
+    $('#hwe-bar').style.width=sc+'%';$('#hwe-bar').style.background=convColor(sc);$('#hwe-pct').textContent=sc+' %';
+    $('#hwe-tip').textContent=d.story.length<10?'Escribe al menos una oración.':sc<40?'Agrega fechas, nombres de personas y lugares.':sc<70?'Va bien: un detalle más lo hace creíble.':'¡Historia con mucho gancho!';
+    const m=d.base*(1+r.score*(d.base<60?8:d.base<300?4:d.base<1500?2.6:1.8));$('#hwe-est').textContent=`Con esta historia, los clientes pagarían hasta ~$${Math.round(m)}.${d.price>m*2.2?' ⚠️ Muy caro: nadie preguntará.':''}`}catch(e){}}
+document.addEventListener('input',e=>{if(/^hwe-/.test(e.target.id||''))hwEdScore()});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t||!HW.ed)return;const a=t.dataset.act;
+  if(a==='hwe-close'){HW.ed=null;hwRender()}
+  if(a==='hwe-bot'&&HP.ch){HP.ch.send(JSON.stringify({t:'story',id:HW.ed.id,crazy:!!t.dataset.crazy}));t.textContent='Escribiendo…'}
+  if(a==='hwe-pub'&&HP.ch){hwEdScore();HP.ch.send(JSON.stringify({t:'publish',id:HW.ed.id,story:HW.ed.story,price:HW.ed.price}));t.disabled=true;t.textContent='Publicando…'}});
+// el botón de la pantalla de chats abre el navegador
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hb-open"],[data-act="hw-open"]');if(!t)return;e.stopImmediatePropagation();hwOpen()},true);
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
