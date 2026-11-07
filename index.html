@@ -219,7 +219,7 @@ input.field.price{font:700 18px var(--f-mono)}
 .sum-line{font-size:13px;font-weight:600;padding:8px 10px;border-radius:10px}
 .sum-line.ok{background:var(--good-soft);color:var(--good)}.sum-line.bad{background:var(--bad-soft);color:var(--bad)}
 .row-acts{display:flex;gap:8px;flex-wrap:wrap}
-.toasts{position:fixed;left:0;right:0;top:calc(92px + env(safe-area-inset-top,0px));z-index:70;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 16px}
+.toasts{position:fixed;left:0;right:0;top:calc(92px + env(safe-area-inset-top,0px));z-index:80;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 16px}
 .toast{background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-weight:600;font-size:14px;max-width:440px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:pop .25s ease-out}
 .toast.good{background:var(--good);color:#fff}
 @keyframes pop{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
@@ -578,7 +578,50 @@ input.field.price{font:700 18px var(--f-mono)}
 .bk-btn{background:var(--bk-b);color:#fff;font-weight:700;border-radius:10px;padding:10px 18px}
 .bk-fine{margin:0;font-size:12px;opacity:.7}
 
-@media (max-width:420px){.tb-stats{width:118px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
+/* ---------- menú principal y partidas ---------- */
+.menu{position:fixed;inset:0;z-index:85;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:radial-gradient(circle at 20% 15%,rgba(255,197,49,.35),transparent 40%),radial-gradient(circle at 85% 90%,rgba(242,84,45,.35),transparent 45%),linear-gradient(160deg,#1A2A8C,#2645F2 55%,#0E1650);color:#fff}
+.menu-box{width:100%;max-width:440px;display:flex;flex-direction:column;gap:14px;animation:pop .35s ease-out}
+.menu-logo{font:800 clamp(44px,13vw,64px)/.9 var(--f-display);letter-spacing:-.05em;text-wrap:balance}
+.menu-logo span{display:inline-block;background:#FFC531;color:#2A1E00;padding:0 .15em;border-radius:.12em;transform:rotate(-3deg)}
+.menu-tag{margin:0 0 8px;opacity:.85;font-size:15px}
+.menu-body{display:flex;flex-direction:column;gap:10px}
+.mbig{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px 16px;border-radius:14px;background:#FFC531;color:#2A1E00;box-shadow:0 4px 0 rgba(0,0,0,.25);transition:transform .12s}
+.mbig:hover{transform:translateY(-2px)}.mbig:active{transform:translateY(1px)}
+.mbig b{font:800 19px var(--f-display)}.mbig span{font-size:13px;opacity:.8}
+.mbig.alt{background:rgba(255,255,255,.12);color:#fff;box-shadow:none;border:1.5px solid rgba(255,255,255,.25)}
+.mlink{color:#fff;opacity:.85;text-decoration:underline;font-size:14px;align-self:flex-start;padding:4px 0}
+.mhint{margin:0;font-size:14px;opacity:.85}.mhint.err{color:#FFD0C8}
+.slots{display:flex;flex-direction:column;gap:8px}
+.slot{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.slot.cur{border-color:#FFC531}.slot.empty{border-style:dashed}.slot.confirm{background:rgba(211,52,63,.25);border-color:#FF8A8A}
+.slot-n{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.75;font-weight:700}
+.slot b{font:800 17px var(--f-display)}.slot-meta{font-size:12px;opacity:.75}
+.slot-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.mbtn{background:#FFC531;color:#2A1E00;font-weight:700;font-size:13px;padding:7px 12px;border-radius:9px}
+.mbtn.ghost{background:rgba(255,255,255,.14);color:#fff}.mbtn.danger{background:#FF6B75;color:#fff}
+.mcode{width:100%;min-height:110px;border-radius:12px;border:0;padding:10px;font:12px var(--f-mono);background:rgba(0,0,0,.3);color:#fff;resize:vertical;word-break:break-all}
+/* ---------- tutorial guiado ---------- */
+#coach{position:fixed;inset:0;z-index:76;pointer-events:none}
+#coach.dim{background:rgba(8,10,22,.55)}
+.coach-spot{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(8,10,22,.55);transition:left .3s,top .3s,width .3s,height .3s;pointer-events:none}
+.coach-spot::after{content:"";position:absolute;inset:-4px;border-radius:14px;border:2.5px solid #FFC531;animation:ring 1.6s ease-out infinite}
+@keyframes ring{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
+.coach-card{position:fixed;pointer-events:auto;width:min(340px,calc(100vw - 24px));background:var(--surface);color:var(--ink);border-radius:16px;padding:14px 16px;box-shadow:0 20px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:8px;transition:left .3s,top .3s}
+.coach-card.below::before,.coach-card.above::before{content:"";position:absolute;left:var(--ax,50%);width:14px;height:14px;background:var(--surface);transform:translateX(-50%) rotate(45deg)}
+.coach-card.below::before{top:-7px}.coach-card.above::before{bottom:-7px}
+.coach-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.coach-step{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.coach-skip{font-size:12px;color:var(--muted);text-decoration:underline}
+.coach-card h3{margin:0;font:800 19px/1.15 var(--f-display);text-wrap:balance}
+.coach-card p{margin:0;font-size:14px;color:var(--muted)}
+.coach-acts{display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.coach-wait{font-size:12px;font-weight:700;color:var(--cobalt)}
+.coach-dots{display:flex;gap:4px}.coach-dots:empty{display:none}
+.coach-dots i{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}.coach-dots i.done{background:var(--good)}.coach-dots i.on{background:var(--cobalt)}
+.tb-end{font-size:12px}
+
+@media (max-width:420px){.tb-stats{width:96px;padding:6px 8px}.tb-stats>span{grid-template-columns:16px 1fr;gap:4px}.tb-stats .num{display:none}.taskbar{gap:6px}.tb-btn{width:36px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -598,6 +641,7 @@ input.field.price{font:700 18px var(--f-mono)}
   <button class="tb-stats" data-act="stats" aria-label="Comida, bebida y refrigerador"><span>🍔<span class="minibar"><i id="tb-food"></i></span><b class="num" id="tb-food-n">100</b></span><span>💧<span class="minibar"><i id="tb-drink"></i></span><b class="num" id="tb-drink-n">100</b></span></button>
   <button class="tb-btn" data-act="msgs" aria-label="Mensajes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="tb-badge" id="tb-badge" hidden>0</span><span class="tb-badge" id="tb-bills" hidden style="left:-4px;right:auto;background:var(--warn)">$</span></button>
   <button class="tb-end" id="tb-end" data-act="end-day">Terminar día</button>
+  <button class="tb-btn" id="tb-menu" data-act="menu" aria-label="Menú y partidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </footer>
 
 <button class="mini" id="mini" data-act="mini" hidden></button>
@@ -671,12 +715,8 @@ input.field.price{font:700 18px var(--f-mono)}
 </section>
 
 <section class="sheet" id="stats" hidden>
-  <div class="sh-head gut"><button class="back" data-act="stats-close" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Tu estado</b><span>Comida, bebida, refrigerador y ajustes</span></div></div>
+  <div class="sh-head gut"><button class="back" data-act="stats-close" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Tu estado</b><span>Comida, bebida, refrigerador y clientes</span></div></div>
   <div class="sh-body"><div class="sh-in gut"><div id="stats-body" style="display:flex;flex-direction:column;gap:14px"></div>
-    <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px">
-      <button class="btn ghost sm" data-act="reset" style="align-self:flex-start">Nueva partida</button>
-      <div id="reset-confirm" class="row-acts" hidden><span class="tip">¿Borrar todo y empezar de cero?</span><button class="btn sm danger" data-act="reset-yes">Sí, borrar</button><button class="btn sm ghost" data-act="reset-no">Cancelar</button></div>
-    </div>
   </div></div>
 </section>
 
@@ -691,21 +731,21 @@ input.field.price{font:700 18px var(--f-mono)}
   <div class="dt-txt"><div id="dt-a"></div><div id="dt-z">Z z z</div><div id="dt-b"></div></div>
 </div>
 
-<div class="overlay" id="intro" hidden><div class="box">
-  <div id="intro-1" style="display:flex;flex-direction:column;gap:12px">
-    <span class="eyebrow">Tutorial · 1 de 2</span><h1>Lo Vendo Caro</h1>
-    <p>Empiezas con $20 y una computadora. Compras cosas baratas, les inventas una historia y las revendes caras convenciendo a los clientes por chat.</p>
-    <ol><li>Los clientes entienden lo que escribes: responde sus preguntas, sé coherente con tu anuncio y no inventes cosas nuevas.</li><li>Las faltas, la mala educación y la desesperación bajan su confianza.</li><li>Puedes regatear, mandar fotos y cobrar la mitad al cerrar el trato; el resto llega con el envío.</li><li>Tú decides cuándo termina el día.</li></ol>
-    <button class="btn" data-act="intro-next">Siguiente</button>
-  </div>
-  <div id="intro-2" hidden style="display:flex;flex-direction:column;gap:12px">
-    <span class="eyebrow">Tutorial · 2 de 2</span><h2>Dos páginas para empezar</h2>
-    <div class="site-card"><span class="fav" style="background:#F2542D">B</span><div><b>bazarito.com</b><span>Compras ofertas relámpago y publicas lo que quieres revender.</span></div></div>
-    <div class="site-card"><span class="fav" style="background:#E63946">C</span><div><b>comeya.com</b><span>Comida rápida barata. Tienes que comer y beber para poder trabajar.</span></div></div>
-    <p>Todo lo demás (trabajos, empleados, historias, facturas, banco, supermercado…) lo encuentras buscando en el navegador.</p>
-    <button class="btn" data-act="start">Empezar</button>
-  </div>
+<div class="menu" id="menu" hidden><div class="menu-box">
+  <div class="menu-logo">Lo Vendo <span>Caro</span></div>
+  <p class="menu-tag">Compra barato. Inventa una historia. Vende caro.</p>
+  <div id="menu-body" class="menu-body"></div>
 </div></div>
+
+<div id="coach" hidden>
+  <div class="coach-spot" id="coach-spot" hidden></div>
+  <div class="coach-card" id="coach-card" role="dialog" aria-live="polite">
+    <div class="coach-top"><span class="coach-step" id="coach-step"></span><button class="coach-skip" id="coach-skip" data-act="tut-skip">Saltar tutorial</button></div>
+    <h3 id="coach-title"></h3><p id="coach-text"></p>
+    <div class="coach-acts" id="coach-acts"></div>
+    <div class="coach-dots" id="coach-dots"></div>
+  </div>
+</div>
 
 <div id="fx" aria-hidden="true"></div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
@@ -1034,8 +1074,14 @@ function newGame(){
   const t={id:S.nextId++,url:'buscalo.com',back:[],fwd:[]};S.tabs.push(t);S.tab=t.id;
   return S;
 }
-function save(){try{localStorage.setItem('lvc-save-v3',JSON.stringify(S))}catch(e){}}
-function load(){try{const r=localStorage.getItem('lvc-save-v3');return r?JSON.parse(r):null}catch(e){return null}}
+/* partidas: tres ranuras en el navegador */
+let SLOT=1;
+function slotMeta(){try{return JSON.parse(localStorage.getItem('lvc-meta')||'{}')}catch(e){return {}}}
+function setMeta(m){try{localStorage.setItem('lvc-meta',JSON.stringify(m))}catch(e){}}
+function save(){if(!S)return;try{localStorage.setItem('lvc-slot-'+SLOT,JSON.stringify(S));const m=slotMeta();m.last=SLOT;m.slots=m.slots||{};m.slots[SLOT]={day:S.day,money:Math.round(S.money),sales:S.sales,at:Date.now()};setMeta(m)}catch(e){}}
+function readSlot(n){try{const r=localStorage.getItem('lvc-slot-'+n);return r?JSON.parse(r):null}catch(e){return null}}
+function deleteSlot(n){try{localStorage.removeItem('lvc-slot-'+n);const m=slotMeta();if(m.slots)delete m.slots[n];if(m.last==n){const k=Object.keys(m.slots||{});if(k.length)m.last=+k[0];else delete m.last}setMeta(m)}catch(e){}}
+function migrateOldSave(){try{const old=localStorage.getItem('lvc-save-v3');if(old&&!localStorage.getItem('lvc-slot-1')){const st=JSON.parse(old);localStorage.setItem('lvc-slot-1',old);const m=slotMeta();m.last=1;m.slots=m.slots||{};m.slots[1]={day:st.day,money:Math.round(st.money),sales:st.sales,at:Date.now()};setMeta(m)}localStorage.removeItem('lvc-save-v3')}catch(e){}}
 const night=()=>S.min>=23*60;
 const isOffline=()=>S.bills.some(b=>b.kind==='internet'&&b.due<S.day);
 const droneOn=()=>S.drone&&!S.bills.some(b=>b.kind==='drone'&&b.due<S.day);
@@ -1121,10 +1167,11 @@ function spawnBuyer(it){
   it.spawned++;
   const m=maxWilling(it);
   const offer=niceRound(Math.max(Math.min(it.price,m)*rand(.55,1.05),it.base*.6));
-  const pid=pick(Object.keys(PERSONAS)),P=PERSONAS[pid];
+  const tut=S.tutBuyer;S.tutBuyer=false;
+  const pid=tut?'amable':pick(Object.keys(PERSONAS)),P=PERSONAS[pid];
   const ratio=offer/it.base;
   const cheap=clamp(14-Math.log10(Math.max(offer,1))*7,0,10);
-  const conv=clamp(Math.round(48-(ratio-1)*6+it.score*10+P.start+cheap-(it.price>m*1.2?8:0)),6,62);
+  const conv=tut?55:clamp(Math.round(48-(ratio-1)*6+it.score*10+P.start+cheap-(it.price>m*1.2?8:0)),6,62);
   const city=pick(CITIES);
   const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:pid==='apurado'?ri(8,10):ri(11,14),city:city[0],dist:city[1],
     msgs:[],status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0};
@@ -1561,6 +1608,7 @@ function takeLoan(amount){
 
 /* ---------- reloj ---------- */
 function tick(){
+  if(!S||menuOpen()||!$('#daytx').hidden)return;
   S.t++;if(S.min<23*60+57)S.min+=3;
   const before=S.shop.length;
   S.shop=S.shop.filter(l=>l.exp>S.t);
@@ -1741,13 +1789,13 @@ function pageBuscalo(path){
   const logo=`<span class="bs-logo" data-go="buscalo.com">busca<span>lo</span></span>`;
   if(!q)return {title:'Buscalo',host:'buscalo.com',cls:'buscalo',html:`<div class="bs-home">${logo}
     <form class="bs-form" id="bs-form"><input id="bs-q" type="search" placeholder="Busca lo que necesites" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form>
-    <p class="bs-tip">Prueba con «comprar cosas», «comida rápida», «trabajo» o lo que se te ocurra.</p></div>`};
+</div>`};
   const res=search(q);
   return {title:`${q} - Buscalo`,host:'buscalo.com',cls:'buscalo',html:`<div class="bs-top">${logo}<form class="bs-form sm" id="bs-form"><input id="bs-q" type="search" value="${esc(q)}" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form></div>
   <div class="bs-results"><p class="bs-count">${res.length?`Cerca de ${res.length} resultado${res.length>1?'s':''} (0,${ri(10,60)} segundos)`:''}</p>
   ${res.length?res.map(s=>{const f=FAV[s.url];return `<article class="bs-res"><div class="bs-url"><span class="fav" style="background:${f[1]}">${f[0]}</span><span>${s.url}</span></div>
   <a href="#" data-go="${s.url}" class="bs-title">${esc(s.title)}</a><p>${esc(typeof s.snip==='function'?s.snip():s.snip)}</p></article>`}).join(''):
-  `<div class="bs-none"><h2>No encontramos nada para «${esc(q)}»</h2><p>Prueba con otras palabras: «vender», «empleados», «historias», «supermercado», «préstamo», «pagar facturas»…</p></div>`}</div>`};
+  `<div class="bs-none"><h2>No encontramos nada para «${esc(q)}»</h2><p>Prueba con otras palabras.</p></div>`}</div>`};
 }
 
 /* ---------- Bazarito ---------- */
@@ -2330,11 +2378,7 @@ document.addEventListener('click',e=>{
     case 'end-day':openNight();break;
     case 'sleep':endDay();break;
     case 'night-close':$('#night').hidden=true;break;
-    case 'start':S.seenIntro=true;$('#intro').hidden=true;save();break;
-    case 'intro-next':$('#intro-1').hidden=true;$('#intro-2').hidden=false;break;
-    case 'reset':$('#reset-confirm').hidden=false;break;
-    case 'reset-no':$('#reset-confirm').hidden=true;break;
-    case 'reset-yes':try{localStorage.removeItem('lvc-save-v3')}catch(err){}newGame();$('#stats').hidden=true;$('#reset-confirm').hidden=true;closeChat();$('#intro').hidden=false;$('#intro-1').hidden=false;$('#intro-2').hidden=true;renderTaskbar();renderPage(true);save();break;
+    case 'menu':openMenu('pause');break;
   }
 });
 document.addEventListener('submit',e=>{
@@ -2357,15 +2401,185 @@ $('#addr').addEventListener('focus',e=>e.target.select());
 
 /* ================= ARRANQUE ================= */
 function start(data){
-  S=(data&&data.S)||load()||newGame();
-  for(const b of S.buyers)if(b.typing){b.typing=false;b.waitingSince=S.t;b.msgs.forEach(m=>m.pending=false)}
-  if(S.cur!=null&&S.buyers.some(b=>b.id===S.cur))openChat(S.cur);else S.cur=null;
-  $('#intro').hidden=!!S.seenIntro;
-  renderTaskbar();renderPage(true);renderMini();
+  migrateOldSave();
+  if(data&&data.S){S=data.S;SLOT=data.SLOT||1;afterLoad();if(S.cur!=null&&S.buyers.some(b=>b.id===S.cur))openChat(S.cur)}
+  else{const m=slotMeta();S=(m.last&&readSlot(m.last))||newGame();SLOT=m.last||1;afterLoad();openMenu('title')}
   setInterval(tick,1000);
   initAI();
 }
-try{window.claude?.hot?.snapshot?.(()=>({S}))}catch(e){}
+
+/* ================= MENÚ Y PARTIDAS ================= */
+let menuMode='title',menuView='main',menuConfirm=null,menuMsg='';
+const fmtAgo=ts=>{const s=Math.round((Date.now()-ts)/1000);if(s<60)return 'hace un momento';const m=Math.round(s/60);if(m<60)return `hace ${m} min`;const h=Math.round(m/60);if(h<24)return `hace ${h} h`;return `hace ${Math.round(h/24)} d`};
+const menuOpen=()=>!$('#menu').hidden;
+function openMenu(mode){menuMode=mode;menuView='main';menuConfirm=null;menuMsg='';if(S&&mode==='pause')save();$('#menu').hidden=false;renderMenu()}
+function closeMenu(){$('#menu').hidden=true}
+function slotCard(n,purpose){
+  const m=(slotMeta().slots||{})[n];const cur=S&&SLOT===n&&menuMode==='pause';
+  const conf=menuConfirm&&menuConfirm.slot===n;
+  if(conf)return `<div class="slot confirm"><b>${menuConfirm.kind==='del'?'¿Borrar esta partida para siempre?':'¿Reemplazar esta partida por una nueva?'}</b><div class="slot-acts"><button class="mbtn danger" data-act="m-${menuConfirm.kind==='del'?'del-yes':'new-yes'}" data-id="${n}">Sí</button><button class="mbtn ghost" data-act="m-cancel">Cancelar</button></div></div>`;
+  if(!m)return `<div class="slot empty"><span class="slot-n">Ranura ${n}</span><b>Vacía</b>${purpose==='new'?`<button class="mbtn" data-act="m-new-slot" data-id="${n}">Empezar aquí</button>`:''}</div>`;
+  return `<div class="slot ${cur?'cur':''}"><span class="slot-n">Ranura ${n}${cur?' · en juego':''}</span><b>Día ${m.day} · <span class="num">${money(m.money)}</span></b><span class="slot-meta">${m.sales||0} ventas · guardada ${fmtAgo(m.at)}</span>
+    <div class="slot-acts">${purpose==='new'?`<button class="mbtn" data-act="m-new-slot" data-id="${n}">Reemplazar</button>`:`<button class="mbtn" data-act="m-load" data-id="${n}" ${cur?'disabled':''}>${cur?'Cargada':'Cargar'}</button>`}
+    <button class="mbtn ghost" data-act="m-export" data-id="${n}">Exportar</button><button class="mbtn ghost" data-act="m-del" data-id="${n}">Borrar</button></div></div>`;
+}
+function renderMenu(){
+  const meta=slotMeta();const last=meta.last&&(meta.slots||{})[meta.last];
+  let h='';
+  if(menuView==='main'){
+    if(menuMode==='title'){
+      h=`${last?`<button class="mbig" data-act="m-continue"><b>Continuar</b><span>Ranura ${meta.last} · Día ${last.day} · ${money(last.money)}</span></button>`:''}
+      <button class="mbig ${last?'alt':''}" data-act="m-view" data-id="new"><b>Nueva partida</b><span>Empiezas con $20 y un navegador</span></button>
+      ${Object.keys(meta.slots||{}).length?`<button class="mbig alt" data-act="m-view" data-id="load"><b>Cargar partida</b><span>${Object.keys(meta.slots).length} guardada${Object.keys(meta.slots).length>1?'s':''}</span></button>`:''}
+      <button class="mlink" data-act="m-view" data-id="import">Importar una partida con un código</button>`;
+    }else{
+      h=`<button class="mbig" data-act="m-resume"><b>Volver al juego</b><span>Ranura ${SLOT} · Día ${S.day}</span></button>
+      <button class="mbig alt" data-act="m-save"><b>Guardar ahora</b><span>${menuMsg||'El juego también guarda solo cada pocos segundos'}</span></button>
+      <button class="mbig alt" data-act="m-view" data-id="load"><b>Partidas</b><span>Cargar, exportar o borrar</span></button>
+      <button class="mbig alt" data-act="m-tut"><b>Repetir el tutorial</b><span>Un repaso guiado de lo básico</span></button>
+      <button class="mlink" data-act="m-title">Salir al menú principal</button>`;
+    }
+  }else if(menuView==='new'||menuView==='load'){
+    h=`<p class="mhint">${menuView==='new'?'Elige dónde guardar la nueva partida.':'Tus partidas guardadas en este navegador.'}</p>
+    <div class="slots">${[1,2,3].map(n=>slotCard(n,menuView)).join('')}</div>
+    ${menuView==='load'?'<button class="mlink" data-act="m-view" data-id="import">Importar una partida con un código</button>':''}
+    <button class="mlink" data-act="m-back">‹ Volver</button>`;
+  }else if(menuView==='export'){
+    h=`<p class="mhint">Copia este código y guárdalo donde quieras. Con él puedes recuperar la partida en otro navegador o dispositivo.</p>
+    <textarea class="mcode" id="m-code" readonly>${esc(menuMsg)}</textarea>
+    <div class="slot-acts"><button class="mbtn" data-act="m-copy">Copiar código</button><button class="mbtn ghost" data-act="m-view" data-id="load">‹ Volver</button></div><p class="mhint" id="m-copied"></p>`;
+  }else if(menuView==='import'){
+    h=`<p class="mhint">Pega el código de una partida exportada y elige la ranura donde guardarla.</p>
+    <textarea class="mcode" id="m-imp" placeholder="LVC1:…"></textarea>
+    <div class="slot-acts">${[1,2,3].map(n=>`<button class="mbtn ${(slotMeta().slots||{})[n]?'ghost':''}" data-act="m-import" data-id="${n}">Ranura ${n}${(slotMeta().slots||{})[n]?' (reemplaza)':''}</button>`).join('')}</div>
+    <p class="mhint err" id="m-imp-err">${menuMsg&&menuView==='import'?esc(menuMsg):''}</p>
+    <button class="mlink" data-act="m-back">‹ Volver</button>`;
+  }
+  $('#menu-body').innerHTML=h;
+}
+function afterLoad(){
+  for(const b of S.buyers)if(b.typing){b.typing=false;b.waitingSince=S.t;b.msgs.forEach(m=>m.pending=false)}
+  S.cur=null;$('#chat').hidden=true;$('#editor').hidden=true;$('#job').hidden=true;$('#stats').hidden=true;
+  lastRenderedUrl=null;renderTaskbar();renderPage(true);renderMini();
+}
+function loadSlot(n){const st=readSlot(n);if(!st){menuMsg='No se pudo leer esa partida.';renderMenu();return}SLOT=n;S=st;afterLoad();save();closeMenu();tutStop();toast(`Partida cargada: día ${S.day}.`)}
+function newInSlot(n){SLOT=n;newGame();save();afterLoad();closeMenu();tutStart()}
+function exportCode(n){const st=SLOT===n&&S?S:readSlot(n);return 'LVC1:'+btoa(unescape(encodeURIComponent(JSON.stringify(st))))}
+function importCode(code,n){
+  try{const c=code.trim().replace(/^LVC1:/,'');const st=JSON.parse(decodeURIComponent(escape(atob(c))));
+    if(!st||typeof st.money!=='number'||!st.day||!Array.isArray(st.inv))throw 0;
+    SLOT=n;S=st;afterLoad();save();closeMenu();toast(`Partida importada en la ranura ${n}.`,'good')}
+  catch(e){menuMsg='Ese código no es válido. Revisa que lo copiaste completo.';renderMenu()}
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act^="m-"],[data-act^="tut-"]');if(!t)return;
+  const a=t.dataset.act,n=+t.dataset.id;
+  switch(a){
+    case 'm-continue':loadSlot(slotMeta().last);break;
+    case 'm-view':menuView=t.dataset.id;menuConfirm=null;menuMsg='';renderMenu();break;
+    case 'm-back':menuView='main';menuConfirm=null;menuMsg='';renderMenu();break;
+    case 'm-cancel':menuConfirm=null;renderMenu();break;
+    case 'm-new-slot':if((slotMeta().slots||{})[n]){menuConfirm={slot:n,kind:'new'};renderMenu()}else newInSlot(n);break;
+    case 'm-new-yes':newInSlot(n);break;
+    case 'm-load':loadSlot(n);break;
+    case 'm-del':menuConfirm={slot:n,kind:'del'};renderMenu();break;
+    case 'm-del-yes':deleteSlot(n);menuConfirm=null;if(menuMode==='pause'&&n===SLOT){menuMode='title'}renderMenu();break;
+    case 'm-export':menuMsg=exportCode(n);menuView='export';renderMenu();break;
+    case 'm-copy':{const ta=$('#m-code');const ok=()=>{$('#m-copied').textContent='Código copiado.'};
+      navigator.clipboard?.writeText(ta.value).then(ok).catch(()=>{ta.select();$('#m-copied').textContent='Selecciónalo y cópialo a mano.'})||(ta.select());break}
+    case 'm-import':importCode($('#m-imp').value,n);break;
+    case 'm-resume':closeMenu();break;
+    case 'm-save':save();menuMsg=`Guardado en la ranura ${SLOT}.`;renderMenu();break;
+    case 'm-tut':closeMenu();tutStart(true);break;
+    case 'm-title':save();openMenu('title');break;
+    case 'tut-next':tutNext();break;
+    case 'tut-skip':tutStop(true);break;
+    case 'tut-action':{const st=STEPS[TUT.i];st.action&&st.action.fn(TUT.mem);break}
+  }
+});
+
+/* ================= TUTORIAL GUIADO ================= */
+let TUT=null;
+const onBazar=p=>{const u=parseUrl(curTab().url);return u.host==='bazarito.com'&&(p===undefined||u.path===p)};
+const tutItem=m=>S.inv.find(i=>i.id===m.itemId)||S.inv[S.inv.length-1];
+const STEPS=[
+ {center:true,title:'Bienvenido a Lo Vendo Caro',text:'Te enseño lo básico en un par de minutos: comprar algo barato, publicarlo con una buena historia y convencer a tu primer cliente.',next:'Empezar'},
+ {target:'.omni',title:'Todo pasa en este navegador',text:'Escribe bazarito.com en la barra de direcciones y pulsa Enter.',wait:()=>onBazar(''),action:{label:'Llévame',fn:()=>go('bazarito.com')}},
+ {target:m=>`[data-act=buy][data-id="${m.listing}"]`,title:'Ofertas relámpago',
+  text:m=>onBazar('')?'Cada oferta desaparece en segundos. Compra esta, que es barata.':'Vuelve a bazarito.com para comprar.',
+  enter:m=>{m.inv0=S.inv.length;const c=CATALOG.filter(c=>c[2]<=8)[ri(0,10)];const L={id:S.nextId++,name:c[0],icon:c[1],base:c[2],g:c[3],seller:'tutorial_bazarito',note:'Ideal para empezar.',exp:S.t+900,life:900,bought:false,type:'normal',price:Math.min(3,S.money)};S.shop.unshift(L);m.listing=L.id;dirty=true;renderPage()},
+  wait:m=>S.inv.length>m.inv0},
+ {target:'a[data-go="bazarito.com/mis-cosas"]',title:'Tus cosas',text:'Lo que compras se guarda en Mis cosas. Entra ahí.',enter:m=>{m.itemId=S.inv[S.inv.length-1].id},wait:()=>onBazar('mis-cosas')},
+ {target:m=>`[data-act=edit][data-id="${m.itemId}"]`,title:'Publícalo',text:'Toca Publicar para crear tu anuncio.',wait:()=>!$('#editor').hidden},
+ {target:'#e-story',title:'La historia es la clave',text:'Inventa quién lo tuvo, cuándo y qué pasó. Las fechas, los nombres y los detalles concretos suben el gancho. Llévalo al menos al 35 %.',
+  action:{label:'Usar un ejemplo',fn:m=>{const it=tutItem(m);const c=CATALOG.find(c=>c[0]===it.name);$('#e-story').value=c?c[4][0]:'Perteneció a mi abuela Rosa, que lo cuidó desde 1955 como su mayor tesoro.';updateEditor()}},
+  wait:m=>!$('#editor').hidden&&storyScore($('#e-story').value,tutItem(m)).score>=.35},
+ {target:'#e-price',title:'El precio',text:'Arriba ves hasta cuánto pagarían con esta historia. Si pides mucho más, nadie va a preguntar.',next:'Entendido'},
+ {target:'#e-publish',title:'Publica',text:'Publica el anuncio y espera a los interesados.',wait:m=>{const it=tutItem(m);return it&&it.listed}},
+ {target:()=>S.buyers.some(b=>b.status==='open')?(onBazar('mensajes')?'.bz-chat':'.tb-btn[data-act=msgs]'):null,title:'Llega un cliente',
+  text:()=>S.buyers.some(b=>b.status==='open')?'¡Te escribió alguien! Abre tus mensajes y toca su conversación.':'Espera unos segundos: ya te van a escribir…',
+  enter:m=>{const it=tutItem(m);S.tutBuyer=true;if(it){it.nextSpawn=S.t+4;it.tooHigh=false;if(it.price>maxWilling(it)*2)it.price=niceRound(maxWilling(it))}},wait:()=>S.cur!=null},
+ {target:'.meter',title:'La barra de confianza',text:'Muestra qué tan convencido está. Si llega al 100 %, compra; si llega a 0, se va. Arriba ves su oferta y su paciencia.',next:'Siguiente'},
+ {target:'#c-input',title:'Respóndele',text:'Saluda, responde exactamente lo que te preguntó y escribe sin faltas. Luego pulsa Enviar.',enter:m=>{const b=S.buyers.find(x=>x.id===S.cur);m.bid=S.cur;m.pm0=b?b.msgs.filter(x=>x.from==='p').length:0},
+  wait:m=>{const b=S.buyers.find(x=>x.id===m.bid);return b&&b.msgs.filter(x=>x.from==='p'&&!x.pending).length>m.pm0}},
+ {target:()=>{const c=document.querySelectorAll('#c-list .msg.p .chips');return c.length?c[c.length-1]:null},title:'Qué sumó y qué restó',text:'Debajo de cada mensaje ves por qué subió o bajó la barra. Úsalo para mejorar el siguiente.',next:'Siguiente'},
+ {target:'#c-hag',title:'Fotos y regateo',text:'Con la cámara le mandas fotos (enfócalas bien) y con Regatear le pides otro precio. Sigue hablando hasta cerrar la venta.',next:'Siguiente'},
+ {target:'[data-act=close-chat]',title:'Sal cuando quieras',text:'Puedes salir del chat: el cliente espera un rato y te avisa si se impacienta.',wait:()=>S.cur==null||$('#chat').hidden,action:{label:'Salir del chat',fn:()=>closeChat()}},
+ {target:'.tb-stats',title:'Comida y bebida',text:'Trabajar cansa. Si alguna baja del 15 % no puedes hacer nada, así que pide comida cuando haga falta.',next:'Siguiente'},
+ {target:'#tb-end',title:'Tú decides cuándo termina el día',text:'Al dormir se cobran las facturas, descansas y llegan ofertas nuevas.',next:'Siguiente'},
+ {target:'#tb-menu',title:'Menú y partidas',text:'Aquí guardas, cargas o exportas partidas y puedes repetir este tutorial.',next:'Siguiente'},
+ {center:true,title:'¡Listo para vender!',text:'Lo demás lo descubres tú. Trabajos, empleados, facturas y mucho más se encuentran buscando en el navegador.',next:'A vender'},
+];
+function tutStart(){TUT={i:0,mem:{}};$('#coach').hidden=false;enterStep()}
+function tutStop(skipped){if(!TUT)return;TUT=null;$('#coach').hidden=true;if(S){S.tutDone=true;save()}if(skipped)toast('Puedes repetir el tutorial desde el menú ☰.')}
+function enterStep(){const st=STEPS[TUT.i];if(st.enter)st.enter(TUT.mem);renderCoach()}
+function tutNext(){if(!TUT)return;TUT.i++;if(TUT.i>=STEPS.length)return tutStop();enterStep()}
+function resolveTarget(st){
+  if(st.center)return null;
+  let t=typeof st.target==='function'?st.target(TUT.mem):st.target;
+  if(!t)return null;const el=typeof t==='string'?document.querySelector(t):t;
+  if(!el)return null;const r=el.getBoundingClientRect();if(!r.width&&!r.height)return null;
+  for(let p=el;p;p=p.parentElement)if(p.hidden)return null;
+  return el;
+}
+function renderCoach(){
+  if(!TUT)return;const st=STEPS[TUT.i];const m=TUT.mem;
+  const total=STEPS.length-2,num=TUT.i;
+  $('#coach-step').textContent=st.center?'':`Paso ${num} de ${total}`;
+  $('#coach-title').textContent=st.title;
+  $('#coach-text').textContent=typeof st.text==='function'?st.text(m):st.text;
+  $('#coach-acts').innerHTML=(st.action?`<button class="btn ghost sm" data-act="tut-action">${st.action.label}</button>`:'')+(st.next?`<button class="btn sm" data-act="tut-next">${st.next}</button>`:'')+(!st.next&&!st.action?'<span class="coach-wait">Hazlo tú para seguir</span>':'');
+  $('#coach-dots').innerHTML=st.center?'':Array.from({length:total},(_,i)=>`<i class="${i+1<num?'done':i+1===num?'on':''}"></i>`).join('');
+  $('#coach-skip').hidden=TUT.i===STEPS.length-1;
+  placeCoach();
+}
+function placeCoach(){
+  if(!TUT)return;const st=STEPS[TUT.i];const el=resolveTarget(st);
+  const spot=$('#coach-spot'),card=$('#coach-card'),coach=$('#coach');
+  const vw=innerWidth,vh=innerHeight,cw=card.offsetWidth,ch=card.offsetHeight;
+  coach.classList.toggle('dim',!el);
+  if(!el){spot.hidden=true;card.style.left=Math.max(12,(vw-cw)/2)+'px';card.style.top=Math.max(12,(vh-ch)/2)+'px';card.classList.remove('below','above');return}
+  const r=el.getBoundingClientRect(),pad=6;
+  spot.hidden=false;spot.style.left=(r.left-pad)+'px';spot.style.top=(r.top-pad)+'px';spot.style.width=(r.width+pad*2)+'px';spot.style.height=(r.height+pad*2)+'px';
+  let top;
+  if(r.bottom+pad+14+ch<vh-8){top=r.bottom+pad+14;card.className='coach-card below'}
+  else if(r.top-pad-14-ch>8){top=r.top-pad-14-ch;card.className='coach-card above'}
+  else{top=vh-ch-12;card.className='coach-card'}
+  const left=clamp(r.left+r.width/2-cw/2,12,vw-cw-12);
+  card.style.left=left+'px';card.style.top=top+'px';
+  card.style.setProperty('--ax',clamp(r.left+r.width/2-left,20,cw-20)+'px');
+}
+setInterval(()=>{
+  if(!TUT)return;const st=STEPS[TUT.i];
+  if(st.wait&&st.wait(TUT.mem)){tutNext();return}
+  if(typeof st.text==='function')$('#coach-text').textContent=st.text(TUT.mem);
+  placeCoach();
+},250);
+addEventListener('resize',()=>TUT&&placeCoach());
+document.addEventListener('scroll',()=>TUT&&placeCoach(),true);
+
+/* ================= ARRANQUE ================= */
+try{window.claude?.hot?.snapshot?.(()=>({S,SLOT}))}catch(e){}
 window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
 
 </script>
