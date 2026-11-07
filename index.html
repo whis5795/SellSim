@@ -656,6 +656,8 @@ input.field.price{font:700 18px var(--f-mono)}
 .rm-stats .minibar{height:9px;background:rgba(255,255,255,.2)}
 .rm-icon{width:44px;height:44px;display:grid;place-items:center}.rm-icon svg{width:22px;height:22px}
 .rm-bottom{position:absolute;left:0;right:0;bottom:0;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px}
+.rm-pickall{border:0;border-radius:999px;padding:10px 18px;background:#FFC531;color:#2A1E00;font:800 14px Figtree,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;margin-bottom:8px;animation:emIn .3s ease}
+.rm-pickall:active{transform:scale(.97)}
 .rm-hint{margin:0;background:rgba(14,18,36,.72);color:#fff;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;text-align:center;max-width:100%}
 .room.late .rm-hint{background:#4C2A8A}
 .rm-nav{display:flex;align-items:center;gap:10px;width:100%;max-width:520px;justify-content:space-between}
@@ -1206,6 +1208,7 @@ body.helper{background:var(--bg)}
     <button class="rm-icon" id="rm-menu" data-act="menu" aria-label="Menú y partidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
   <div class="rm-bottom gut">
+    <button class="rm-pickall" id="rm-pickall" data-act="pick-all" hidden>🛍️ Recoger todo</button>
     <p class="rm-hint" id="rm-hint"></p>
     <div class="rm-nav" id="rm-nav">
       <button class="rm-arrow" id="rm-prev" data-act="turn-l" aria-label="Girar a la izquierda">‹ <span></span></button>
@@ -3676,6 +3679,7 @@ function renderRoomHUD(){
   $('#rm-money').textContent=money(S.money);$('#rm-clock').textContent=`Día ${S.day} · ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
   const col=v=>v>=70?'var(--good)':v>=DRAIN?'var(--warn)':'var(--bad)';
   try{renderPhoneBtn()}catch(e){}
+  {const pa=$('#rm-pickall');if(pa){const n=S.door.length;pa.hidden=!(S.wall===1&&n>=2);pa.textContent=`🛍️ Recoger todo (${n})`}}
   $('#rm-food').style.width=S.food+'%';$('#rm-food').style.background=col(S.food);$('#rm-drink').style.width=S.drink+'%';$('#rm-drink').style.background=col(S.drink);
 }
 function renderRoom(){
@@ -3703,6 +3707,9 @@ document.addEventListener('click',e=>{
   else if(a==='turn-l')turn(-1);
   else if(a==='turn-r')turn(1);
   else if(a==='pickup')pickup(+t.dataset.id);
+  else if(a==='pick-all')pickAll();
+  else if(a==='pkg-eat'&&pendingPkg==='all')pickAllDo('eat');
+  else if(a==='pkg-store'&&pendingPkg==='all')pickAllDo('store');
   else if(a==='pkg-eat')pkgChoice('eat');
   else if(a==='pkg-store')pkgChoice('store');
   else if(a==='pkg-close'){$('#pkg').hidden=true;pendingPkg=null}
@@ -3738,6 +3745,28 @@ function friendsSVG(){
       <g class="fr-tag"><rect x="-30" y="184" width="60" height="20" rx="10" fill="#14171F" opacity=".85"/><text x="0" y="198" font-size="11" font-weight="700" text-anchor="middle" fill="#fff" font-family="Figtree,sans-serif">${esc(p.name.slice(0,9))}</text></g>
       ${busy?'<g class="fr-bub"><rect x="18" y="200" width="34" height="20" rx="10" fill="#fff"/><circle cx="28" cy="210" r="2.4" fill="#5A6283"/><circle cx="35" cy="210" r="2.4" fill="#5A6283"/><circle cx="42" cy="210" r="2.4" fill="#5A6283"/></g>':''}
     </g>`}).join('')}
+
+/* recoger todos los pedidos de la puerta de una vez */
+function pickAll(){
+  if(!S.door.length)return;
+  const foods=S.door.filter(p=>!p.ing);
+  if(S.fridge&&foods.length){pendingPkg='all';$('#pkg-title').textContent=`Recoger ${S.door.length} pedidos`;
+    const tf=foods.reduce((a,p)=>{const F=FOOD.find(f=>f.id===p.id);return {f:a.f+F.food,d:a.d+F.drink}},{f:0,d:0});
+    $('#pkg-text').textContent=`${foods.length} de comida o bebida (comida +${tf.f}, bebida +${tf.d})${S.door.length>foods.length?' y los ingredientes van a la despensa':''}. ¿Te lo comes todo ahora o lo guardas en el refrigerador?`;
+    $('#pkg').hidden=false;return}
+  pickAllDo('eat')}
+function pickAllDo(kind){
+  $('#pkg').hidden=true;pendingPkg=null;
+  let ings=0,ate=[],stored=0,wasted=0;
+  for(const p of [...S.door]){
+    if(p.ing){const g=ING[p.ing];S.pantry[p.ing]=(S.pantry[p.ing]||0)+g.pack;ings++;continue}
+    const F=FOOD.find(f=>f.id===p.id);
+    if(kind==='store'&&S.fridge){S.fridgeItems.push({uid:S.nextId++,id:F.id,day:p.day});stored++}
+    else{if(S.food>=100&&S.drink>=100)wasted++;consume(F);ate.push(low(F.name))}}
+  S.door=[];
+  const parts=[];if(ate.length)parts.push(`te comiste ${ate.length>3?ate.length+' cosas':ate.join(', ')}`);if(stored)parts.push(`guardaste ${stored} en el refrigerador`);if(ings)parts.push(`${ings} pedido${ings>1?'s':''} de ingredientes a la despensa`);
+  toast(`🛍️ Recogiste todo: ${parts.join(' · ')}.${wasted?' Ya estabas lleno: algo se desperdició.':''}`,'good');
+  roomKey='';renderRoom();renderRoomHUD();save()}
 
 /* ================= PERFILES DE LOS CLIENTES ================= */
 const PROFILE_BIO={
