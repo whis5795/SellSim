@@ -627,9 +627,13 @@ input.field.price{font:700 18px var(--f-mono)}
 .room.wake #rm-scene{animation:wake .42s ease-out}
 @keyframes wake{from{transform:scale(1.4);opacity:0}to{transform:none;opacity:1}}
 #rm-scene{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
-#rm-scene.from-r{animation:fromR .35s ease-out}#rm-scene.from-l{animation:fromL .35s ease-out}
-@keyframes fromR{from{transform:translateX(28%);opacity:.2}to{transform:none;opacity:1}}
-@keyframes fromL{from{transform:translateX(-28%);opacity:.2}to{transform:none;opacity:1}}
+#rm-scene.in-r{animation:inR .55s cubic-bezier(.25,.1,.25,1)}#rm-scene.in-l{animation:inL .55s cubic-bezier(.25,.1,.25,1)}
+.rm-old{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.rm-old.out-l{animation:outL .55s cubic-bezier(.25,.1,.25,1) forwards}.rm-old.out-r{animation:outR .55s cubic-bezier(.25,.1,.25,1) forwards}
+@keyframes inR{from{opacity:0;transform:translateX(5%)}to{opacity:1;transform:none}}
+@keyframes inL{from{opacity:0;transform:translateX(-5%)}to{opacity:1;transform:none}}
+@keyframes outL{from{opacity:1;transform:none}to{opacity:0;transform:translateX(-5%)}}
+@keyframes outR{from{opacity:1;transform:none}to{opacity:0;transform:translateX(5%)}}
 .room .hot{cursor:pointer;transition:filter .2s}
 .room .hot:hover,.room .hot:focus{filter:drop-shadow(0 0 6px #FFC531) drop-shadow(0 0 2px #FFC531)}
 .room .hot.pc{animation:glow 2.4s ease-in-out infinite}
@@ -685,6 +689,14 @@ input.field.price{font:700 18px var(--f-mono)}
 .ct-pre{font-size:12px;opacity:.75;font-style:italic}
 .ct-row{display:flex;gap:6px;flex-wrap:wrap}
 .ct-use.alt{background:transparent;color:var(--ct-bg);border:1.5px solid var(--ct-bg)}
+
+.bphoto{background:var(--bubble-them);border-radius:16px 16px 16px 4px;padding:5px;display:flex;flex-direction:column;gap:4px;max-width:220px}
+.bph{width:180px;height:150px;border-radius:12px;display:grid;place-items:center;font-size:64px;background:radial-gradient(circle at 50% 60%,hsl(var(--h) 45% 82%),hsl(var(--h) 35% 55%));overflow:hidden}
+.bphoto p{margin:0;padding:0 6px 4px;font-size:14px}
+.bphoto.sepia .bph{filter:sepia(.85) contrast(.9)}
+.bphoto.blur .bph span{filter:blur(2.5px)}
+.bphoto.glow .bph{box-shadow:inset 0 0 40px rgba(255,220,120,.8)}
+.bphoto.zoom .bph span{transform:scale(1.5)}
 
 @media (max-width:420px){.tb-stats{width:96px;padding:6px 8px}.tb-stats>span{grid-template-columns:16px 1fr;gap:4px}.tb-stats .num{display:none}.taskbar{gap:6px}.tb-btn{width:36px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
@@ -1166,7 +1178,7 @@ const LEX={
 };
 const LEX_ALL=Object.values(LEX).flat();
 const CONNECT=['cuando','porque','despues','desde entonces','hasta que','aunque','sin embargo','por eso','mientras','luego','entonces','al final','una noche','un dia','anos despues','dias antes','esa misma','gracias a'];
-const CONTRA=[...LEX['Fama'],...LEX['Aventura'],...LEX['Misterio'],'guerra','dictadura','revoluc','museo','subasta','certificad','diamante','record','nasa','titanic','beatles','luna'].filter(s=>!['ocult','escond','apareci','extrano','secret','nadie sabe','rescat','frontera','oceano'].includes(s));
+const CONTRA=[...LEX['Fama'],...LEX['Aventura'],...LEX['Misterio'],'guerra','dictadura','revoluc','diamante','nasa','titanic','beatles','luna'].filter(s=>!['ocult','escond','apareci','extrano','secret','nadie sabe','rescat','frontera','oceano'].includes(s));
 const PROOF=['certificad','factura','document','prueba','tasacion','expert','papeles','sello','original','autentic','constancia','registro','recibo','foto','archivo','periodico','diario de la epoca'];
 const CONDITION=['estado','impecable','funciona','nuevo','nueva','rayon','detalle','desgaste','roto','rota','sano','perfect','intact','conservad','golpe','anda','sirve'];
 const SHIP=['envio','envi','mando','entrego','entrega','retir','correo','paqueteria','llevo','paso a dejar','recoger'];
@@ -1174,11 +1186,27 @@ const ORIGIN=['hered','herencia','compr','regal','encontr','famili','abuel','pad
 const INSULTS=['idiota','estupid','imbecil','tarad','pendej','cabron','mierda','carajo','puta','gilipoll','imbecil','inutil','tonto','tonta','burro','callate','vete a','ignorante','pobre tipo','muerto de hambre','rata','maldito','baboso','menso'];
 const SLANG=['bro','wey','papu','crack','jaja','jaj','jsjs','xd','lol','nah','ni idea','yo que se','loco','compa','alv','ntc','we'];
 const PERSONAS={
- coleccionista:{label:'Coleccionista',desc:'Valora las pruebas y la coherencia',pos:1,neg:1,proof:1.6,story:1.5,start:-6,why:'Colecciono este tipo de cosas. Esto completaría mi colección.'},
- desconfiado:{label:'Desconfiado',desc:'Cualquier error le pesa el doble',pos:.9,neg:1.45,proof:1.2,story:1,start:-10,why:'Es para un regalo, y no quiero quedar mal con algo falso.'},
- apurado:{label:'Con prisa',desc:'Poca paciencia, odia los textos largos',pos:1.15,neg:1,proof:1,story:1,start:0,why:'Es un regalo para mañana, por eso tengo prisa.'},
- amable:{label:'Amable',desc:'Le cae bien la buena actitud',pos:1.25,neg:.8,proof:1,story:1,start:6,why:'Me encantan las cosas con historia, nada más.'},
- tikismikis:{label:'Tikismikis',desc:'Se fija muchísimo en la ortografía',pos:1,neg:1.1,proof:1,story:1,start:-4,why:'Busco algo especial, y espero un trato impecable.'},
+ coleccionista:{label:'Coleccionista',desc:'Valora las pruebas y la coherencia',pos:1,neg:1,proof:1.6,story:1.5,start:-6,w:8,offer:1.1,why:'Colecciono este tipo de cosas. Esto completaría mi colección.'},
+ desconfiado:{label:'Desconfiado',desc:'Cualquier error le pesa el doble',pos:.9,neg:1.45,proof:1.2,story:1,start:-10,w:8,why:'Es para un regalo, y no quiero quedar mal con algo falso.'},
+ apurado:{label:'Con prisa',desc:'Poca paciencia, odia los textos largos',pos:1.15,neg:1,proof:1,story:1,start:0,w:8,longPen:true,pat:[8,10],why:'Es un regalo para mañana, por eso tengo prisa.'},
+ amable:{label:'Amable',desc:'Le cae bien la buena actitud',pos:1.25,neg:.8,proof:1,story:1,start:6,w:10,why:'Me encantan las cosas con historia, nada más.'},
+ tikismikis:{label:'Tikismikis',desc:'Se fija muchísimo en la ortografía',pos:1,neg:1.1,proof:1,story:1,start:-4,w:6,why:'Busco algo especial, y espero un trato impecable.'},
+ regateador:{label:'Regateador',desc:'Siempre quiere un descuento',pos:1,neg:1,proof:1,story:.9,start:-2,w:7,offer:.75,haggler:true,open:'Hola. Voy directo:',why:'Me gusta conseguir buenos precios, es mi deporte.',quirks:['¿Y si me haces un precio especial?','Con un descuentito cerramos más rápido.'],asks:[{id:'pr1',q:'¿Me lo dejas un poco más barato?',a:['descuento','rebaja','te lo dejo','precio','no puedo','fijo','vale','si','no','NUM']}]},
+ nostalgico:{label:'Nostálgico',desc:'Se emociona con el pasado y la familia',pos:1.15,neg:.9,proof:1,story:1.3,start:2,w:6,boost:['Emoción','Historia'],why:'Me recuerda a mi infancia. Quiero volver a tener uno.',quirks:['Ay, qué recuerdos me trae esto.','Antes las cosas se hacían para durar.'],
+   photo:[['{icon}','Mira, mi abuelo tenía uno igualito en 1962.','sepia'],['🏡','Esta foto es de la casa donde crecí. ¿No te recuerda a algo?','sepia']]},
+ influencer:{label:'Influencer',desc:'Lo quiere para hacer contenido',pos:1.1,neg:.9,proof:.8,story:1.1,start:0,w:5,offer:1.15,emoji:true,slangOK:true,photoX:1.6,open:'¡Holaaa! 😍',why:'Es para una publicación. A mis seguidores les encantan las cosas con historia ✨',quirks:['¿Me lo mandas bien iluminado? 📸','Esto va a explotar en redes 🔥'],asks:[{id:'in1',q:'¿Te puedo etiquetar en la publicación? 😍',a:['__any__']}],
+   photo:[['🤳','¡Así lo voy a mostrar en mis historias! ✨','glow'],['💡','Ya tengo la luz preparada para la sesión de fotos 📸','glow']]},
+ conspiranoico:{label:'Conspiranoico',desc:'Cree en secretos, ovnis y misterios',pos:1.1,neg:.9,proof:.6,story:1.2,start:-4,w:3,boost:['Misterio','Aventura'],wild:true,open:'Hola. Seré breve: puede que nos estén leyendo.',why:'Creo que tiene algo oculto. Las cosas viejas guardan secretos.',quirks:['No lo digas muy fuerte, que nos escuchan.','Nada es casualidad.'],asks:[{id:'cs1',q:'¿Alguna vez notaste algo raro con él? Luces, sonidos, lo que sea.',a:['__any__']}],
+   photo:[['🛸','Esto lo vi anoche desde mi azotea. ¿Tiene relación con tu objeto?','blur'],['👁️','Encontré este símbolo en un libro viejo. ¿Tu objeto lo tiene?','blur']]},
+ abuelita:{label:'Abuelita',desc:'Dulce, paciente y muy educada',pos:1.2,neg:.8,proof:1,story:1,start:8,w:5,capsOK:true,courtesyX:2,pat:[13,16],open:'Hola, querido. Espero no molestar.',why:'Es para regalarle a mi nieto. Le encantan estas cosas.',quirks:['¿Ya comiste, mijo?','Disculpa si tardo, todavía estoy aprendiendo a usar esto.'],asks:[{id:'ab1',q:'¿Y tú cómo estás, querido? ¿Mucho trabajo?',a:['__any__']}]},
+ revendedor:{label:'Revendedor',desc:'Conoce el negocio y detecta mentiras',pos:.85,neg:1.3,proof:1.3,story:.8,start:-12,w:5,offer:.7,contraX:1.6,longPen:true,open:'Buenas. Vamos al grano.',why:'Lo compro para revenderlo, no te voy a mentir.',quirks:['Conozco el truco: yo también vendo.','Ese cuento ya lo escuché antes.'],asks:[{id:'rv1',q:'¿A cuánto lo compraste tú?',a:['NUM','compr','pague','barato','herencia','regal','no te','secreto']}]},
+ poeta:{label:'Poeta',desc:'Ama las palabras bonitas',pos:1.2,neg:.9,proof:.8,story:1.4,start:0,w:3,dryPen:true,boost:['Escena','Emoción'],open:'Saludos, alma vendedora.',why:'Busco objetos que me inspiren versos.',quirks:['Qué bella forma de decirlo.','Cada objeto es un poema que nadie escribió.']},
+ detective:{label:'Detective',desc:'Lo verifica todo, dos veces',pos:.95,neg:1.2,proof:1.8,story:1,start:-8,w:5,contraX:1.5,evadeX:1.6,open:'Buenas tardes. Tengo algunas preguntas.',why:'Me interesa, pero solo compro lo que puedo comprobar.',quirks:['Anoto todo lo que me dices.','Los detalles nunca mienten.'],
+   photo:[['🔍','Encontré la foto de uno parecido. ¿El tuyo tiene una marca abajo como esta?','zoom'],['🗂️','Revisé archivos de la época. ¿Coincide la fecha con lo que dices?','zoom']]},
+ fan:{label:'Fan obsesivo',desc:'Idolatra a los famosos',pos:1.15,neg:1,proof:1,story:1.2,start:-2,w:4,offer:1.2,boost:['Fama'],open:'¡¡Hola!! Vi tu anuncio y casi me desmayo.',why:'Soy fan número uno. Necesito tenerlo.',quirks:['¡No puedo creer que sea real!','Si es verdad, pago lo que sea… bueno, casi.'],
+   photo:[['🕯️','Este es mi altar. Tu objeto quedaría perfecto en el centro.','glow'],['🖼️','Tengo su póster en el cuarto desde los 12 años.','glow']]},
+ bromista:{label:'Bromista',desc:'Le encanta reírse',pos:1.15,neg:.85,proof:.9,story:1,start:4,w:3,slangOK:true,humor:true,open:'¡Hola! ¿Vendes o regalas? Jaja, es broma.',why:'Es para hacerle una broma a mi hermano. Bueno, y porque me gusta.',quirks:['¿Sabes por qué los objetos viejos no usan internet? Porque ya tienen mucha historia. Jaja.','Si no me haces reír, no compro. Es broma. O no.']},
+ turista:{label:'Turista',desc:'Habla poco español: prefiere mensajes claros',pos:1.05,neg:.95,proof:1,story:.9,start:0,w:3,longPen:true,open:'Hello! Hola.',why:'Is a souvenir. Un recuerdo de mi viaje.',quirks:['Sorry, mi español es poco.','Very nice, muy bonito.'],asks:[{id:'tu1',q:'¿Puedes enviar a otro país? Sorry… ¿envío internacional?',a:SHIP.concat(['si','no','internacional','pais','claro'])}]},
 };
 const FOOD=[
  {id:'hotdog',name:'Hot dog con mostaza',icon:'🌭',kind:'junk',price:2,food:20,drink:0,desc:'Llena poco, pero es barato.'},
@@ -1299,20 +1327,23 @@ const ease=b=>clamp(2.2-.5*Math.log10(Math.max(b.offer,5)),.7,1.75);
 function spawnBuyer(it){
   it.spawned++;
   const m=maxWilling(it);
-  const offer=niceRound(Math.max(Math.min(it.price,m)*rand(.55,1.05),it.base*.6));
   const tut=S.tutBuyer;S.tutBuyer=false;
-  const pid=tut?'amable':pick(Object.keys(PERSONAS)),P=PERSONAS[pid];
+  const keys=Object.keys(PERSONAS);let roll=Math.random()*keys.reduce((a,k)=>a+(PERSONAS[k].w||4),0),pid=keys[0];
+  for(const k of keys){roll-=PERSONAS[k].w||4;if(roll<=0){pid=k;break}}
+  if(tut)pid='amable';const P=PERSONAS[pid];
+  const famous=LEX['Fama'].some(s=>rx(s).test(norm(it.story)));
+  const offer=niceRound(Math.max(Math.min(it.price,m)*rand(.55,1.05)*(P.offer||1)*(pid==='fan'&&!famous?.8:1),it.base*.6));
   const ratio=offer/it.base;
   const cheap=clamp(14-Math.log10(Math.max(offer,1))*7,0,10);
   const conv=tut?55:clamp(Math.round(48-(ratio-1)*6+it.score*10+P.start+cheap-(it.price>m*1.2?8:0)),6,62);
   const city=pick(CITIES);
-  const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:pid==='apurado'?ri(8,10):ri(11,14),city:city[0],dist:city[1],
+  const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:P.pat?ri(P.pat[0],P.pat[1]):ri(11,14),city:city[0],dist:city[1],
     msgs:[],status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0};
   b.patMax=b.patience;
-  const pc=PERSONA_CONCERNS[pid].slice();const extra=pick(Object.keys(CONCERNS).filter(c=>!pc.includes(c)));
+  const pc=(PERSONA_CONCERNS[pid]||['estado']).slice();const extra=pick(Object.keys(CONCERNS).filter(c=>!pc.includes(c)));
   b.concerns=Math.random()<.6?pc.concat(extra):pc;b.resolved=[];b.facts={years:[],rel:{}};b.insults=0;
   const q=nextQuestion(b,it,null);
-  b.msgs.push({from:'b',text:opening(b,it)+' '+q.q});b.q=q;
+  b.msgs.push({from:'b',text:(P.open?P.open+' ':'')+opening(b,it)+' '+q.q});b.q=q;
   S.buyers.push(b);
   it.nextSpawn=S.t+Math.round(rand(10,22)/(.45+attract(it)));
   toast(`${b.name} ofrece ${money(offer)} por tu ${low(it.name)}`,'',()=>openChat(b.id));
@@ -1363,7 +1394,7 @@ const CONCERNS={
  confianza:{label:'que seas de fiar',asks:()=>['¿Cómo sé que no me vas a estafar?','¿Qué pasa si llega y no es lo que dices?'],stems:['garantia','devol','reembols','referencia','opinion','calificac','resena','honest','pago al recibir','contra entrega','en persona','comprobante','factura']},
  foto:{label:'verlo con mis propios ojos',asks:()=>['¿Me mandas una foto?','¿Puedo ver una foto antes de decidir?'],photo:true},
 };
-const PERSONA_CONCERNS={tikismikis:['estado','confianza'],coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
+const PERSONA_CONCERNS={regateador:['precio'],nostalgico:['procedencia','estado'],influencer:['foto','estado'],conspiranoico:['procedencia'],abuelita:['envio','confianza'],revendedor:['precio','autenticidad'],poeta:['procedencia'],detective:['autenticidad','procedencia','foto'],fan:['autenticidad'],bromista:['estado'],turista:['envio','precio'],tikismikis:['estado','confianza'],coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
 const SALES_WORDS=/(precio|envi|compr|vend|pago|pagar|foto|estado|historia|regalo|dinero|oferta|garantia|objeto|articulo|pieza|anuncio|trato|cerrar|cerramos|interes)/;
 function prepBuyer(b){b.concerns=b.concerns||[];b.resolved=b.resolved||[];b.facts=b.facts||{years:[],rel:{}};b.insults=b.insults||0}
 function relNames(text){const out={};for(const m of String(text).matchAll(/\b(bisabuel[oa]|abuel[oa]|t[ií][oa]|padre|madre)\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)/g))out[strip(m[1].toLowerCase())]=m[2];return out}
@@ -1374,6 +1405,8 @@ function nextQuestion(b,it,topic,text){
   const d=text?norm(text):'';const fresh=q=>!b.asked.includes(q.id)&&!(text&&answers(q,d,text));
   const take=q=>{b.asked.push(q.id);return q};
   if(topic&&Math.random()<.55){const T=TOPICS.find(t=>t.id===topic.id);for(const q of T.ask(topic.x))if(fresh(q))return take(q)}
+  const PA=(PERSONAS[b.persona]||{}).asks||[];
+  if(Math.random()<.4)for(const q of PA)if(fresh(q))return take(Object.assign({},q));
   for(const c of b.concerns){if(b.resolved.includes(c))continue;const C=CONCERNS[c];
     const qs=C.asks(b).map((q,i)=>({id:'c-'+c+i,q,a:C.stems,concern:c,photo:!!C.photo}));
     const q=qs.find(fresh);if(q)return take(q)}
@@ -1405,9 +1438,14 @@ function qType(d){
   if(/(como te llamas|quien eres|tu nombre)/.test(d))return 'name';
   return 'other';
 }
-function parsePrice(text){
+function parsePrice(text,b){
   const m=text.match(/(?:\$|us\$|usd)\s?(\d[\d.,]*)|(\d[\d.,]*)\s?(?:d[oó]lares|pesos|usd|bucks)/i);
-  return m?parseInt((m[1]||m[2]).replace(/[.,]/g,''),10):null;
+  if(m)return parseInt((m[1]||m[2]).replace(/[.,]/g,''),10);
+  const d=norm(text);
+  const c=d.match(/(?:por|en|a|quiero|pido|minimo|vale|cuesta|precio|ofrece|ofreceme|dejo|deja|dame|sube|subes|subir|sea|serian|son|menos de|mas de)\s+(?:unos\s+|los\s+)?(\d{1,5})(?![\d])/);
+  if(c){const n=+c[1];if(!(n>=1800&&n<=2030))return n}
+  if(b&&/(sube|subir|subes|subeme|ofrece mas|ofreceme mas|un poco mas|algo mas de dinero|mas dinero|paga mas|pagar mas|me parece poco|es muy poco|muy poca plata)/.test(d))return niceRound(b.offer*1.15)||b.offer+1;
+  return null;
 }
 
 /* ---------- forma del mensaje (siempre local, para que las faltas se vean al instante) ---------- */
@@ -1445,6 +1483,22 @@ function formCheck(text,b){
 }
 
 /* ---------- evaluación local del contenido: memoria, preocupaciones, evasivas y contradicciones ---------- */
+function personaMods(text,d,b,it,f,add,form){
+  const P=PERSONAS[b.persona]||{};
+  if(P.slangOK){const c=form.chips.find(c=>c.l==='Poco profesional');if(c){add(-c.v,'No le molesta la jerga')}}
+  if(P.capsOK){const c=form.chips.find(c=>c.l==='Todo en mayúsculas');if(c){add(-c.v,'A la abuela no le molestan las mayúsculas');f.caps=false}}
+  if(P.courtesyX){const c=form.chips.find(c=>c.l==='Cortesía');if(c)add(c.v,'Le encanta la cortesía')}
+  if(P.boost){const cats=Object.entries(LEX).filter(([cat,st])=>P.boost.includes(cat)&&st.some(s=>rx(s).test(d))).map(([c])=>c);if(cats.length){add(5*cats.length,'Le encanta: '+cats.join(' y ').toLowerCase());f.boosted=cats}}
+  if(P.emoji&&/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(text))add(4,'Le gustan los emojis');
+  if(P.humor&&/(jaja|jeje|jiji|chiste|broma|xd|lol)/.test(d)){add(6,'Le hizo gracia');f.laughed=true}
+  if(P.dryPen&&text.length<30){add(-5,'Demasiado seco para su gusto');f.dry=true}
+  if(P.dryPen&&text.length>=80&&!f.insult)add(4,'Bien escrito');
+  if(P.longPen&&text.length>220)add(-6,b.persona==='turista'?'Muy largo: no lo entiende':'Demasiado largo');
+  if(P.haggler){
+    if(/(descuento|rebaja|te lo dejo|precio especial)/.test(d))add(6,'Le encanta regatear');
+    if(/(precio fijo|no bajo|no hago descuento|no rebajo)/.test(d)){add(-6,'No quieres negociar');f.noDeal=true}
+  }
+}
 function evaluateLocal(text,b,it,form){
   prepBuyer(b);
   const P=PERSONAS[b.persona];const chips=[...form.chips];let pos=form.pos,neg=form.neg;const f=form.f,d=form.d;
@@ -1471,7 +1525,7 @@ function evaluateLocal(text,b,it,form){
       add(10,'Respondiste su pregunta');f.answered=true;f.answerWord=(q.a.map(s=>s.startsWith('__')||s==='NUM'?null:wordFor(text,s)).find(Boolean))||null;
       if(q.concern&&!b.resolved.includes(q.concern)){b.resolved.push(q.concern);add(6,'Resolviste: '+CONCERNS[q.concern].label);f.resolvedNow=[q.concern]}
       b.q=null;
-    }else if(evasive){add(-9,'Esquivaste la pregunta');f.evaded=true;q.tries++}
+    }else if(evasive){add(Math.round(-9*(P.evadeX||1)),'Esquivaste la pregunta');f.evaded=true;q.tries++}
     else if(text.length>70&&relevant){chips.push({v:0,l:'Respuesta a medias'});f.partial=true;q.tries+=.5}
     else{add(-6,'Ignoraste su pregunta');f.ignored=true;f.ignoredQ=q.q;q.tries++}
     if(b.q&&q.tries>=2){add(-4,'Insiste y no le respondes');f.giveUpQ=true;b.q=null}
@@ -1499,8 +1553,13 @@ function evaluateLocal(text,b,it,form){
   const saidRel=relNames(text);
   for(const r in saidRel)if(knownRel[r]&&knownRel[r]!==saidRel[r]){add(-12,'Cambiaste un nombre');f.nameClash={rel:r,was:knownRel[r],now:saidRel[r]};break}
   const newClaims=CONTRA.filter(k=>rx(k).test(d)&&!rx(k).test(sd));
-  if(newClaims.length){add(-9*Math.min(newClaims.length,2),'Eso no estaba en el anuncio');f.contra=true}
-  if(newClaims.length>=2||/(el mejor del mundo|unico en el mundo|vale millones|nadie mas tiene|el mas famoso|mas valioso del mundo|imposible de conseguir)/.test(d)){add(-6,'Suena exagerado');f.exag=true}
+  const exagRx=/(el mejor del mundo|unico en el mundo|vale millones|nadie mas tiene|el mas famoso|mas valioso del mundo|imposible de conseguir)/;
+  if(P.wild&&(newClaims.length||exagRx.test(d))){add(7,'Le encantan los secretos');f.wildLike=true}
+  else{
+    if(newClaims.length){add(Math.round(-9*Math.min(newClaims.length,2)*(P.contraX||1)),'Eso no estaba en el anuncio');f.contra=true}
+    if(newClaims.length>=2||exagRx.test(d)){add(Math.round(-6*(P.contraX||1)),'Suena exagerado');f.exag=true}
+  }
+  personaMods(text,d,b,it,f,add,form);
   /* presión y desvíos */
   if(/(decidete ya|ultima oportunidad|ahora o nunca|si no lo compras|hay otros interesados|otro interesado|se lo vendo a otro)/.test(d)){
     if(b.persona==='apurado')add(3,'Le gusta la rapidez');else{add(b.persona==='desconfiado'?-9:-5,'Lo estás presionando');f.pressure=true}}
@@ -1514,6 +1573,17 @@ function evaluateLocal(text,b,it,form){
   return {delta:Math.min(34,Math.round(pos*P.pos*e+neg*P.neg)),chips,f,text};
 }
 const VOICE={
+ regateador:{good:['Me gusta cómo negocias.','Bien, bien.'],bad:['Así no nos vamos a entender.','Mmm, muy caro me parece.'],ok:['Ajá.','Ya veo.']},
+ nostalgico:{good:['Ay, me hiciste emocionar.','Eso me trae tantos recuerdos…'],bad:['No sé, no me transmite nada.','Esperaba algo con más alma.'],ok:['Entiendo.','Qué cosa…']},
+ influencer:{good:['¡Me encanta! 😍','¡Esto es contenido puro! 🔥'],bad:['Mmm, no me da buena vibra 😕','Eso no le va a gustar a mis seguidores.'],ok:['Okey ✨','Ajá 👀']},
+ conspiranoico:{good:['Lo sabía. Lo sabía.','Esto confirma mis sospechas.'],bad:['Eso es justo lo que dirían ELLOS.','Demasiado normal. Sospechoso.'],ok:['Interesante…','Mmm. Anotado.']},
+ abuelita:{good:['¡Ay, qué amor!','Qué muchacho más educado.'],bad:['Ay, mijo, no me hables así.','No entendí bien, querido.'],ok:['Ah, bueno.','Ajá, querido.']},
+ revendedor:{good:['Vale, eso tiene sentido.','Sabes vender, te lo reconozco.'],bad:['No me vendas humo.','Eso no se lo cree nadie.'],ok:['Ok.','Sigue.']},
+ poeta:{good:['Tus palabras danzan como hojas de otoño.','Qué belleza de frase.'],bad:['Tus frases cojean, amigo.','Le falta alma a eso.'],ok:['Mmm, prosaico.','Continúa, te escucho.']},
+ detective:{good:['Eso cuadra con mis notas.','Bien. Un punto a tu favor.'],bad:['Eso no cuadra.','Tomo nota de la inconsistencia.'],ok:['Anotado.','Continúe.']},
+ fan:{good:['¡AAAH! ¡Sabía que era real!','¡No puedo con tanta emoción!'],bad:['Me estás rompiendo el corazón.','No, no, no…'],ok:['¿Y qué más? ¡Cuéntame todo!','¡Sigue!']},
+ bromista:{good:['¡Jajaja, me caes bien!','Buenísimo.'],bad:['Qué seriedad, che… digo, amigo.','Eso no tuvo gracia.'],ok:['Jeje.','Ajá.']},
+ turista:{good:['Very good! Muy bien.','Ok, perfect.'],bad:['Sorry, no entiendo.','Too much, demasiado.'],ok:['Ok.','Ah, yes.']},
  amable:{good:['¡Qué bien!','¡Me encanta!','Ay, qué lindo.'],bad:['Uy, eso no me gustó mucho.','Mmm, me dejas pensando.'],ok:['Entiendo.','Ajá.']},
  desconfiado:{good:['Bueno, eso suena mejor.','Puede ser.'],bad:['Ya me lo imaginaba.','No me convences.'],ok:['Mmm.','Ya veo.']},
  apurado:{good:['Perfecto.','Bien, rápido.'],bad:['No tengo tiempo para esto.','Al grano, por favor.'],ok:['Vale.','Ok.']},
@@ -1575,12 +1645,28 @@ function buyerReply(b,ev,it){
       if(ev.delta>=15)L.push(pick(V.good));else if(ev.delta<=-5)L.push(pick(V.bad));else if(f.dry)L.push(pick(['¿Nada más? Esperaba algo más.','Ajá… ¿y?']));else L.push(pick(V.ok));
     }
   }
+  const P=PERSONAS[b.persona]||{};
+  if(f.wildLike)L.push(pick(['¡Lo sabía! Siempre hay algo más detrás.','Eso confirma lo que pensaba. Nadie más lo sabe, ¿verdad?']));
+  if(f.laughed)L.push(pick(['¡Jajaja! Me hiciste reír.','Jaja, buenísimo.']));
+  if(f.boosted&&!f.contra&&L.length<3)L.push(b.persona==='fan'?'¡Lo de la fama es lo que más me importa!':b.persona==='poeta'?'Hay poesía en lo que cuentas.':'Eso me toca el corazón.');
+  if(f.noDeal)L.push('¿Ni un poquito de descuento? Qué difícil eres.');
+  if(f.answered&&ev.delta>=10&&Math.random()<.35){const facts=[...b.facts.years,...Object.values(b.facts.rel)];if(facts.length)L.push(`Con lo de ${pick(facts)} que me contaste antes, todo tiene más sentido.`)}
+  if(P.quirks&&Math.random()<.3&&L.length<3)L.push(pick(P.quirks));
+  if(L.length>3)L.splice(3);
+  /* el cliente a veces te manda una foto */
+  let photoQ=null;
+  if(P.photo&&(b.sentPhotos||0)<2&&!f.insult&&Math.random()<.4){
+    const [ic,cap,sty]=pick(P.photo);b.sentPhotos=(b.sentPhotos||0)+1;
+    b.pendingPhoto={from:'b',bphoto:{icon:ic==='{icon}'?(it?it.icon:'📦'):ic,cap,sty,h:hue(cap)}};
+    if(cap.includes('?'))photoQ={id:'bp'+b.sentPhotos,q:cap,a:['__any__']};
+  }
   /* 7. sube la oferta si está muy convencido */
   const after=b.conv+ev.delta;
   if(after>=80&&!b.raised&&it&&b.offer<it.price&&!f.insult){b.raised=true;b.offer=niceRound(Math.min(it.price,b.offer*1.1));L.push(`Te subo la oferta a ${money(b.offer)} si me respondes esto.`)}
   /* 8. próxima pregunta */
   if(f.photoPromise)L.push('De acuerdo, espero la foto.');
   else if(keepQ){L.push(b.q.photo&&keepQ==='¿Y la foto?'?keepQ:keepQ+' '+b.q.q)}
+  else if(photoQ){b.q=photoQ;L.push('Mira la foto que te mando.')}
   else{const q=nextQ||nextQuestion(b,it,topic,ev.text);b.asked.includes(q.id)||b.asked.push(q.id);b.q=q;L.push(q.q)}
   if(b.patience===1)L.push('Te aviso que no tengo todo el día.');
   return L.slice(0,5).join(' ');
@@ -1604,7 +1690,7 @@ async function aiBuyerTurn(text,b,it,form){
   const P=PERSONAS[b.persona];
   const hist=b.msgs.slice(-10).map(m=>m.from==='b'?`CLIENTE: ${m.text}`:m.from==='p'?(m.photo?`VENDEDOR: [envió una foto de calidad ${m.photo.q}%]`:`VENDEDOR: ${m.text}`):m.from==='emp'?`EMPLEADO DEL VENDEDOR: ${m.text}`:`(sistema: ${m.text})`).join('\n');
   const formIssues=form.chips.filter(c=>c.v<0).map(c=>c.l).join('; ')||'ninguno';
-  const prompt=`Eres el motor de un cliente en un juego de navegador sobre revender objetos usados con historias inventadas. Interpretas a ${b.name}, comprador con perfil «${P.label}» (${P.desc}). Vive en ${b.city}. Escribe en español neutro, tuteando, sin regionalismos ni jerga.
+  const prompt=`Eres el motor de un cliente en un juego de navegador sobre revender objetos usados con historias inventadas. Interpretas a ${b.name}, comprador con perfil «${P.label}» (${P.desc}). Su motivo: ${P.why}${P.quirks?' Muletillas típicas: '+P.quirks.join(' / '):''} Vive en ${b.city}. Escribe en español neutro, tuteando, sin regionalismos ni jerga.
 
 ANUNCIO
 Objeto: ${it.name}
@@ -1661,7 +1747,7 @@ function haggle(b,p,it){
   const chips=[];let delta=0,reply,newOffer=b.offer;
   if(p<=b.offer){newOffer=p;delta=10;chips.push({v:10,l:'Bajaste el precio'});reply=p<b.offer?`¿${money(p)}? ¡Mejor para mí! Me gusta tu actitud.`:`Perfecto, quedamos en ${money(p)}.`}
   else if(p<=max&&b.conv>=60){newOffer=p;delta=-3;chips.push({v:-3,l:'Regateo aceptado'});reply=pick([`Está bien, ${money(p)}. Pero que valga la pena.`,`Uf… de acuerdo, ${money(p)}.`])}
-  else if(p<=max*1.3){const mid=niceRound((b.offer+Math.min(p,max))/2);newOffer=Math.max(b.offer,mid);delta=-5;chips.push({v:-5,l:'Te hizo una contraoferta'});reply=newOffer>b.offer?`${money(p)} es mucho. Te puedo dar ${money(newOffer)}, no más.`:`No puedo subir de ${money(b.offer)} todavía. Convénceme un poco más.`}
+  else if(p<=max*1.3){const mid=niceRound((b.offer+Math.min(p,max))/2);newOffer=Math.max(b.offer,mid);delta=-5;chips.push({v:-5,l:'Te hizo una contraoferta'});if(newOffer>=p){newOffer=p;reply=`Bueno, está bien: ${money(p)}.`}else reply=newOffer>b.offer?`${money(p)} es mucho. Te puedo dar ${money(newOffer)}, no más.`:`No puedo subir de ${money(b.offer)} todavía. Convénceme un poco más.`}
   else{delta=-11;chips.push({v:-11,l:'Pediste un abuso'});reply=pick([`¿${money(p)}? Eso es un abuso. Sigo en ${money(b.offer)}.`,`Ni loco pago ${money(p)}. Mi oferta es ${money(b.offer)}.`])}
   if(b.haggles>=3){delta-=5;chips.push({v:-5,l:'Regateas demasiado'})}
   b.offer=newOffer;
@@ -2221,6 +2307,7 @@ function renderChat(keepScroll){
     if(m.from==='sys')return `<div class="msg sys ${m.cls||''}">${esc(m.text)}</div>`;
     if(m.from==='emp')return `<div class="msg emp"><span class="who">${esc(m.who)} (tu empleado)</span><div class="bubble">${esc(m.text)}</div></div>`;
     const chips=m.chips&&m.chips.length?`<div class="chips">${m.chips.map(c=>`<span class="chip ${c.v>0?'up':c.v<0?'down':''}">${c.v>0?'+':c.v<0?'−':''}${c.v?Math.abs(c.v)+' ':''}${esc(c.l)}</span>`).join('')}</div>`:(m.pending?'<div class="chips"><span class="chip">Leyendo…</span></div>':'');
+    if(m.bphoto)return `<div class="msg b"><div class="bphoto ${m.bphoto.sty}"><div class="bph" style="--h:${m.bphoto.h}"><span>${m.bphoto.icon}</span></div><p>${esc(m.bphoto.cap)}</p></div></div>`;
     if(m.photo)return `<div class="msg p"><div class="photo-msg"><div class="ph" style="--h:${m.photo.h};filter:blur(${m.photo.blur}px) brightness(${m.photo.br})"><span style="transform:scale(${m.photo.sc})">${m.photo.icon}</span></div><span class="ph-q">Calidad ${m.photo.q} %</span></div>${chips}</div>`;
     if(m.offer)return `<div class="msg p"><div class="bubble offer-b">Propongo <b class="num">${money(m.offer)}</b></div>${chips}</div>`;
     return `<div class="msg ${m.from}"><div class="bubble">${esc(m.text)}</div>${chips}</div>`;
@@ -2238,7 +2325,7 @@ function finishTurn(b,delta,reply,delay){
     if(b.conv>=100)winBuyer(b);
     else if(b.conv<=0){b.msgs.push({from:'b',text:pick(['No, gracias. Lo dejo aquí.','Adiós, suerte vendiéndolo.','Paso. No me inspiras confianza.'])});loseBuyer(b,'Perdiste al cliente.')}
     else if(b.patience<=0){b.msgs.push({from:'b',text:'Bueno, ya me cansé. Lo pienso y cualquier cosa te escribo.'});loseBuyer(b,'Se le acabó la paciencia.')}
-    else{b.msgs.push({from:'b',text:reply});b.waitingSince=S.t}
+    else{b.msgs.push({from:'b',text:reply});if(b.pendingPhoto){b.msgs.push(b.pendingPhoto);b.pendingPhoto=null}b.waitingSince=S.t}
     if(S.cur===b.id){b.unread=0;renderChat()}else b.unread=1;
     dirty=true;save();
   },delay);
@@ -2252,7 +2339,7 @@ async function sendMsg(){
   const msg={from:'p',text,chips:[],pending:true};b.msgs.push(msg);
   b.waitingSince=null;b.typing=true;inp.value='';autosize();renderChat();
   const started=performance.now();
-  const price=parsePrice(text);
+  const price=parsePrice(text,b);
   let delta,reply,chips;
   if(aiReady()){
     try{
@@ -2267,7 +2354,7 @@ async function sendMsg(){
       b.q=out.pide_foto?{id:'aiph',q:qs?qs[qs.length-1]:'¿Me mandas una foto?',photo:true}:qs?{id:'ai'+b.pmsgs,q:qs[qs.length-1],a:['__any__']}:null;
     }catch(e){if(!e||e.code!=='invalid_json')aiFail(e);const ev=evaluateLocal(text,b,it,form);delta=ev.delta;chips=ev.chips;reply=buyerReply(b,ev,it)}
   }else{const ev=evaluateLocal(text,b,it,form);delta=ev.delta;chips=ev.chips;reply=buyerReply(b,ev,it)}
-  if(price){const hag=haggle(b,price,it);delta+=hag.delta;chips=chips.concat(hag.chips);reply=hag.reply+' '+reply}else b.patience--;
+  if(price){const hag=haggle(b,price,it);delta+=hag.delta;chips=chips.concat(hag.chips);const keep=reply.match(/¿[^?]*\?\s*$/);reply=hag.reply+(keep?' '+keep[0].trim():'')}else b.patience--;
   delta=Math.min(34,delta);
   b.pmsgs++;b.last=norm(text).trim();
   msg.chips=chips;msg.pending=false;
@@ -2327,7 +2414,7 @@ function sendPhoto(){
   if(b.q&&b.q.photo&&ph.q>=60){add(8,'Mandaste la foto que pidió');b.q=null}
   prepBuyer(b);b.photoPromised=false;
   if(ph.q>=60&&b.concerns.includes('foto')&&!b.resolved.includes('foto')){b.resolved.push('foto');add(6,'Resolviste: verlo con mis propios ojos')}
-  const delta=Math.round(pos*P.pos*ease(b)*(S.weak?.75:1)+neg*P.neg);
+  const delta=Math.round(pos*(P.photoX||1)*P.pos*ease(b)*(S.weak?.75:1)+neg*(P.photoX||1)*P.neg);
   b.msgs.push({from:'p',photo:Object.assign({},ph),chips});
   b.patience--;b.waitingSince=null;b.typing=true;renderChat();
   const it=itemOf(b);const L=[];
@@ -2702,10 +2789,12 @@ function renderRoom(){
   renderRoomHUD();
   if(key===roomKey)return;roomKey=key;
   const svg=$('#rm-scene');
+  let old=null;
+  if(turnDir&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.rm-old').forEach(x=>x.remove());old=svg.cloneNode(true);old.removeAttribute('id');old.classList.remove('in-l','in-r');old.classList.add('rm-old',turnDir>0?'out-l':'out-r');svg.after(old);setTimeout(()=>old.remove(),560)}
   svg.innerHTML=`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky.a}"/><stop offset="1" stop-color="${sky.b}"/></linearGradient>
     <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2645F2"/><stop offset="1" stop-color="#6F86FF"/></linearGradient></defs>
     ${wallSVG(S.wall,sky)}<rect x="-2000" y="-2000" width="4400" height="5000" fill="#0A0E28" opacity="${sky.night}" pointer-events="none"/>`;
-  if(turnDir){svg.classList.remove('from-l','from-r');void svg.getBoundingClientRect();svg.classList.add(turnDir>0?'from-r':'from-l');turnDir=0}
+  if(turnDir){svg.classList.remove('in-l','in-r');void svg.getBoundingClientRect();if(old)svg.classList.add(turnDir>0?'in-r':'in-l');turnDir=0}
   $('#rm-wall').textContent=WALLS[S.wall];$('#rm-prev').querySelector('span').textContent=WALLS[(S.wall+3)%4];$('#rm-next').querySelector('span').textContent=WALLS[(S.wall+1)%4];
   $('#rm-dots').innerHTML=WALLS.map((w,i)=>`<i class="${i===S.wall?'on':''}"></i>`).join('');
   $('#rm-hint').textContent=roomHint();
@@ -2737,10 +2826,21 @@ const PROFILE_BIO={
  desconfiado:[['Ya me estafaron dos veces. No habrá una tercera.','Sin pruebas no hay trato 🔍'],['Escéptico profesional 🧐','Creo lo que veo, no lo que me cuentan.']],
  apurado:[['Siempre a mil 🏃','Respondo rápido y espero lo mismo.'],['Agenda llena 📅','Sin vueltas, por favor.']],
  amable:[['Amo las cosas con historia ✨','Buena actitud ante todo 🌻'],['Jardinera y soñadora 🌷','Cada objeto cuenta algo.']],
+ regateador:[['Cazador de ofertas 🏷️','Si no hay descuento, no hay compra.'],['Nunca pagué precio completo en mi vida 💸','Y no voy a empezar ahora.']],
+ nostalgico:[['Todo tiempo pasado fue mejor 📻','Coleccionando recuerdos desde 1975.'],['Hijo, nieto y bisnieto de soñadores 🕰️','Las cosas viejas tienen alma.']],
+ influencer:[['Creadora de contenido ✨ | 120 k','Moda vintage y objetos con historia 📸'],['Lifestyle, viajes y cosas lindas 🌸','Colaboraciones por mensaje 💌']],
+ conspiranoico:[['No te creas todo lo que ves 👁️','Investigador independiente de lo inexplicable.'],['La verdad está ahí afuera 🛸','Y en los mercadillos también.']],
+ abuelita:[['Abuela de 7 nietos 👵💕','Me encanta tejer y las cosas bonitas.'],['Jubilada y feliz 🌺','Mi nieto me abrió esta cuenta.']],
+ revendedor:[['Compro y vendo de todo 📦','Precios justos (para mí).'],['Comerciante desde los 15 💼','Sé lo que vale cada cosa.']],
+ poeta:[['Escribo versos que nadie lee 🖋️','La belleza está en los objetos olvidados.'],['Poeta de madrugada 🌙','Cada cosa tiene una canción escondida.']],
+ detective:[['Investigador privado (retirado) 🔍','Los detalles nunca mienten.'],['Perito en antigüedades 🧐','Verifico antes de confiar.']],
+ fan:[['Fan número 1 de las leyendas 🌟','Mi cuarto es un museo.'],['Coleccionista de recuerdos de famosos ⭐','Si alguien famoso lo tocó, lo quiero.']],
+ bromista:[['La vida es mejor con risas 😂','Chistes malos gratis.'],['Profesional del humor amateur 🤡','Si no te ríes, te devuelvo el chiste.']],
+ turista:[['Traveler 🌍 | Viajero','Collecting souvenirs everywhere ✈️'],['Living abroad 🧳','Aprendiendo español poco a poco.']],
  tikismikis:[['Profesora de lengua jubilada 📚','Las tildes no son decoración.'],['Corrector de estilo ✒️','Escribe bien y hablamos. Escribe mal y también, pero menos.']],
 };
-const PROFILE_POSTS={coleccionista:['🏺','🕰️','📜','🗝️','🖼️','⚱️'],desconfiado:['🔍','🧾','🔐','🧐','⚖️','🕵️'],apurado:['🏃','☕','⏱️','🚗','✈️','⚡'],amable:['🌻','🐶','🍰','🌷','🐱','🌈'],tikismikis:['📚','✒️','📝','📖','🔤','🎓']};
-const PROFILE_HL={coleccionista:['Colección','Ferias','Restauros'],desconfiado:['Estafas','Pruebas','Reseñas'],apurado:['Viajes','Trabajo','Café'],amable:['Familia','Jardín','Recetas'],tikismikis:['Libros','Clases','Errores ajenos']};
+const PROFILE_POSTS={regateador:['🏷️','💸','🛒','🧾','📉','🤑'],nostalgico:['📻','🕰️','📷','🏡','🎞️','🧸'],influencer:['🤳','✨','💄','🌸','📸','🛍️'],conspiranoico:['🛸','👁️','🔺','🌕','📡','🗺️'],abuelita:['🧶','🍪','🌺','👵','🐈','☕'],revendedor:['📦','💼','🏷️','🚚','📈','🔧'],poeta:['🖋️','🌙','🍂','📜','🕯️','🌧️'],detective:['🔍','🗂️','🧐','🕵️','📎','🔦'],fan:['⭐','🕯️','🖼️','🎤','🎬','💌'],bromista:['😂','🤡','🎈','🥸','🃏','🍌'],turista:['🌍','✈️','🧳','🗺️','📍','🏛️'],coleccionista:['🏺','🕰️','📜','🗝️','🖼️','⚱️'],desconfiado:['🔍','🧾','🔐','🧐','⚖️','🕵️'],apurado:['🏃','☕','⏱️','🚗','✈️','⚡'],amable:['🌻','🐶','🍰','🌷','🐱','🌈'],tikismikis:['📚','✒️','📝','📖','🔤','🎓']};
+const PROFILE_HL={regateador:['Gangas','Ferias','Tiendas'],nostalgico:['Familia','Fotos viejas','Radio'],influencer:['Colabs','Outfits','Viajes'],conspiranoico:['Pruebas','Avistamientos','Teorías'],abuelita:['Nietos','Tejidos','Recetas'],revendedor:['Stock','Ventas','Envíos'],poeta:['Versos','Noches','Lluvia'],detective:['Casos','Archivos','Pistas'],fan:['Ídolos','Conciertos','Firmas'],bromista:['Memes','Bromas','Risas'],turista:['Viajes','Comida','Recuerdos'],coleccionista:['Colección','Ferias','Restauros'],desconfiado:['Estafas','Pruebas','Reseñas'],apurado:['Viajes','Trabajo','Café'],amable:['Familia','Jardín','Recetas'],tikismikis:['Libros','Clases','Errores ajenos']};
 const CONCERN_PIN={autenticidad:'Me vendieron una réplica una vez. Nunca más.',procedencia:'Me encanta saber quién tuvo cada cosa antes que yo.',estado:'Lo primero que miro es el estado. Siempre.',envio:'Odio esperar envíos eternos.',precio:'Nunca pago de más. Nunca.',confianza:'Sin garantía no compro nada.',foto:'Sin fotos no hay trato 📸'};
 function ensureProfile(b){
   if(b.profile)return b.profile;
