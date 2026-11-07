@@ -4,7 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Juego de reventa: compra barato, inventa historias y convence a los clientes.">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta name="theme-color" content="#14171F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lo Vendo Caro">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'&&window.top===window)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
 </head>
 <body>
 <title>Lo Vendo Caro</title>
@@ -942,6 +951,7 @@ details.chips[open] summary{display:none}
 .mcard.alt .mstats span{background:rgba(255,255,255,.14)}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mgrid .mcard{flex-direction:column;align-items:flex-start;gap:8px}
+.mapp{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.mpill{background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:13px;padding:8px 14px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25);cursor:pointer;font-family:inherit}.mpill:hover{background:rgba(255,255,255,.22)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -3526,6 +3536,15 @@ function pkLoop(ts){
 document.addEventListener('input',e=>{if(e.target.id==='pk-bet')$('#pk-betn').textContent=money(e.target.value)});
 
 /* ================= MENÚ Y PARTIDAS ================= */
+let installEvt=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;try{if(!$('#menu').hidden)renderMenu()}catch(_){}});
+addEventListener('appinstalled',()=>{installEvt=null;toast('¡Instalada! Ábrela desde tu pantalla de inicio.','good')});
+const isApp=()=>matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function toggleFS(){const d=document,el=d.documentElement;
+  if(!(d.fullscreenElement||d.webkitFullscreenElement)){const f=el.requestFullscreen||el.webkitRequestFullscreen;if(!f){toast(isIOS()?'En iPhone, instala la app para jugar a pantalla completa.':'Tu navegador no permite pantalla completa aquí.');return}Promise.resolve(f.call(el)).catch(()=>toast('Tu navegador no permite pantalla completa aquí.'))}
+  else{const x=d.exitFullscreen||d.webkitExitFullscreen;x&&x.call(d)}}
+function doInstall(){if(installEvt){installEvt.prompt();installEvt.userChoice.finally(()=>{installEvt=null;renderMenu()})}else{menuView='install';renderMenu()}}
 let menuMode='title',menuView='main',menuConfirm=null,menuMsg='';
 const fmtAgo=ts=>{const s=Math.round((Date.now()-ts)/1000);if(s<60)return 'hace un momento';const m=Math.round(s/60);if(m<60)return `hace ${m} min`;const h=Math.round(m/60);if(h<24)return `hace ${h} h`;return `hace ${Math.round(h/24)} d`};
 const menuOpen=()=>!$('#menu').hidden;
@@ -3541,6 +3560,7 @@ function slotCard(n,purpose){
     <div class="slot-acts">${purpose==='new'?`<button class="mbtn" data-act="m-new-slot" data-id="${n}">Reemplazar</button>`:`<button class="mbtn" data-act="m-load" data-id="${n}" ${cur?'disabled':''}>${cur?'Cargada':'Cargar'}</button>`}
     <button class="mbtn ghost" data-act="m-export" data-id="${n}">Exportar</button><button class="mbtn ghost" data-act="m-del" data-id="${n}">Borrar</button></div></div>`;
 }
+const appRow=()=>`<div class="mapp">${isApp()?'':`<button class="mpill" data-act="m-install">📲 Instalar app</button>`}<button class="mpill" data-act="m-fs">⛶ Pantalla completa</button></div>`;
 const mcard=(act,id,icon,title,sub,alt,extra)=>`<button class="mcard ${alt?'alt':''}" data-act="${act}" ${id?`data-id="${id}"`:''}><span class="mi">${icon}</span><span class="mt"><b>${title}</b><small>${sub}</small>${extra||''}</span></button>`;
 function renderMenu(){
   const meta=slotMeta();const last=meta.last&&(meta.slots||{})[meta.last];const nSlots=Object.keys(meta.slots||{}).length;
@@ -3550,10 +3570,10 @@ function renderMenu(){
     if(menuMode==='title'){
       h=(last?mcard('m-continue','','▶','Continuar',`Archivo ${meta.last} · Día ${last.day} · guardado ${fmtAgo(last.at)}`,false,`<span class="mstats"><span>${money(last.money)}</span><span>${last.sales||0} ventas</span>${last.icons?`<span>${last.icons}</span>`:''}</span>`):'')
        +mcard('m-view','new','＋','Nueva partida','Empiezas con $20 en tu cuarto',!!last)
-       +`<div class="mgrid">${mcard('m-view','files','🗂️','Archivos de guardado',nSlots?`${nSlots} partida${nSlots>1?'s':''} guardada${nSlots>1?'s':''}`:'Ninguna todavía',true)}${mcard('m-view','howto','❓','Cómo se juega','Lo básico en 30 segundos',true)}</div>`;
+       +`<div class="mgrid">${mcard('m-view','files','🗂️','Archivos de guardado',nSlots?`${nSlots} partida${nSlots>1?'s':''} guardada${nSlots>1?'s':''}`:'Ninguna todavía',true)}${mcard('m-view','howto','❓','Cómo se juega','Lo básico en 30 segundos',true)}</div>`+appRow();
     }else{
       h=mcard('m-resume','','▶','Volver al juego',`Archivo ${SLOT} · Día ${S.day} · ${money(S.money)}`,false)
-       +`<div class="mgrid">${mcard('m-save','','💾','Guardar ahora',menuMsg||'También se guarda solo',true)}${mcard('m-view','files','🗂️','Archivos de guardado','Cargar, exportar, importar',true)}${mcard('m-tut','','🎓','Repetir tutorial','Repaso guiado',true)}${mcard('m-title','','🏠','Menú principal','Guarda y sale',true)}</div>`;
+       +`<div class="mgrid">${mcard('m-save','','💾','Guardar ahora',menuMsg||'También se guarda solo',true)}${mcard('m-view','files','🗂️','Archivos de guardado','Cargar, exportar, importar',true)}${mcard('m-tut','','🎓','Repetir tutorial','Repaso guiado',true)}${mcard('m-title','','🏠','Menú principal','Guarda y sale',true)}</div>`+appRow();
     }
   }else if(menuView==='new'){
     h=head('Nueva partida')+`<p class="mhint">Elige en qué archivo guardarla.</p><div class="slots">${[1,2,3].map(n=>slotCard(n,'new')).join('')}</div>`;
@@ -3567,6 +3587,8 @@ function renderMenu(){
     h=head('Exportar partida')+`<p class="mhint">Copia este código y guárdalo donde quieras. Con él recuperas la partida en cualquier navegador.</p>
     <textarea class="mcode" id="m-code" readonly>${esc(menuMsg)}</textarea>
     <div class="slot-acts"><button class="mbtn" data-act="m-copy">Copiar código</button></div><p class="mhint" id="m-copied"></p>`;
+  }else if(menuView==='install'){
+    h=head('Instalar la app')+`<div class="mhowto">${isIOS()?'<p>En iPhone o iPad, desde <b>Safari</b>:</p><p>1. Toca <b>Compartir</b> (el cuadrado con la flecha hacia arriba).</p><p>2. Elige <b>Agregar a pantalla de inicio</b>.</p><p>3. Abre <b>Lo Vendo Caro</b> desde el ícono: se abre a pantalla completa, sin barras del navegador.</p>':'<p>Abre el menú del navegador (⋮) y elige <b>Instalar app</b> o <b>Agregar a la pantalla de inicio</b>.</p><p>Luego ábrela desde el ícono: se abre a pantalla completa, sin barras del navegador.</p><p>Si no aparece la opción, entra desde <b>whis5795.github.io/SellSim</b> en Chrome, Edge o Samsung Internet.</p>'}</div>`;
   }else if(menuView==='howto'){
     h=head('Cómo se juega')+`<div class="mhowto"><p>🛒 <b>Compra barato</b> en bazarito.com desde la computadora de tu cuarto.</p><p>✍️ <b>Inventa una historia</b> para cada objeto: fechas, nombres y detalles suben su valor.</p><p>💬 <b>Convence</b> a cada cliente por chat: responde lo que pregunta, no te contradigas y mira su perfil.</p><p>📦 <b>Envía</b> lo vendido por la ventana para cobrar el resto.</p><p>🍔 <b>Come y bebe</b>: la comida llega a tu puerta. Y duerme en la cama para pasar el día.</p><p>🔎 Todo lo demás lo encuentras <b>buscando en el navegador</b>.</p></div>`;
   }
@@ -3602,6 +3624,8 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act^="m-"],[data-act^="tut-"]');if(!t)return;
   const a=t.dataset.act,n=+t.dataset.id;
   switch(a){
+    case 'm-install':doInstall();break;
+    case 'm-fs':toggleFS();break;
     case 'm-continue':loadSlot(slotMeta().last);break;
     case 'm-view':menuView=t.dataset.id;menuConfirm=null;menuMsg='';renderMenu();break;
     case 'm-back':if(menuView==='export'){menuView='files';menuMsg='';menuConfirm=null;renderMenu();break}menuView='main';menuConfirm=null;menuMsg='';renderMenu();break;
