@@ -1132,6 +1132,16 @@ body.helper{background:var(--bg)}
 .hp-grid{position:absolute;inset:0;background:linear-gradient(90deg,transparent 33%,rgba(255,255,255,.35) 33%,rgba(255,255,255,.35) 33.5%,transparent 33.5%,transparent 66%,rgba(255,255,255,.35) 66%,rgba(255,255,255,.35) 66.5%,transparent 66.5%),linear-gradient(transparent 33%,rgba(255,255,255,.35) 33%,rgba(255,255,255,.35) 33.5%,transparent 33.5%,transparent 66%,rgba(255,255,255,.35) 66%,rgba(255,255,255,.35) 66.5%,transparent 66.5%)}
 .hp-camhint{margin:0;font-size:13px;color:var(--muted)}.hp-lq{display:flex;gap:8px;align-items:center}.hp-lq .minibar{flex:1}
 .hp-sl{display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:700}.hp-sl input{width:100%}
+
+.hp-cutl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px}.hp-cutl b{color:var(--good)}.hp-cutl input{width:100%;margin-top:6px}
+.hp-stats{display:flex;gap:8px;flex-wrap:wrap}.hp-stats span:not(:empty){background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+.hp-ship{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.hp-ship.has{border-color:#FFC93C;background:color-mix(in srgb,#FFC93C 14%,var(--surface))}.hp-ship>div{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}.hp-ship span{font-size:12.5px;color:var(--muted)}
+.hp-h3{margin:6px 2px 0;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.friend{animation:frIn .6s cubic-bezier(.2,1.3,.4,1)}@keyframes frIn{from{opacity:0}}
+.friend .fr-head{animation:frNod 3.2s ease-in-out infinite;transform-origin:0 250px}@keyframes frNod{0%,70%,100%{transform:none}80%{transform:rotate(-4deg)}90%{transform:rotate(3deg)}}
+.friend .fr-phone{animation:frTap 1.8s ease-in-out infinite}@keyframes frTap{50%{transform:translateY(1.5px)}}
+.friend .fr-bub circle{animation:emDot 1.2s infinite}.friend .fr-bub circle:nth-child(3){animation-delay:.15s}.friend .fr-bub circle:nth-child(4){animation-delay:.3s}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -3577,7 +3587,7 @@ function wallSVG(w,sky){
      ${unread?`<circle cx="250" cy="172" r="12" fill="#E5484D"/><text x="250" y="177" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace">${unread}</text>`:''}</g>
    <rect x="112" y="283" width="34" height="6" rx="2" fill="#3A3F52"/>
    <path d="M150 318 h60 v48 h-60 z" fill="#2B3047"/><rect x="146" y="364" width="68" height="10" rx="4" fill="#23273A"/><rect x="176" y="374" width="8" height="26" fill="#23273A"/>
-   <g transform="translate(46 254)"><rect x="0" y="22" width="26" height="14" rx="2" fill="#B5643B"/><path d="M13 22 C2 10 4 2 8 0 C10 8 12 12 13 22 C14 10 20 4 24 2 C24 12 20 18 13 22Z" fill="#3E8E5A"/></g>`;
+   <g transform="translate(46 254)"><rect x="0" y="22" width="26" height="14" rx="2" fill="#B5643B"/><path d="M13 22 C2 10 4 2 8 0 C10 8 12 12 13 22 C14 10 20 4 24 2 C24 12 20 18 13 22Z" fill="#3E8E5A"/></g>${friendsSVG()}`;
   if(w===1){const pk=S.door.slice(0,6);return base+`
    <rect x="118" y="112" width="124" height="262" fill="#E5E8F0"/><rect x="126" y="120" width="108" height="252" rx="2" fill="#9C6B47"/>
    <rect x="138" y="134" width="84" height="96" rx="3" fill="none" stroke="#7E5434" stroke-width="3"/><rect x="138" y="246" width="84" height="112" rx="3" fill="none" stroke="#7E5434" stroke-width="3"/>
@@ -3640,7 +3650,7 @@ function renderRoomHUD(){
 function renderRoom(){
   if(!S)return;const r=$('#room');r.hidden=!inRoom();if(r.hidden)return;
   const sky=skyAt(S.min);
-  const key=[S.stove,JSON.stringify(S.pantry||{}),S.shipments.filter(s=>s.pending).length,S.wall,S.door.map(p=>p.uid+':'+(p.day<=S.day-1)).join(),S.fridge,S.fridgeItems.length,sky.a,S.wall===3?S.min:'',S.buyers.filter(b=>b.status==='open'&&b.unread).length].join('|');
+  const key=[(typeof friendList==='function'?friendList().map(p=>p.name).join(','):''),S.stove,JSON.stringify(S.pantry||{}),S.shipments.filter(s=>s.pending).length,S.wall,S.door.map(p=>p.uid+':'+(p.day<=S.day-1)).join(),S.fridge,S.fridgeItems.length,sky.a,S.wall===3?S.min:'',S.buyers.filter(b=>b.status==='open'&&b.unread).length].join('|');
   renderRoomHUD();
   if(key===roomKey)return;roomKey=key;
   const svg=$('#rm-scene');
@@ -3675,6 +3685,28 @@ document.addEventListener('keydown',e=>{if(!inRoom()||menuOpen()||e.target.match
 (()=>{let sx=null,sy=null;const r=$('#room');
   r.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY});
   r.addEventListener('pointerup',e=>{if(sx==null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)turn(dx<0?1:-1)});})();
+
+/* amigos ayudantes conectados: aparecen al lado de la computadora */
+function friendsSVG(){
+  let fr=[];try{fr=friendList()}catch(e){}if(!fr.length)return '';
+  const spots=[{x:282,flip:-1},{x:78,flip:1}];
+  return fr.slice(0,2).map((p,i)=>{const sp=spots[i],h=hue(p.name),skin=['#F2C9A0','#D9A27A','#A8714E','#7A4B30'][h%4],hair=['#2B1B12','#6B3E1E','#C98B3A','#1A1A1A','#8A2E1E'][h%5];
+    const busy=S.buyers.some(b=>b.status==='open'&&b.friend===p.name&&b.typing);
+    return `<g class="friend" transform="translate(${sp.x} 0)"><title>${esc(p.name)} te está ayudando</title>
+      <ellipse cx="0" cy="398" rx="26" ry="6" fill="rgba(0,0,0,.18)"/>
+      <rect x="-13" y="330" width="11" height="64" rx="5" fill="#2E3550"/><rect x="2" y="330" width="11" height="64" rx="5" fill="#2E3550"/>
+      <rect x="-15" y="388" width="15" height="8" rx="4" fill="#F4F4F6"/><rect x="0" y="388" width="15" height="8" rx="4" fill="#F4F4F6"/>
+      <path d="M-22 268 Q0 254 22 268 L24 336 Q0 344 -24 336 Z" fill="hsl(${h} 62% 52%)"/>
+      <path d="M-8 262 Q0 272 8 262" stroke="hsl(${h} 62% 38%)" stroke-width="3" fill="none"/>
+      <rect x="-4" y="250" width="8" height="10" fill="${skin}"/>
+      <g class="fr-head"><circle cx="0" cy="236" r="19" fill="${skin}"/><path d="M-19 234 Q-18 212 0 213 Q19 212 19 234 Q12 222 0 224 Q-10 222 -19 234Z" fill="${hair}"/>
+        <circle cx="${-6*sp.flip}" cy="238" r="2.2" fill="#1B1F2E"/><circle cx="${4*sp.flip}" cy="238" r="2.2" fill="#1B1F2E"/><path d="M${-5*sp.flip} 246 Q${-1*sp.flip} 249 ${3*sp.flip} 246" stroke="#1B1F2E" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>
+      <path d="M${-20*sp.flip} 272 Q${-30*sp.flip} 300 ${-12*sp.flip} 304" stroke="hsl(${h} 62% 46%)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M${20*sp.flip} 272 Q${28*sp.flip} 296 ${10*sp.flip} 302" stroke="hsl(${h} 62% 46%)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <g class="fr-phone"><rect x="-8" y="288" width="16" height="26" rx="3" fill="#14171F"/><rect x="-6" y="291" width="12" height="19" rx="1.5" fill="#7FD3FF"/>${busy?'':'<rect x="-4" y="294" width="8" height="2" fill="#fff" opacity=".8"/><rect x="-4" y="299" width="6" height="2" fill="#fff" opacity=".6"/>'}</g>
+      <g class="fr-tag"><rect x="-30" y="184" width="60" height="20" rx="10" fill="#14171F" opacity=".85"/><text x="0" y="198" font-size="11" font-weight="700" text-anchor="middle" fill="#fff" font-family="Figtree,sans-serif">${esc(p.name.slice(0,9))}</text></g>
+      ${busy?'<g class="fr-bub"><rect x="18" y="200" width="34" height="20" rx="10" fill="#fff"/><circle cx="28" cy="210" r="2.4" fill="#5A6283"/><circle cx="35" cy="210" r="2.4" fill="#5A6283"/><circle cx="42" cy="210" r="2.4" fill="#5A6283"/></g>':''}
+    </g>`}).join('')}
 
 /* ================= PERFILES DE LOS CLIENTES ================= */
 const PROFILE_BIO={
@@ -4086,7 +4118,7 @@ function empTick(){
 function msgTabs(on){const n=S.hired.length,w=S.inv.filter(i=>i.assigned).length;
   return `<div class="em-tabs" role="tablist"><a href="#" role="tab" data-go="bazarito.com/mensajes" class="${on==='chats'?'on':''}">💬 Clientes</a><a href="#" role="tab" data-go="bazarito.com/mensajes/equipo" class="${on==='team'?'on':''}">👥 Empleados${n?` <span class="em-cnt">${n}</span>`:''}${w?` <span class="em-cnt live">${w} en venta</span>`:''}</a></div>`}
 function friendCard(){const fr=friendList(),st=S.friends||{};
-  return `<div class="em-friend"><div class="em-fi">📲</div><div class="em-fb"><b>Contrata a tus amigos</b><span>Empareja su celular con tu partida: ven tus chats y responden a tus clientes desde su teléfono. Se llevan un ${Math.round(FRIEND_CUT*100)} % de cada venta que cierran.</span>
+  return `<div class="em-friend"><div class="em-fi">📲</div><div class="em-fb"><b>Contrata a tus amigos</b><span>Empareja su celular con tu partida: ven tus chats y responden a tus clientes desde su teléfono. Pueden ayudarte gratis o cobrar hasta un 20 % de cada venta que cierran, y también despachar tus paquetes.</span>
     ${fr.length?`<span class="em-fl">${fr.map(p=>`🟢 ${esc(p.name)}${st[p.name]?` · ${st[p.name].sold} venta${st[p.name].sold>1?'s':''}`:''}`).join(' · ')}</span>`:''}
     ${hasF('phone')?'':'<span class="em-lock">🔒 Necesitas un teléfono móvil para emparejarte. Cómpralo en Hogar Total.</span>'}</div>
     ${hasF('phone')?`<button class="bz-btn" data-act="pair-open">${fr.length?'Invitar a otro':'Invitar a un amigo'}</button>`:'<button class="bz-btn ghost" data-go="hogartotal.com">Ir a Hogar Total</button>'}</div>`}
@@ -4320,8 +4352,8 @@ setInterval(()=>{try{if(S&&friendList().length)hostPush()}catch(e){}},1000);
 // comisión al amigo que cerró la venta
 const _winBuyer=winBuyer;
 winBuyer=function(b,by){const was=b.status;_winBuyer(b,by);
-  if(was==='open'&&b.status==='won'&&b.friend){const cut=Math.max(1,Math.round(b.offer*FRIEND_CUT));S.money-=cut;S.friends=S.friends||{};const f=S.friends[b.friend]=S.friends[b.friend]||{sold:0,paid:0};f.sold++;f.paid+=cut;
-    toast(`🤝 ${b.friend} cerró la venta con ${b.name}. Su comisión: ${money(cut)}.`,'good');for(const p of friendList())if(p.name===b.friend)try{p.ch.send(JSON.stringify({t:'won',name:b.name,cut}))}catch(e){}}};
+  if(was==='open'&&b.status==='won'&&b.friend){const pcut=friendCut(b.friend);const cut=pcut>0?Math.max(1,Math.round(b.offer*pcut)):0;S.money-=cut;S.friends=S.friends||{};const f=S.friends[b.friend]=S.friends[b.friend]||{sold:0,paid:0};f.sold++;f.paid+=cut;
+    toast(`🤝 ${b.friend} cerró la venta con ${b.name}. ${cut?`Su comisión (${Math.round(pcut*100)} %): ${money(cut)}.`:'Lo hizo gratis 💛'}`,'good');for(const p of friendList())if(p.name===b.friend)try{p.ch.send(JSON.stringify({t:'won',name:b.name,cut}))}catch(e){}}};
 
 function openPair(){if(!hasF('phone')){toast('Necesitas un teléfono móvil: cómpralo en Hogar Total.','',()=>go('hogartotal.com'));return}$('#pair').hidden=false;if(!LK.pending)hostInvite();renderPair()}
 async function renderPair(){const el=$('#pr-body');if(!el||$('#pair').hidden)return;const p=LK.pending;
@@ -4362,11 +4394,11 @@ async function hpJoin(){
   HP.name=($('#hp-name').value||'').trim().slice(0,20)||'Amigo';try{localStorage.setItem('lvc-helper-name',HP.name)}catch(e){}
   HP.stage='making';hpRender();
   const pc=HP.pc=new RTCPeerConnection(ICE);
-  pc.ondatachannel=e=>{const ch=HP.ch=e.channel;ch.onopen=()=>{HP.stage='live';ch.send(JSON.stringify({t:'hi',n:HP.name}));hpRender()};
+  pc.ondatachannel=e=>{const ch=HP.ch=e.channel;ch.onopen=()=>{HP.stage='live';ch.send(JSON.stringify({t:'hi',n:HP.name,cut:HP.cut}));hpRender()};
     ch.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(x){return}
       if(m.t==='state'){HP.chats=m.chats;HP.day=m.day;hpRender(true)}
       if(m.t==='err'){HP.err=m.msg;hpRender(true);setTimeout(()=>{HP.err='';hpRender(true)},3500)}
-      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`)}};
+      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(m.cut?`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`:`🎉 ¡Cerraste la venta con ${m.name}! (trabajas gratis)`)}};
     ch.onclose=()=>{HP.stage='closed';hpRender()}};
   pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'){HP.stage='failed';hpRender()}};
   await pc.setRemoteDescription({type:'offer',sdp:HP.offer.s});await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);
@@ -4375,7 +4407,7 @@ function hpToast(t){const d=document.createElement('div');d.className='hp-toast'
 async function hpRender(soft){const el=$('#hp');if(!el)return;
   const head=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">${HP.stage==='live'?'🟢 Ayudante: '+esc(HP.name):'Modo ayudante'}</span></header>`;
   if(HP.stage==='bad'){el.innerHTML=head+`<main class="hp-main"><h2>Este enlace no funciona</h2><p>Pídele a tu amigo que te mande una invitación nueva desde su partida (Mensajes → Empleados → Invitar a un amigo).</p></main>`;return}
-  if(HP.stage==='name'){el.innerHTML=head+`<main class="hp-main"><h2>Tu amigo te invitó a ayudarle</h2><p>Vas a ver los chats de su tienda y responder a sus clientes. Te llevas un ${Math.round(FRIEND_CUT*100)} % de comisión de cada venta que cierres.</p>
+  if(HP.stage==='name'){el.innerHTML=head+`<main class="hp-main"><h2>Tu amigo te invitó a ayudarle</h2><p>Vas a ver los chats de su tienda y responder a sus clientes. Puedes ayudar gratis o cobrar hasta un 20 % de cada venta que cierres.</p>
     <label class="hp-lab">¿Cómo te llamas?<input id="hp-name" maxlength="20" value="${esc(HP.name)}" placeholder="Tu nombre" autocomplete="nickname"></label><button class="hp-btn" data-act="hp-join">Unirme</button>
     <p class="hp-small">${esc(HP.offer.h||'')}</p></main>`;setTimeout(()=>$('#hp-name')&&$('#hp-name').focus(),50);return}
   if(HP.stage==='making'){el.innerHTML=head+'<main class="hp-main"><h2>Preparando la conexión…</h2></main>';return}
@@ -4533,11 +4565,11 @@ async function radarFriendMsg(raw){let m;try{m=JSON.parse(raw)}catch(e){return}
     (await mq()).pub(`${RT}/p/${m.from}`,{k:'answer',from:RF.id,sdp:pc.localDescription.sdp});
     setTimeout(()=>{if(HP.stage==='making'){HP.stage='failed';hpRender()}},20000)}}
 function hpWire(pc){
-  pc.ondatachannel=e=>{const ch=HP.ch=e.channel;ch.onopen=()=>{HP.stage='live';ch.send(JSON.stringify({t:'hi',n:HP.name}));hpRender()};
+  pc.ondatachannel=e=>{const ch=HP.ch=e.channel;ch.onopen=()=>{HP.stage='live';ch.send(JSON.stringify({t:'hi',n:HP.name,cut:HP.cut}));hpRender()};
     ch.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(x){return}
       if(m.t==='state'){HP.chats=m.chats;HP.day=m.day;hpRender(true)}
       if(m.t==='err'){HP.err=m.msg;hpRender(true);setTimeout(()=>{HP.err='';hpRender(true)},3500)}
-      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`)}};
+      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(m.cut?`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`:`🎉 ¡Cerraste la venta con ${m.name}! (trabajas gratis)`)}};
     ch.onclose=()=>{HP.stage='closed';hpRender()}};
   pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'){HP.stage='failed';hpRender()}}}
 // pantallas del radar dentro del modo ayudante
@@ -4662,6 +4694,56 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
 // mientras la cámara está abierta, no redibujar con cada actualización
 const _hpWireRender=hpRender;
 hpRender=function(soft){if(soft&&HX.cam&&$('#hx-f'))return;return _hpWireRender(soft)};
+
+/* ================= AYUDANTE: comisión elegible (0–20 %) y despacho de paquetes ================= */
+HP.cut=(()=>{try{const v=localStorage.getItem('lvc-helper-cut');return v==null?10:clamp(+v,0,20)}catch(e){return 10}})();
+function friendCut(name){const p=LK.peers.find(x=>x.name===name);return p&&p.cut!=null?p.cut:FRIEND_CUT}
+const _hostOnMsg3=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t==='hi'||m.t==='cut'){const v=clamp(Math.round(+(m.cut!=null?m.cut:m.v)),0,20);if(!isNaN(v)){const ch=peer.cut!=null&&peer.cut!==v/100;peer.cut=v/100;
+      if(m.t==='cut'&&ch)toast(`${peer.name} ahora ${v?`cobra un ${v} %`:'te ayuda gratis'} por venta.`);}
+    if(m.t==='cut'){renderPair();try{renderPage(true)}catch(e){}hostPush(true);return}}
+  if(m.t==='ship'){const err=t=>{try{peer.ch.send(JSON.stringify({t:'err',msg:t}))}catch(e){}};
+    if(!hasF('phone'))return err('Tu amigo ya no tiene teléfono móvil.');
+    const n=dispatchAll();if(!n)return err('No hay paquetes para enviar.');
+    toast(`📦 ${peer.name} despachó ${n} paquete${n>1?'s':''} por la ventana${droneOn()?': los drones los entregan hoy':''}.`,'good');
+    try{peer.ch.send(JSON.stringify({t:'shipped',n}))}catch(e){}try{roomKey='';renderRoom()}catch(e){}hostPush(true);return}
+  return _hostOnMsg3(peer,raw)};
+hostPush=function(force){const ps=friendList();if(!ps.length)return;
+  const ships=S.shipments.filter(s=>s.pending).map(s=>({n:s.name,i:s.icon,b:s.buyer,c:s.city,r:s.rest}));
+  const base={t:'state',day:S.day,money:Math.round(S.money),chats:snapshot(),ships,drone:droneOn(),van:!!(S.furn&&S.furn.van)};
+  for(const p of ps){const data=JSON.stringify(Object.assign({cut:p.cut!=null?Math.round(p.cut*100):10},base));if(force||p.last!==data){p.last=data;try{p.ch.send(data)}catch(e){}}}};
+// en la lista de amigos conectados mostrar cuánto cobra cada uno
+const _friendCard=friendCard;
+friendCard=function(){return _friendCard().replace(/🟢 ([^·<]+?)(?=( · |<))/g,(m,n)=>{const p=friendList().find(x=>esc(x.name)===n.trim());return p?`🟢 ${n} (${p.cut===0?'gratis':Math.round((p.cut!=null?p.cut:FRIEND_CUT)*100)+' %'})`:m})};
+
+/* ---- celular del amigo ---- */
+function cutCtl(){return `<label class="hp-lab hp-cutl">Tu comisión por venta: <b id="hp-cutv">${HP.cut?HP.cut+' %':'gratis 💛'}</b><input type="range" id="hp-cut" min="0" max="20" step="1" value="${HP.cut}"></label>`}
+document.addEventListener('input',e=>{if(e.target.id==='hp-cut'){HP.cut=+e.target.value;$('#hp-cutv').textContent=HP.cut?HP.cut+' %':'gratis 💛';try{localStorage.setItem('lvc-helper-cut',HP.cut)}catch(x){}}});
+document.addEventListener('change',e=>{if(e.target.id==='hp-cut'&&HP.ch&&HP.stage==='live')HP.ch.send(JSON.stringify({t:'cut',v:HP.cut}))});
+let HPS={ships:[],shipped:0};
+const _hpRender3=hpRender;
+hpRender=async function(soft){
+  // pantallas de entrada: agregar la elección de comisión debajo del nombre
+  if(HP.stage!=='live'){await _hpRender3(soft);const n=$('#hp-name');if(n&&!$('#hp-cut'))n.closest('label').insertAdjacentHTML('afterend',cutCtl());return}
+  if(HP.cur!=null)return _hpRender3(soft);
+  const el=$('#hp');if(soft&&document.activeElement&&document.activeElement.id==='hp-cut')return;
+  const ships=HPS.ships||[];
+  el.innerHTML=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">🟢 ${esc(HP.name)}</span></header>
+  <main class="hp-list"><div class="hp-stats"><span>Día ${HP.day||'—'}</span><span>${HP.sold} venta${HP.sold===1?'':'s'}</span><span>${HP.earned?'$'+HP.earned+' ganados':HP.cut?'':'trabajas gratis'}</span></div>
+    ${cutCtl()}
+    <section class="hp-ship ${ships.length?'has':''}"><div><b>📦 Paquetes por enviar${ships.length?` (${ships.length})`:''}</b>
+      <span>${ships.length?ships.slice(0,4).map(s=>`${s.i} ${esc(s.n)} → ${esc(s.b)}, ${esc(s.c)}`).join('<br>')+(ships.length>4?`<br>y ${ships.length-4} más…`:''):'Cuando tu amigo venda algo, puedes despacharlo desde aquí.'}</span></div>
+      ${ships.length?`<button class="hp-btn" data-act="hp-ship">Enviar ${ships.length>1?'todos':'paquete'}${HPS.drone?' (dron)':HPS.van?' (camioneta)':''}</button>`:''}</section>
+    <h3 class="hp-h3">Chats</h3>
+    ${HP.chats.length?HP.chats.map(x=>`<button class="hp-chat" data-act="hp-open" data-id="${x.id}"><span class="av" style="--h:${hue(x.name)}">${esc(x.name[0])}</span><span class="hp-ci"><b>${esc(x.name)} <small>${x.icon||''} ${esc(x.item||'')}</small></b>
+      <span class="hp-sub">${x.emp?'Lo atiende un empleado':x.typing?'Escribiendo…':'Espera respuesta'} · ofrece $${x.offer}</span><span class="minibar"><i style="width:${x.conv}%;background:${convColor(x.conv)}"></i></span></span></button>`).join(''):'<div class="hp-empty">No hay clientes escribiendo ahora. En cuanto llegue uno, aparece aquí.</div>'}</main>`};
+// recibir paquetes y confirmación de envío
+const _hpWire=hpWire;
+hpWire=function(pc){_hpWire(pc);const prev=pc.ondatachannel;pc.ondatachannel=e=>{prev(e);const ch=e.channel,on=ch.onmessage;ch.onmessage=ev=>{try{const m=JSON.parse(ev.data);
+  if(m.t==='state'){HPS.ships=m.ships||[];HPS.drone=m.drone;HPS.van=m.van}
+  if(m.t==='shipped')hpToast(`📦 Enviaste ${m.n} paquete${m.n>1?'s':''}. Tu amigo cobra el resto al entregarse.`)}catch(x){}on(ev)}}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;if(t.dataset.act==='hp-ship'&&HP.ch){HP.ch.send(JSON.stringify({t:'ship'}));t.disabled=true;t.textContent='Enviando…'}});
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
