@@ -4040,7 +4040,7 @@ function msgTabs(on){const n=S.hired.length,w=S.inv.filter(i=>i.assigned).length
   return `<div class="em-tabs" role="tablist"><a href="#" role="tab" data-go="bazarito.com/mensajes" class="${on==='chats'?'on':''}">💬 Clientes</a><a href="#" role="tab" data-go="bazarito.com/mensajes/equipo" class="${on==='team'?'on':''}">👥 Empleados${n?` <span class="em-cnt">${n}</span>`:''}${w?` <span class="em-cnt live">${w} en venta</span>`:''}</a></div>`}
 function friendCard(){const fr=friendList(),st=S.friends||{};
   return `<div class="em-friend"><div class="em-fi">📲</div><div class="em-fb"><b>Contrata a tus amigos</b><span>Empareja su celular con tu partida: ven tus chats y responden a tus clientes desde su teléfono. Se llevan un ${Math.round(FRIEND_CUT*100)} % de cada venta que cierran.</span>
-    ${fr.length?`<span class="em-fl">${fr.map(p=>`🟢 ${esc(p.name)}${st[p.name]?` · ${st[p.name].sold} venta${st[p.name].sold>1?'s':''}`:''}`).join(' · ')}</span>`:''}</div>
+    ${fr.length?`<span class="em-fl">${fr.map(p=>`🟢 ${esc(p.name)}${st[p.name]?` · ${st[p.name].sold} venta${st[p.name].sold>1?'s':''}`:''}`).join(' · ')}</span>`:''}
     ${hasF('phone')?'':'<span class="em-lock">🔒 Necesitas un teléfono móvil para emparejarte. Cómpralo en Hogar Total.</span>'}</div>
     ${hasF('phone')?`<button class="bz-btn" data-act="pair-open">${fr.length?'Invitar a otro':'Invitar a un amigo'}</button>`:'<button class="bz-btn ghost" data-go="hogartotal.com">Ir a Hogar Total</button>'}</div>`}
 function empPage(){
