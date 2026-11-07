@@ -1180,6 +1180,16 @@ body.helper{background:var(--bg)}
 .cx-final{margin:10px 6px;padding:12px;border-radius:16px;background:linear-gradient(135deg,var(--good-soft),var(--surface));border:1.5px solid var(--good);display:flex;flex-direction:column;gap:10px;animation:emIn .35s ease}
 .cxf-t{display:flex;gap:10px;align-items:center}.cxf-t>span{font-size:28px}.cxf-t small{display:block;color:var(--muted);font-size:12.5px}.cxf-a{display:flex;gap:8px;flex-wrap:wrap}
 .hp-final{align-self:stretch;display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:16px;background:var(--good-soft);border:1.5px solid var(--good);margin-top:6px;animation:emIn .35s ease}.hp-final span{font-size:13px;color:var(--muted)}
+
+.pin-b{font-size:15px;filter:grayscale(1);opacity:.55}.pin-b.on{filter:none;opacity:1}
+.bs-pins{width:min(560px,100%);margin-top:26px;text-align:left}.bs-pins h2{font-size:14px;color:#5F6368;margin:0 0 10px;font-weight:700}
+.bs-pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.bs-pin{position:relative}.bs-pinb{width:100%;display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px 10px;border-radius:16px;border:1px solid #E3E6EC;background:#fff;cursor:pointer;font:inherit;color:#202124;transition:transform .15s,box-shadow .15s}
+.bs-pinb:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}.bs-pinb b{font-size:12.5px;text-align:center;line-height:1.2}.bs-pinb small{font-size:10.5px;color:#70757A;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fav.lg{width:38px;height:38px;border-radius:12px;font-size:18px}
+.bs-pinx{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:#F1F3F4;color:#5F6368;font-size:14px;cursor:pointer;line-height:1}
+.bs-pinhint{font-size:13px;color:#70757A;margin:0}
+.bs-pinr{margin-left:8px;border:1px solid #DADCE0;background:#fff;color:#5F6368;border-radius:999px;padding:2px 9px;font:600 11.5px inherit;cursor:pointer;vertical-align:middle}.bs-pinr.on{border-color:#2B50E8;color:#2B50E8}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -1199,7 +1209,7 @@ body.helper{background:var(--bg)}
   <form class="addrbar gut" id="omni">
     <button type="button" class="nav-b" id="nav-back" data-act="back" aria-label="Atrás"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button type="button" class="nav-b" id="nav-fwd" data-act="fwd" aria-label="Adelante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
-    <label class="omni"><svg id="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="addr" autocomplete="off" spellcheck="false" aria-label="Dirección o búsqueda" placeholder="Busca o escribe una dirección"></label>
+    <label class="omni"><svg id="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="addr" autocomplete="off" spellcheck="false" aria-label="Dirección o búsqueda" placeholder="Busca o escribe una dirección"></label><button type="button" class="nav-b pin-b" id="pin-b" data-act="pin-toggle" aria-label="Fijar esta página en Buscalo" title="Fijar en Buscalo">📌</button>
   </form>
 </div>
 
@@ -2818,6 +2828,7 @@ function renderChrome(){
     <span class="fav" style="background:${f[1]}">${esc(f[0])}</span><span class="tt">${esc(x.title||x.url)}</span>
     <button class="tx" data-act="close-tab" data-id="${x.id}" aria-label="Cerrar pestaña">×</button></div>`}).join('')+`<button class="newtab" data-act="new-tab" aria-label="Nueva pestaña">+</button>`;
   if(document.activeElement!==$('#addr'))$('#addr').value=t.url;
+  try{renderPinBtn()}catch(e){}
   $('#nav-back').disabled=!t.back.length;$('#nav-fwd').disabled=!t.fwd.length;
   $('#lock').style.color=FAV[t.host]?'var(--good)':'var(--muted)';
 }
@@ -2837,14 +2848,14 @@ function pageBuscalo(path){
   const logo=`<span class="bs-logo" data-go="buscalo.com">busca<span>lo</span></span>`;
   if(!q)return {title:'Buscalo',host:'buscalo.com',cls:'buscalo',html:`<div class="bs-home">${logo}
     <form class="bs-form" id="bs-form"><input id="bs-q" type="search" placeholder="Busca lo que necesites" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form>
-</div>`};
+    ${pinsHTML()}</div>`};
   let res=search(q);const fx=fixQuery(q);let note='';
   if(fx.changed){const r2=search(fx.fixed);
     if(r2.length){res=r2;note=`<p class="bs-fix">Quizás quisiste decir: <a href="#" data-go="buscalo.com/buscar?q=${encodeURIComponent(fx.fixed)}"><b>${esc(fx.fixed)}</b></a>. Mostrando sus resultados.</p>`}}
   return {title:`${q} - Buscalo`,host:'buscalo.com',cls:'buscalo',html:`<div class="bs-top">${logo}<form class="bs-form sm" id="bs-form"><input id="bs-q" type="search" value="${esc(q)}" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form></div>
   <div class="bs-results">${note}<p class="bs-count">${res.length?`Cerca de ${res.length} resultado${res.length>1?'s':''} (0,${ri(10,60)} segundos)`:''}</p>
   ${res.length?res.map(s=>{const f=FAV[s.url];return `<article class="bs-res"><div class="bs-url"><span class="fav" style="background:${f[1]}">${f[0]}</span><span>${s.url}</span></div>
-  <a href="#" data-go="${s.url}" class="bs-title">${esc(s.title)}</a><p>${esc(typeof s.snip==='function'?s.snip():s.snip)}</p></article>`}).join(''):
+  <a href="#" data-go="${s.url}" class="bs-title">${esc(s.title)}</a>${pinResBtn(s.url,s.title)}<p>${esc(typeof s.snip==='function'?s.snip():s.snip)}</p></article>`}).join(''):
   `<div class="bs-none"><h2>No encontramos nada para «${esc(q)}»</h2><p>Prueba con otras palabras.</p></div>`}</div>`};
 }
 
@@ -5059,6 +5070,29 @@ hpRender=async function(soft){await _hpRenderF(soft);const c=HP.chats.find(x=>x.
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hp-final"]');if(!t||!HP.ch)return;
   HP.ch.send(JSON.stringify({t:'final',id:HP.cur,ok:!!t.dataset.ok}));hpToast(t.dataset.ok?'🤝 ¡Venta cerrada!':'Rechazaste la oferta final.');HP.cur=null;setTimeout(()=>hpRender(),300)});
 
+/* ================= PÁGINAS FIJADAS EN BUSCALO ================= */
+const PIN_MAX=12;
+const pins=()=>(S.pins=S.pins||[]);
+const isPinned=url=>pins().some(p=>p.url===url);
+const pinUrl=()=>{const u=curTab().url||'';return u.replace(/\/$/,'')};
+function pinTitle(url){const t=S.tabs.find(x=>x.url===url);const host=parseUrl(url).host;const e=(typeof INDEX!=='undefined'?INDEX:[]).find(x=>x.url===url||x.url===host);
+  return ((t&&t.title)||(e&&e.title)||host).split(' · ')[0].split(' - ')[0].slice(0,26)}
+function togglePin(url,title){url=(url||'').replace(/\/$/,'');if(!url||/^buscalo\.com\/?$/.test(url))return;
+  if(isPinned(url)){S.pins=pins().filter(p=>p.url!==url);toast('Quitaste la página de tus fijadas.')}
+  else{if(pins().length>=PIN_MAX){toast(`Puedes fijar hasta ${PIN_MAX} páginas. Quita alguna primero.`);return}
+    pins().push({url,title:(title||pinTitle(url)).slice(0,26)});toast('📌 Página fijada: aparece al abrir Buscalo.','good')}
+  save();renderPinBtn();try{renderPage(true)}catch(e){}}
+function renderPinBtn(){const b=$('#pin-b');if(!b)return;const u=pinUrl();const home=/^buscalo\.com(\/)?$/.test(u)||!u;
+  b.hidden=home;b.classList.toggle('on',isPinned(u));b.title=isPinned(u)?'Quitar de Buscalo':'Fijar en Buscalo'}
+function pinsHTML(){const P=pins();
+  return `<section class="bs-pins"><h2>📌 Páginas fijadas</h2>${P.length?`<div class="bs-pgrid">${P.map(p=>{const f=FAV[parseUrl(p.url).host]||['?','#888'];
+    return `<div class="bs-pin"><button class="bs-pinb" data-go="${esc(p.url)}"><span class="fav lg" style="background:${f[1]}">${esc(f[0])}</span><b>${esc(p.title)}</b><small>${esc(p.url)}</small></button><button class="bs-pinx" data-act="pin-del" data-url="${esc(p.url)}" aria-label="Quitar ${esc(p.title)}">×</button></div>`}).join('')}</div>`
+    :'<p class="bs-pinhint">Todavía no fijaste ninguna. Abre una página y toca <b>📌</b> en la barra de direcciones, o el botón <b>📌 Fijar</b> en los resultados de búsqueda.</p>'}</section>`}
+function pinResBtn(url,title){return `<button class="bs-pinr ${isPinned(url)?'on':''}" data-act="pin-res" data-url="${esc(url)}" data-title="${esc(title||'')}">${isPinned(url)?'📌 Fijada':'📌 Fijar'}</button>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='pin-toggle'){e.preventDefault();togglePin(pinUrl())}
+  if(a==='pin-del'||a==='pin-res'){e.preventDefault();togglePin(t.dataset.url,(t.dataset.title||'').split(' · ')[0].split(' - ')[0])}});
+
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;try{if(!$('#menu').hidden)renderMenu()}catch(_){}});
@@ -5126,7 +5160,7 @@ function renderMenu(){
 }
 /* completa los datos que no existían en partidas guardadas con versiones anteriores */
 function upgradeSave(st){
-  const d={shop:[],tshop:{},inv:[],buyers:[],hired:[],cands:[],bills:[],shipments:[],deliveries:[],door:[],fridgeItems:[],botMsgs:[],used:{},lexUse:{},pantry:{},unlocked:[],proStories:[],absUsed:[],coupons:[],furn:{},
+  const d={shop:[],tshop:{},inv:[],buyers:[],hired:[],cands:[],bills:[],shipments:[],deliveries:[],door:[],fridgeItems:[],botMsgs:[],used:{},lexUse:{},pantry:{},unlocked:[],proStories:[],absUsed:[],coupons:[],furn:{},pins:[],
     jobsDone:{plates:0,surveys:0,typing:0},day$:{sales:0,profit:0,jobs:0,spent:0},revenue:0,stove:false,fridge:false,drone:false,botSub:false,botPro:false,restock2:false,aiOn:true,auto:true,view:'room',wall:0,food:100,drink:100,sales:0,earned:0,nextId:1,t:0,day:1,min:480,money:20};
   for(const k in d)if(st[k]===undefined||st[k]===null)st[k]=JSON.parse(JSON.stringify(d[k]));
   if(!Array.isArray(st.tabs)||!st.tabs.length){const id=st.nextId++;st.tabs=[{id,url:'buscalo.com',back:[],fwd:[]}];st.tab=id}
