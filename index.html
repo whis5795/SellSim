@@ -13,7 +13,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Lo Vendo Caro">
 <style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
-<script>if('serviceWorker' in navigator&&location.protocol==='https:'&&window.top===window)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'&&window.top===window)addEventListener('load',()=>{
+  const had=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').then(r=>{setInterval(()=>r.update().catch(()=>{}),60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update().catch(()=>{})})}).catch(()=>{});
+  // cuando hay una versión nueva, avisar con un cartel para actualizar
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!had||window.__lvcUpd)return;window.__lvcUpd=1;const d=document.createElement('button');d.className='upd-bar';d.textContent='✨ Hay una versión nueva del juego. Toca para actualizar.';d.onclick=()=>{try{save()}catch(e){}location.reload()};document.body.appendChild(d)});
+});</script>
 </head>
 <body>
 <title>Lo Vendo Caro</title>
@@ -1215,6 +1220,8 @@ body.helper{background:var(--bg)}
 .bz-fr{font-size:11px;font-weight:800;color:#1F9D63;background:#E3F7EC;padding:2px 7px;border-radius:999px;white-space:nowrap;align-self:flex-start}
 .cx-friend{margin:0;padding:8px 14px;font-size:12.5px;background:#E3F7EC;color:#135C3A;border-bottom:1px solid #9ADBB8}
 @media (prefers-color-scheme:dark){.cx-friend{background:#123528;color:#9FE8C3;border-color:#1F5C41}.bz-fr{background:#123528;color:#7FE0AE}}
+.upd-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:200;border:0;border-radius:999px;padding:12px 18px;background:#2645F2;color:#fff;font:800 14px Figtree,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35);cursor:pointer;max-width:calc(100% - 32px)}
+.site-bazarito .bz-rej{background:#fff}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
