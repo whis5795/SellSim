@@ -2659,7 +2659,8 @@ function employeesWork(){
       }
       continue;
     }
-    const b=S.buyers.find(x=>x.status==='open'&&!x.emp&&!x.typing&&x.id!==S.cur&&x.waitingSince!=null&&S.t-x.waitingSince>=10);
+    // solo atiende chats de objetos que se le asignaron a este empleado
+    const b=S.buyers.find(x=>x.status==='open'&&!x.emp&&!x.typing&&x.id!==S.cur&&x.waitingSince!=null&&S.t-x.waitingSince>=10&&(itemOf(x)||{}).assigned===h.id);
     if(b){h.busy=b.id;h.until=S.t+ri(4,7);b.emp=h.id;b.waitingSince=null;b.msgs.push({from:'emp',who:h.name,text:pick(TIERS[h.tier].lines)});dirty=true}
   }
 }
@@ -3123,7 +3124,7 @@ function pageEmplea(path){
     const tot=S.hired.reduce((a,h)=>a+h.salary,0);
     return {title:'Mi equipo · EmpleaYa',host:'empleaya.com',cls:'labur',html:head+`<div class="lb-in lb-body">
       <h1 class="lb-h1">Mi equipo</h1><p class="lb-lead">Atienden los chats que dejas sin responder unos segundos. Sus sueldos (${money(tot)} al día) llegan como facturas a Cuentas Claras.</p>
-      <label class="lb-switch" for="auto"><span>Que atiendan los chats sin responder</span><input type="checkbox" id="auto" ${S.auto?'checked':''}></label>
+      <label class="lb-switch" for="auto"><span>Que atiendan los chats de los objetos que les asignaste</span><input type="checkbox" id="auto" ${S.auto?'checked':''}></label>
       ${S.hired.length?S.hired.map(h=>{const busy=h.busy?S.buyers.find(b=>b.id===h.busy):null;return `<div class="lb-cv"><div class="lb-top"><span class="lb-av" style="--h:${hue(h.name)}">${esc(h.name[0])}</span><div><b>${esc(h.name)}</b><span>${esc(h.title)}</span></div><span class="lb-ch num">${Math.round(h.chance*100)} %</span></div>
         <div class="lb-row"><span>${busy?`Atendiendo a ${esc(busy.name)}`:'Libre'} · sueldo <span class="num">${money(h.salary)}</span>/día</span><button class="lb-btn ghost" data-act="fire" data-id="${h.id}">Despedir</button></div></div>`}).join(''):'<div class="lb-empty">Todavía no contrataste a nadie.</div>'}</div>`};
   }
