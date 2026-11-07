@@ -1290,6 +1290,12 @@ body.helper{background:var(--bg)}
 .ck-pantry span{position:relative}.ck-exp{font-style:normal;font:800 10px 'JetBrains Mono',monospace;padding:1px 5px;border-radius:999px;margin-left:2px}
 .ck-exp.ok{background:var(--good-soft);color:var(--good)}.ck-exp.warn{background:#FFF3CF;color:#8A5A00}.ck-exp.bad{background:var(--bad-soft);color:var(--bad);animation:ckBlink 1.4s ease-in-out infinite}@keyframes ckBlink{50%{opacity:.55}}
 .ck-warn{margin:8px 0 0;padding:8px 12px;border-radius:12px;background:var(--bad-soft);color:var(--bad);font-weight:700;font-size:13px}.ck-legend{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.req-cards{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:250;display:flex;flex-direction:column;gap:8px;width:min(300px,calc(100% - 24px))}
+.req-card{background:#fff;color:#141A33;border-radius:18px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.35),0 0 0 2px #FFC93C;display:flex;flex-direction:column;gap:8px;animation:reqIn .4s cubic-bezier(.2,1.3,.4,1);font-family:Figtree,system-ui,sans-serif}
+@keyframes reqIn{from{transform:translateX(40px);opacity:0}}
+.req-h{display:flex;gap:10px;align-items:center}.req-h small{display:block;color:#5A6283;font-size:12px}.req-h .av{background:hsl(var(--h) 70% 88%);color:hsl(var(--h) 55% 24%)}
+.req-perm{border:1.5px solid #D2D8E6;background:#F4F6FB;color:#5A6283;border-radius:999px;padding:6px 10px;font:700 12.5px inherit;cursor:pointer;text-align:left}.req-perm.on{border-color:#1F9D63;background:#E3F7EC;color:#135C3A}
+.req-a{display:flex;gap:8px}.req-yes{flex:1;border:0;border-radius:12px;padding:10px;background:#2645F2;color:#fff;font:800 14px inherit;cursor:pointer}.req-no{border:0;border-radius:12px;padding:10px 14px;background:#EEF0F5;color:#141A33;font:700 14px inherit;cursor:pointer}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -5893,6 +5899,28 @@ hpRender=async function(soft){
   await _hpRenderSF(soft);window.__sfView=view;
   const restore=()=>{for(const k in pos){const x=document.querySelector('#hp '+k);if(x&&Math.abs(x.scrollTop-pos[k])>1)x.scrollTop=pos[k]}};
   restore();requestAnimationFrame(restore)};
+
+/* ================= SOLICITUDES DE AYUDANTES: tarjeta fija abajo a la derecha, esté donde esté el anfitrión ================= */
+function renderReqCards(){
+  let box=$('#req-cards');if(!box){box=document.createElement('div');box.id='req-cards';box.className='req-cards';document.body.appendChild(box)}
+  const reqs=(typeof RH!=='undefined'&&RH.reqs)||[];
+  const html=reqs.map(r=>`<div class="req-card"><div class="req-h"><span class="av" style="--h:${hue(r.n)}">${esc(r.n[0])}</span><div><b>${esc(r.n)}</b><small>quiere ayudarte con tu partida</small></div></div>
+    <button class="req-perm ${r.perm?'on':''}" data-act="req-perm" data-id="${r.from}">${r.perm?'✅ Puede comprar y publicar':'🔒 Sin permisos (solo chats)'}</button>
+    <div class="req-a"><button class="req-yes" data-act="req-yes" data-id="${r.from}">Aceptar</button><button class="req-no" data-act="req-no" data-id="${r.from}">No</button></div></div>`).join('');
+  if(box.innerHTML!==html)box.innerHTML=html;box.hidden=!reqs.length}
+// al aceptar, el permiso elegido en la tarjeta se aplica al amigo
+const _radarAcceptRC=radarAccept;
+radarAccept=async function(fid){const r=RH.reqs.find(x=>x.from===fid);const perm=!!(r&&r.perm);await _radarAcceptRC(fid);
+  const p=LK.peers.find(x=>x.fid===fid);if(p){p.perm=perm;if(perm)hostPush(true)}renderReqCards()};
+const _radarRejectRC=radarReject;radarReject=function(fid){_radarRejectRC(fid);renderReqCards()};
+// la solicitud ya no sale como aviso pasajero: queda en la tarjeta hasta que respondas
+const _radarHostMsgRC=radarHostMsg;
+radarHostMsg=function(raw){const tt=toast;toast=(t,c,cb)=>{if(/quiere ayudarte/.test(String(t)))return;tt(t,c,cb)};try{_radarHostMsgRC(raw)}finally{toast=tt}renderReqCards()};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act^="req-"]');if(!t)return;const a=t.dataset.act,id=t.dataset.id;
+  if(a==='req-perm'){const r=RH.reqs.find(x=>x.from===id);if(r){r.perm=!r.perm;renderReqCards()}}
+  if(a==='req-yes')radarAccept(id);
+  if(a==='req-no')radarReject(id)});
+setInterval(()=>{try{if(typeof RH!=='undefined')renderReqCards()}catch(e){}},1000);
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
