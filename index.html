@@ -1085,6 +1085,53 @@ body.helper{background:var(--bg)}
 .hp-form textarea{flex:1;font:inherit;font-size:16px;padding:10px 12px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);resize:none}
 .hp-send{width:46px;height:46px;border-radius:50%;border:0;background:var(--cobalt);color:#fff;font-size:18px;cursor:pointer}
 .hp-toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#111628;color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;font-size:13.5px;z-index:120;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+
+/* radar */
+.rd-wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:6px 0 10px}
+.rd{position:relative;width:150px;height:150px;flex:none;border-radius:50%;background:radial-gradient(circle,#0F2A1E 0,#071510 70%);box-shadow:inset 0 0 0 2px #1FAA6A55,0 6px 24px rgba(0,0,0,.25);overflow:hidden}
+.rd.big{width:min(260px,72vw);height:min(260px,72vw);align-self:center;margin:6px auto}
+.rd-ring{position:absolute;inset:0;margin:auto;border-radius:50%;border:1px solid #2EE59D44}.rd-ring.r1{width:33%;height:33%}.rd-ring.r2{width:66%;height:66%}.rd-ring.r3{width:99%;height:99%}
+.rd-sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#2EE59D00 0deg,#2EE59D00 290deg,#2EE59D88 360deg);opacity:0}
+.on .rd-sweep,.rd.on .rd-sweep{opacity:1;animation:rdSpin 2.4s linear infinite}@keyframes rdSpin{to{transform:rotate(360deg)}}
+.rd-me{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:26px;filter:drop-shadow(0 0 8px #2EE59D)}
+.rd-blip{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px;border-radius:50%;display:grid;place-items:center;font:800 13px inherit;color:#06281A;background:#2EE59D;border:0;cursor:pointer;
+  transform:rotate(var(--a)) translate(0,-38%) translateY(calc(var(--r,1) * -40%)) rotate(calc(-1 * var(--a)));animation:rdPop .5s cubic-bezier(.3,1.6,.5,1),rdGlow 1.6s ease-in-out infinite}
+.rd .rd-blip{transform:rotate(var(--a)) translateY(-52px) rotate(calc(-1 * var(--a)))}.rd.big .rd-blip{transform:rotate(var(--a)) translateY(-86px) rotate(calc(-1 * var(--a)));width:40px;height:40px;margin:-20px;font-size:20px}
+.rd-blip.req{background:#FFC93C}
+@keyframes rdPop{from{scale:0}}@keyframes rdGlow{50%{box-shadow:0 0 0 7px #2EE59D33}}
+.rd-info{flex:1;min-width:190px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}.rd-info b{color:var(--ink);font-size:14px}
+.rd-code{font:800 28px 'JetBrains Mono',monospace;letter-spacing:.2em;color:var(--ink)}
+.rd-name{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700}.rd-name input{font:inherit;font-size:14px;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink)}
+.rd-reqs{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.rd-req{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:color-mix(in srgb,#FFC93C 18%,var(--surface));border:1px solid #FFC93C;border-radius:14px;padding:8px 10px;animation:emIn .3s ease}.rd-req span:not(.av){flex:1;font-size:13px;color:var(--muted)}
+.rd-alt{margin:8px 0}.rd-alt summary{cursor:pointer;font-size:13px;color:var(--muted);font-weight:700}
+.hp-center{text-align:center;align-items:center}.hp-found{display:flex;flex-direction:column;gap:8px}.hp-go{font-weight:800;color:var(--cobalt);font-size:13px}
+.hp-coderow{display:flex;gap:8px;margin-top:8px}.hp-coderow input{flex:1;font:800 22px 'JetBrains Mono',monospace;letter-spacing:.3em;text-align:center;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);min-width:0}
+.hp-home{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;font:700 12px inherit}
+
+/* ayudante: chat completo */
+.hp-avb{background:none;border:0;padding:0;cursor:pointer;border-radius:50%;box-shadow:0 0 0 2px #E1306C}
+.hp-cht{flex:1;min-width:0}.hp-cht b{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.hp-ai{font-size:10.5px;font-weight:700;background:var(--surface-2);color:var(--muted);padding:2px 7px;border-radius:999px}.hp-ai.on{background:var(--good-soft);color:var(--good)}
+.hp-offer{font:800 15px 'JetBrains Mono',monospace;background:#FFC93C;color:#1A1400;padding:4px 9px;border-radius:10px}
+.hp-pf{padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);font-size:13px}.hp-pf p{margin:4px 0;color:var(--muted)}.hp-trait{color:var(--ink)!important;font-weight:700}.hp-story{font-size:12px}
+.hp-pat{display:flex;gap:2px}.hp-pat i{width:5px;height:5px;border-radius:50%;background:var(--line)}.hp-pat i.on{background:var(--muted)}
+.hp-chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;margin:-2px 0 4px}.hp-chips span{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px}
+.hp-chips .up{background:var(--good-soft);color:var(--good)}.hp-chips .dn{background:var(--bad-soft);color:var(--bad)}
+.hp-m.ph{padding:6px}.hp-photo{width:150px;height:120px;border-radius:12px;background:hsl(var(--h) 45% 82%);display:grid;place-items:center;position:relative;overflow:hidden;font-size:54px}
+.hp-photo b{position:absolute;right:6px;bottom:6px;font:700 11px 'JetBrains Mono',monospace;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:6px}
+.hp-m.typing{display:flex;gap:4px}.hp-m.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:emDot 1.2s infinite}.hp-m.typing i:nth-child(2){animation-delay:.15s}.hp-m.typing i:nth-child(3){animation-delay:.3s}
+.hp-q{padding:7px 14px;font-size:12.5px;font-weight:700;color:var(--cobalt);background:color-mix(in srgb,var(--cobalt) 10%,var(--surface));border-top:1px solid var(--line)}
+.hp-qr{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:var(--surface);border-top:1px solid var(--line)}
+.hp-qrb{flex:none;max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:7px 12px;font:600 13px inherit;cursor:pointer}.hp-qrb.ph{border-color:var(--cobalt);color:var(--cobalt)}
+.hp-tool{width:40px;height:40px;flex:none;border-radius:50%;border:0;background:var(--surface-2);font-size:18px;cursor:pointer;align-self:center}.hp-tool:disabled{opacity:.4}
+.hp-hag{display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--surface);border-top:1px solid var(--line)}.hp-hag input{flex:1;font:800 18px 'JetBrains Mono',monospace;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);min-width:0}.hp-hag .hp-btn{padding:10px 12px}
+.hp-cam{position:fixed;inset:0;background:rgba(3,5,12,.7);display:grid;place-items:end center;z-index:110;animation:phIn .2s}
+.hp-camb{width:100%;max-width:520px;background:var(--surface);border-radius:22px 22px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;animation:phUp .3s cubic-bezier(.2,1.2,.4,1)}.hp-camb h3{margin:0}
+.hp-view{height:200px;border-radius:16px;background:hsl(var(--h) 45% 82%);display:grid;place-items:center;overflow:hidden;position:relative;font-size:90px}.hp-view span{transition:filter .1s,transform .1s}
+.hp-grid{position:absolute;inset:0;background:linear-gradient(90deg,transparent 33%,rgba(255,255,255,.35) 33%,rgba(255,255,255,.35) 33.5%,transparent 33.5%,transparent 66%,rgba(255,255,255,.35) 66%,rgba(255,255,255,.35) 66.5%,transparent 66.5%),linear-gradient(transparent 33%,rgba(255,255,255,.35) 33%,rgba(255,255,255,.35) 33.5%,transparent 33.5%,transparent 66%,rgba(255,255,255,.35) 66%,rgba(255,255,255,.35) 66.5%,transparent 66.5%)}
+.hp-camhint{margin:0;font-size:13px;color:var(--muted)}.hp-lq{display:flex;gap:8px;align-items:center}.hp-lq .minibar{flex:1}
+.hp-sl{display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:700}.hp-sl input{width:100%}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -3147,11 +3194,11 @@ async function sendMsg(ext){
   finishTurn(b,delta,reply,Math.max(300,rand(900,1700)-waited));
   renderChat();
 }
-function sendOffer(){
-  const b=S.buyers.find(x=>x.id===S.cur);if(!b||b.status!=='open'||b.typing||b.emp)return;
-  const p=Math.round(+$('#hag-in').value);if(!(p>0)){toast('Escribe un precio válido.');return}
+function sendOffer(ext){
+  const b=S.buyers.find(x=>x.id===(ext?ext.id:S.cur));if(!b||b.status!=='open'||b.typing||b.emp)return;
+  const p=Math.round(ext?ext.p:+$('#hag-in').value);if(!(p>0)){if(!ext)toast('Escribe un precio válido.');return}
   const it=itemOf(b);const h=haggle(b,p,it);
-  b.msgs.push({from:'p',offer:p,chips:h.chips});b.waitingSince=null;b.typing=true;$('#haggle').hidden=true;renderChat();
+  b.msgs.push(Object.assign({from:'p',offer:p,chips:h.chips},ext&&ext.who?{who:ext.who}:{}));b.waitingSince=null;b.typing=true;if(!ext)$('#haggle').hidden=true;if(S.cur===b.id)renderChat();
   finishTurn(b,h.delta,h.reply,rand(800,1400));
 }
 function autosize(){const t=$('#c-input');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px'}
@@ -3190,9 +3237,9 @@ function shoot(){
   $('#cam-verdict').textContent=q>=85?'Nítida y bien encuadrada.':q>=60?`Aceptable, aunque ${errs[0][1]}.`:`Mala: ${errs[0][1]}.`;
   $('#cam-result').hidden=false;$('#cam-controls').hidden=true;
 }
-function sendPhoto(){
-  const b=S.buyers.find(x=>x.id===S.cur);const ph=camState&&camState.shot;if(!b||!ph)return;
-  $('#camera').hidden=true;
+function sendPhoto(ext){
+  const b=S.buyers.find(x=>x.id===(ext?ext.id:S.cur));const ph=ext?ext.shot:camState&&camState.shot;if(!b||!ph||b.status!=='open'||b.typing)return;
+  if(!ext)$('#camera').hidden=true;
   const P=PERSONAS[b.persona];const chips=[];let pos=0,neg=0;const add=(v,l)=>{chips.push({v,l});v>0?pos+=v:neg+=v};
   const first=!b.photos;b.photos++;
   if(ph.q>=85)add(first?18:5,'Foto nítida');else if(ph.q>=60)add(first?8:3,'Foto aceptable');else if(ph.q>=35)add(-5,'Foto borrosa');else add(-12,'Foto impresentable');
@@ -3200,8 +3247,8 @@ function sendPhoto(){
   prepBuyer(b);b.photoPromised=false;
   if(ph.q>=60&&b.concerns.includes('foto')&&!b.resolved.includes('foto')){b.resolved.push('foto');add(6,'Resolviste: verlo con mis propios ojos')}
   const delta=Math.round(pos*(P.photoX||1)*P.pos*ease(b)*(S.weak?.75:1)+neg*(P.photoX||1)*P.neg);
-  b.msgs.push({from:'p',photo:Object.assign({},ph),chips});
-  b.patience--;b.waitingSince=null;b.typing=true;renderChat();
+  b.msgs.push(Object.assign({from:'p',photo:Object.assign({},ph),chips},ext&&ext.who?{who:ext.who}:{}));
+  b.patience--;b.waitingSince=null;b.typing=true;if(S.cur===b.id)renderChat();
   const it=itemOf(b);const L=[];
   if(ph.q>=85){L.push(pick(['¡Qué buena foto! Se ve impecable.','Ahora sí, se ve precioso.']));const q={id:'ph'+b.photos,q:'¿Lo que se ve es su estado original, sin restaurar?',a:['si','original','claro','asi','exacto','correcto','nunca','sin restaurar','tal cual']};b.q=q;L.push(q.q)}
   else if(ph.q>=60){L.push(`Se ve bien, aunque ${ph.issue}.`);const q=nextQuestion(b,it,null);b.q=q;L.push(q.q)}
@@ -4359,6 +4406,263 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   if(a==='hp-back'){HP.cur=null;hpRender()}
 });
 
+/* ================= RADAR: encontrar amigos en la misma wifi ================= */
+// Los dispositivos se encuentran a través de un servidor MQTT público (solo para presentarse);
+// después hablan directo entre ellos por WebRTC.
+const MQ_URLS=window.LVC_MQ||['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081/mqtt'];
+const RT='lovendocaro/v1';
+/* ---- cliente MQTT 3.1.1 mínimo sobre WebSocket ---- */
+class MQ{
+  constructor(){this.subs=new Map();this.buf=new Uint8Array(0);this.ok=false;this.q=[];this.pid=1;this.id='lvc'+Math.random().toString(36).slice(2,10)}
+  static str(s){const b=new TextEncoder().encode(s);return [b.length>>8,b.length&255,...b]}
+  static len(n){const o=[];do{let d=n%128;n=Math.floor(n/128);if(n>0)d|=128;o.push(d)}while(n>0);return o}
+  pkt(type,body){return new Uint8Array([type,...MQ.len(body.length),...body])}
+  connect(){return new Promise((res,rej)=>{let i=0;const tryNext=()=>{if(i>=MQ_URLS.length)return rej(new Error('sin servidor'));const url=MQ_URLS[i++];
+      let ws;try{ws=new WebSocket(url,['mqtt'])}catch(e){return tryNext()}ws.binaryType='arraybuffer';const to=setTimeout(()=>{try{ws.close()}catch(e){}},6000);
+      ws.onopen=()=>{ws.send(this.pkt(0x10,[...MQ.str('MQTT'),4,2,0,60,...MQ.str(this.id)]))};
+      ws.onmessage=e=>{const was=this.ok;this.feed(new Uint8Array(e.data));if(!was&&this.ok){clearTimeout(to);this.ws=ws;this.url=url;res(this);this.q.splice(0).forEach(f=>f());this.ping=setInterval(()=>{try{ws.send(new Uint8Array([0xC0,0]))}catch(x){}},25000)}};
+      ws.onerror=()=>{};ws.onclose=()=>{clearTimeout(to);if(!this.ok)tryNext();else{this.ok=false;clearInterval(this.ping);this.onclose&&this.onclose()}}};tryNext()})}
+  feed(d){const b=new Uint8Array(this.buf.length+d.length);b.set(this.buf);b.set(d,this.buf.length);this.buf=b;
+    while(this.buf.length>=2){let m=1,len=0,i=1,c;do{if(i>=this.buf.length)return;c=this.buf[i++];len+=(c&127)*m;m*=128}while(c&128);
+      if(this.buf.length<i+len)return;const type=this.buf[0],body=this.buf.slice(i,i+len);this.buf=this.buf.slice(i+len);
+      if((type>>4)===2)this.ok=true;
+      if((type>>4)===3){const tl=(body[0]<<8)|body[1];const topic=new TextDecoder().decode(body.slice(2,2+tl));let p=2+tl;if(type&6)p+=2;
+        const msg=new TextDecoder().decode(body.slice(p));for(const [f,cb] of this.subs)if(MQ.match(f,topic))try{cb(msg,topic)}catch(e){}}}}
+  static match(f,t){if(f===t)return true;if(f.endsWith('/#'))return t.startsWith(f.slice(0,-1));return false}
+  sub(topic,cb){this.subs.set(topic,cb);const go=()=>{const id=this.pid++&65535||1;this.ws.send(this.pkt(0x82,[id>>8,id&255,...MQ.str(topic),0]))};this.ok?go():this.q.push(go)}
+  unsub(topic){this.subs.delete(topic);if(this.ok){const id=this.pid++&65535||1;this.ws.send(this.pkt(0xA2,[id>>8,id&255,...MQ.str(topic)]))}}
+  pub(topic,obj){const go=()=>{const p=new TextEncoder().encode(typeof obj==='string'?obj:JSON.stringify(obj));this.ws.send(this.pkt(0x30,[...MQ.str(topic),...p]))};this.ok?go():this.q.push(go)}
+  close(){try{this.ws&&this.ws.send(new Uint8Array([0xE0,0]));this.ws&&this.ws.close()}catch(e){}clearInterval(this.ping)}
+}
+/* ---- huella de la red: la IP pública que comparten los que están en la misma wifi ---- */
+let netKeyP=null;
+function netKey(){if(window.LVC_NET)return Promise.resolve(window.LVC_NET);if(netKeyP)return netKeyP;
+  netKeyP=new Promise(res=>{let done=false;const fin=v=>{if(done)return;done=true;try{pc.close()}catch(e){}res(v)};
+    const pc=new RTCPeerConnection(ICE);pc.createDataChannel('x');
+    pc.onicecandidate=e=>{const c=e.candidate&&e.candidate.candidate;if(!c)return;const m=c.match(/ (\d+\.\d+\.\d+\.\d+|[0-9a-f:]{6,}) \d+ typ srflx/i);if(m)fin(fnv(m[1]+'|lvc'))};
+    pc.createOffer().then(o=>pc.setLocalDescription(o)).catch(()=>fin(null));setTimeout(()=>fin(null),4000)});
+  return netKeyP}
+const fnv=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)};
+const rid=()=>Math.random().toString(36).slice(2,9);
+let MQC=null;
+async function mq(){if(MQC&&MQC.ok)return MQC;MQC=new MQ();await MQC.connect();MQC.onclose=()=>{MQC=null};return MQC}
+
+/* ================= ANFITRIÓN: hacerse visible ================= */
+const RH={on:false,id:null,code:null,net:null,timer:null,reqs:[],status:''};
+async function radarHostStart(){
+  if(RH.on)return;RH.on=true;RH.id=RH.id||rid();RH.code=RH.code||String(ri(1000,9999));RH.status='Conectando al radar…';renderPair();
+  try{const c=await mq();RH.net=await netKey();
+    c.sub(`${RT}/p/${RH.id}`,raw=>radarHostMsg(raw));
+    const beacon=()=>{if(!RH.on||!c.ok)return;const b={k:'b',id:RH.id,n:hostName(),d:S.day,f:friendList().length};if(RH.net)c.pub(`${RT}/n/${RH.net}/b`,b);c.pub(`${RT}/c/${RH.code}/b`,b)};
+    beacon();RH.timer=setInterval(beacon,2500);
+    RH.status=RH.net?'Visible para jugadores en tu misma wifi':'Visible con tu código (no detecté la wifi)';}
+  catch(e){RH.on=false;RH.status='No pude conectarme al radar. Revisa tu internet o usa el enlace de abajo.'}
+  renderPair()}
+function radarHostStop(){RH.on=false;clearInterval(RH.timer);RH.status='';renderPair()}
+function hostName(){try{return localStorage.getItem('lvc-host-name')||'Mi tienda'}catch(e){return 'Mi tienda'}}
+function radarHostMsg(raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.k==='req'){if(RH.reqs.some(r=>r.from===m.from)||friendList().some(p=>p.fid===m.from))return;
+    const r={from:m.from,n:String(m.n||'Amigo').slice(0,20)};RH.reqs.push(r);renderPair();
+    if($('#pair').hidden)toast(`📡 ${r.n} quiere ayudarte con tus mensajes. Toca para aceptar.`,'good',()=>radarAccept(r.from));}
+  if(m.k==='answer'){const p=LK.peers.find(x=>x.fid===m.from);if(p&&!p.answered){p.answered=true;p.pc.setRemoteDescription({type:'answer',sdp:m.sdp}).catch(()=>{})}}
+  if(m.k==='bye'){RH.reqs=RH.reqs.filter(r=>r.from!==m.from);renderPair()}}
+async function radarAccept(fid){
+  if(!hasF('phone')){toast('Necesitas el teléfono móvil.');return}
+  const r=RH.reqs.find(x=>x.from===fid);if(!r)return;RH.reqs=RH.reqs.filter(x=>x!==r);r.busy=true;renderPair();
+  const pc=new RTCPeerConnection(ICE);const ch=pc.createDataChannel('lvc',{ordered:true});
+  const peer={pc,ch,name:r.n,fid,id:'f'+Date.now(),last:''};LK.peers.push(peer);
+  ch.onopen=()=>{toast(`📲 ${peer.name} se conectó para ayudarte con los mensajes.`,'good');renderPair();hostPush(true);try{renderPage(true)}catch(e){}};
+  ch.onclose=()=>{LK.peers=LK.peers.filter(p=>p!==peer);toast(`${peer.name} se desconectó.`);renderPair();try{renderPage(true)}catch(e){}};
+  ch.onmessage=e=>hostOnMsg(peer,e.data);
+  await pc.setLocalDescription(await pc.createOffer());await waitIce(pc);
+  (await mq()).pub(`${RT}/p/${fid}`,{k:'offer',from:RH.id,sdp:pc.localDescription.sdp,n:hostName()});
+  setTimeout(()=>{if(ch.readyState!=='open'&&LK.peers.includes(peer)){LK.peers=LK.peers.filter(p=>p!==peer);try{pc.close()}catch(e){}toast(`No se pudo conectar con ${peer.name}. Prueben otra vez en la misma wifi.`);renderPair()}},25000)}
+function radarReject(fid){const r=RH.reqs.find(x=>x.from===fid);RH.reqs=RH.reqs.filter(x=>x!==r);mq().then(c=>c.pub(`${RT}/p/${fid}`,{k:'no',from:RH.id})).catch(()=>{});renderPair()}
+
+// nueva ventana de invitación: radar primero, QR/enlace como alternativa
+openPair=function(){if(!hasF('phone')){toast('Necesitas un teléfono móvil: cómpralo en Hogar Total.','',()=>go('hogartotal.com'));return}$('#pair').hidden=false;radarHostStart();renderPair()};
+const _renderPairOld=renderPair;
+renderPair=async function(){const el=$('#pr-body');if(!el||$('#pair').hidden)return;
+  const conn=friendList();
+  const radar=`<div class="rd-wrap ${RH.on?'on':''}"><div class="rd"><i class="rd-sweep"></i><i class="rd-ring r1"></i><i class="rd-ring r2"></i><i class="rd-ring r3"></i><span class="rd-me">🏪</span>
+      ${conn.map((p,i)=>`<span class="rd-blip ok" style="--a:${i*67+30}deg">${esc(p.name[0])}</span>`).join('')}${RH.reqs.map((r,i)=>`<span class="rd-blip req" style="--a:${i*67+200}deg">${esc(r.n[0])}</span>`).join('')}</div>
+    <div class="rd-info"><b>${esc(RH.status||'Radar apagado')}</b>${RH.on?`<span>Tu amigo abre el juego en su celular, toca <b>📡 Ayudar a un amigo</b> y te encuentra. ¿Otra red? Que escriba el código:</span><span class="rd-code">${RH.code}</span>`:''}
+    <label class="rd-name">Nombre de tu tienda<input id="rd-hn" maxlength="22" value="${esc(hostName())}"></label></div></div>`;
+  const reqs=RH.reqs.length?`<div class="rd-reqs">${RH.reqs.map(r=>`<div class="rd-req"><span class="av" style="--h:${hue(r.n)}">${esc(r.n[0])}</span><b>${esc(r.n)}</b><span>quiere ayudarte</span><button class="btn sm" data-act="rd-yes" data-id="${r.from}">Aceptar</button><button class="btn sm ghost" data-act="rd-no" data-id="${r.from}">No</button></div>`).join('')}</div>`:'';
+  const list=conn.length?`<div class="pr-friends">${conn.map(x=>`<span class="pr-f">🟢 ${esc(x.name)}</span>`).join('')}</div>`:'';
+  const keep=el.querySelector('details.rd-alt');const altOpen=keep&&keep.open;
+  el.innerHTML=reqs+radar+list+`<details class="rd-alt" ${altOpen?'open':''}><summary>¿No funciona el radar? Usar código QR o enlace</summary><div id="pr-alt"></div></details>
+    <div class="row-acts"><button class="btn ghost sm" data-act="${RH.on?'rd-off':'rd-on'}">${RH.on?'Dejar de ser visible':'Hacerme visible'}</button><button class="btn sm" data-act="pr-close">Listo</button></div>`;
+  if(altOpen)renderAlt()};
+async function renderAlt(){const box=$('#pr-alt');if(!box)return;if(!LK.pending){await hostInvite();}
+  const p=LK.pending;if(!p||!p.link){box.innerHTML='<p class="pr-p">Preparando…</p>';return}const svg=await qrSVG(p.link);
+  box.innerHTML=`<div class="pr-step"><b>1</b><div><p class="pr-p">Que escanee este QR o abra el enlace.</p>${svg?`<div class="pr-qr">${svg}</div>`:''}<div class="row-acts"><button class="btn sm" data-act="pr-copy">Copiar enlace</button>${navigator.share?'<button class="btn sm ghost" data-act="pr-share">Enviar por…</button>':''}</div></div></div>
+  <div class="pr-step"><b>2</b><div><p class="pr-p">Pega aquí el código que le aparece:</p><textarea class="pr-code" id="pr-in" rows="3" placeholder="Código de respuesta" spellcheck="false"></textarea>
+  <div class="row-acts"><button class="btn sm" data-act="pr-ok">Conectar</button>${canScan()?'<button class="btn sm ghost" data-act="pr-scan">📷 Escanear</button>':''}</div><video id="pr-cam" playsinline muted hidden></video><p class="pr-err" id="pr-err"></p><p class="pr-p" id="pr-st"></p></div></div>`}
+document.addEventListener('toggle',e=>{if(e.target.classList&&e.target.classList.contains('rd-alt')&&e.target.open)renderAlt()},true);
+document.addEventListener('change',e=>{if(e.target.id==='rd-hn'){try{localStorage.setItem('lvc-host-name',e.target.value.trim()||'Mi tienda')}catch(x){}}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='rd-yes')radarAccept(t.dataset.id);if(a==='rd-no')radarReject(t.dataset.id);
+  if(a==='rd-on')radarHostStart();if(a==='rd-off')radarHostStop();
+  if(a==='m-helper'){location.hash='radar';location.reload()}});
+
+/* ================= AMIGO: buscar partidas con el radar ================= */
+const RF={id:rid(),hosts:new Map(),code:'',waiting:null,timer:null,net:null,err:''};
+async function radarFriendStart(){
+  HP.stage='radar';hpRender();
+  try{const c=await mq();RF.net=await netKey();
+    c.sub(`${RT}/p/${RF.id}`,raw=>radarFriendMsg(raw));
+    if(RF.net)c.sub(`${RT}/n/${RF.net}/b`,raw=>radarSeen(raw,'wifi'));
+    RF.ready=true}catch(e){RF.err='No pude conectarme al radar. Revisa tu internet.'}
+  RF.timer=setInterval(()=>{const now=Date.now();let ch=false;for(const [k,h] of RF.hosts)if(now-h.at>8000){RF.hosts.delete(k);ch=true}if(ch&&HP.stage==='radar')hpRender()},2000);
+  hpRender()}
+function radarSeen(raw,via){let m;try{m=JSON.parse(raw)}catch(e){return}if(m.k!=='b')return;
+  const had=RF.hosts.has(m.id);RF.hosts.set(m.id,{id:m.id,n:String(m.n||'Tienda').slice(0,22),d:m.d,f:m.f,via,at:Date.now()});if(!had&&HP.stage==='radar')hpRender()}
+async function radarFriendCode(code){code=(code||'').replace(/\D/g,'').slice(0,4);if(code.length!==4){RF.err='El código tiene 4 números.';hpRender();return}
+  RF.err='';const c=await mq();if(RF.code)c.unsub(`${RT}/c/${RF.code}/b`);RF.code=code;c.sub(`${RT}/c/${code}/b`,raw=>{radarSeen(raw,'código');const h=[...RF.hosts.values()].find(x=>x.via==='código');if(h&&!RF.waiting)radarAsk(h.id)});
+  RF.err='Buscando la partida con ese código…';hpRender()}
+async function radarAsk(hid){const h=RF.hosts.get(hid);if(!h)return;
+  HP.name=(($('#hp-name')||{}).value||HP.name||'').trim().slice(0,20)||'Amigo';try{localStorage.setItem('lvc-helper-name',HP.name)}catch(e){}
+  RF.waiting=h;HP.stage='asking';hpRender();(await mq()).pub(`${RT}/p/${hid}`,{k:'req',from:RF.id,n:HP.name});
+  clearTimeout(RF.to);RF.to=setTimeout(()=>{if(HP.stage==='asking'){RF.waiting=null;HP.stage='radar';RF.err=`${h.n} no respondió. Pídele que acepte en su partida.`;hpRender()}},45000)}
+async function radarFriendMsg(raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.k==='no'){RF.waiting=null;HP.stage='radar';RF.err='Tu amigo rechazó la conexión.';hpRender()}
+  if(m.k==='offer'&&HP.stage==='asking'){clearTimeout(RF.to);HP.stage='making';hpRender();
+    const pc=HP.pc=new RTCPeerConnection(ICE);hpWire(pc);
+    await pc.setRemoteDescription({type:'offer',sdp:m.sdp});await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);
+    (await mq()).pub(`${RT}/p/${m.from}`,{k:'answer',from:RF.id,sdp:pc.localDescription.sdp});
+    setTimeout(()=>{if(HP.stage==='making'){HP.stage='failed';hpRender()}},20000)}}
+function hpWire(pc){
+  pc.ondatachannel=e=>{const ch=HP.ch=e.channel;ch.onopen=()=>{HP.stage='live';ch.send(JSON.stringify({t:'hi',n:HP.name}));hpRender()};
+    ch.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(x){return}
+      if(m.t==='state'){HP.chats=m.chats;HP.day=m.day;hpRender(true)}
+      if(m.t==='err'){HP.err=m.msg;hpRender(true);setTimeout(()=>{HP.err='';hpRender(true)},3500)}
+      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`)}};
+    ch.onclose=()=>{HP.stage='closed';hpRender()}};
+  pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'){HP.stage='failed';hpRender()}}}
+// pantallas del radar dentro del modo ayudante
+const _hpRender=hpRender;
+hpRender=async function(soft){const el=$('#hp');if(!el)return;
+  if(HP.stage!=='radar'&&HP.stage!=='asking'){if((HP.stage==='closed'||HP.stage==='failed')&&RF.ready){await _hpRender(soft);el.querySelector('.hp-main')&&el.querySelector('.hp-main').insertAdjacentHTML('beforeend','<button class="hp-btn" data-act="hp-radar">📡 Volver al radar</button>');return}return _hpRender(soft)}
+  const head=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><button class="hp-role hp-home" data-act="hp-exit">Mi partida ›</button></header>`;
+  if(HP.stage==='asking'){el.innerHTML=head+`<main class="hp-main hp-center"><div class="rd big on"><i class="rd-sweep"></i><i class="rd-ring r1"></i><i class="rd-ring r2"></i><i class="rd-ring r3"></i><span class="rd-me">🏪</span></div><h2>Esperando a ${esc(RF.waiting.n)}</h2><p>Le pedimos permiso. Tiene que tocar <b>Aceptar</b> en su partida.</p><button class="hp-btn ghost" data-act="hp-cancel">Cancelar</button></main>`;return}
+  const name=$('#hp-name')?$('#hp-name').value:HP.name;const codeV=$('#hp-code')?$('#hp-code').value:RF.code;
+  const hosts=[...RF.hosts.values()];
+  el.innerHTML=head+`<main class="hp-main"><h2>📡 Ayudar a un amigo</h2><p>Busca partidas de amigos en tu misma wifi. Tu amigo tiene que tener un teléfono en el juego y abrir <b>Mensajes → Empleados → Invitar a un amigo</b>.</p>
+    <label class="hp-lab">Tu nombre<input id="hp-name" maxlength="20" value="${esc(name)}" placeholder="¿Cómo te llamas?" autocomplete="nickname"></label>
+    <div class="rd big on"><i class="rd-sweep"></i><i class="rd-ring r1"></i><i class="rd-ring r2"></i><i class="rd-ring r3"></i><span class="rd-me">📱</span>${hosts.map((h,i)=>`<button class="rd-blip host" style="--a:${(fnv(h.id).charCodeAt(0)*37+i*90)%360}deg" data-act="hp-ask" data-id="${h.id}">🏪</button>`).join('')}</div>
+    ${hosts.length?`<div class="hp-found">${hosts.map(h=>`<button class="hp-chat" data-act="hp-ask" data-id="${h.id}"><span class="av" style="--h:${hue(h.n)}">🏪</span><span class="hp-ci"><b>${esc(h.n)}</b><span class="hp-sub">Día ${h.d} · ${h.via==='wifi'?'en tu wifi':'por código'}${h.f?` · ${h.f} ayudante${h.f>1?'s':''}`:''}</span></span><span class="hp-go">Unirme ›</span></button>`).join('')}</div>`
+      :`<p class="hp-small hp-center">${RF.err&&!RF.ready?esc(RF.err):RF.ready?(RF.net?'Buscando partidas cerca…':'No pude detectar tu wifi: usa el código de tu amigo.'):'Encendiendo el radar…'}</p>`}
+    <details class="rd-alt" ${RF.code?'open':''}><summary>¿Están en redes distintas? Escribe su código</summary><div class="hp-coderow"><input id="hp-code" inputmode="numeric" maxlength="4" placeholder="0000" value="${esc(codeV||'')}"><button class="hp-btn" data-act="hp-code">Buscar</button></div></details>
+    ${RF.err&&RF.ready?`<p class="hp-err">${esc(RF.err)}</p>`:''}</main>`};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='hp-ask')radarAsk(t.dataset.id);
+  if(a==='hp-code')radarFriendCode($('#hp-code').value);
+  if(a==='hp-cancel'){const h=RF.waiting;RF.waiting=null;HP.stage='radar';if(h)mq().then(c=>c.pub(`${RT}/p/${h.id}`,{k:'bye',from:RF.id}));hpRender()}
+  if(a==='hp-radar'){try{HP.pc&&HP.pc.close()}catch(x){}HP.chats=[];HP.cur=null;HP.stage='radar';hpRender()}
+  if(a==='hp-exit'){location.hash='';location.reload()}});
+document.addEventListener('keydown',e=>{if(e.target.id==='hp-code'&&e.key==='Enter'){e.preventDefault();radarFriendCode(e.target.value)}});
+// arranque del modo ayudante: con #radar entra directo al radar
+helperMode=function(){return /[#&](ayudante=|radar)/.test(location.hash)};
+const _helperBoot=helperBoot;
+helperBoot=async function(){if(/[#&]ayudante=/.test(location.hash))return _helperBoot();
+  document.body.classList.add('helper');['#menu','#room','#coach','.chrome','.taskbar','#viewport'].forEach(s=>{const el=$(s);if(el)el.hidden=true});
+  const host=document.createElement('div');host.id='hp';document.body.appendChild(host);
+  try{HP.name=localStorage.getItem('lvc-helper-name')||''}catch(e){}radarFriendStart()};
+
+/* ================= MODO AYUDANTE COMPLETO: fotos, respuestas rápidas, perfil y regateo ================= */
+// Lo que el anfitrión manda de cada chat: todo lo que necesita el amigo para vender igual de bien
+snapshot=function(){
+  return S.buyers.filter(b=>b.status==='open').map(b=>{const it=itemOf(b)||{};const pf=ensureProfile(b);const P=PERSONAS[b.persona]||{};
+    let qr=[];try{qr=quickReplies(b,it)}catch(e){}
+    return {id:b.id,name:b.name,item:it.name,icon:it.icon,h:hue(it.name||''),ask:it.price,offer:b.offer,conv:Math.round(b.conv),pat:b.patience,patMax:b.patMax||P.pat||10,typing:!!b.typing,emp:!!b.emp,
+      ai:aiReady(),q:b.q?{t:b.q.q||'',photo:!!b.q.photo}:null,qr,story:it.story||'',
+      pf:{handle:pf.handle,bio:pf.bio,trait:b.followed||b.pfSeen?P.desc||'':''},
+      msgs:b.msgs.slice(-40).map(m=>{const o={f:m.from,t:m.text||'',w:m.who||''};
+        if(m.photo)o.ph={icon:m.photo.icon,h:m.photo.h,blur:m.photo.blur,br:m.photo.br,sc:m.photo.sc,q:m.photo.q};
+        if(m.bphoto)o.bph={icon:m.bphoto.icon,h:m.bphoto.h,cap:m.bphoto.cap};
+        if(m.offer)o.offer=m.offer;
+        if(m.chips&&m.chips.length)o.c=m.chips.slice(0,4).map(c=>[c.v,c.l]);
+        return o})}})};
+const _hostOnMsg=hostOnMsg;
+hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t==='photo'||m.t==='offer'||m.t==='seen'){
+    const b=S.buyers.find(x=>x.id===m.id);const err=t=>{try{peer.ch.send(JSON.stringify({t:'err',msg:t}))}catch(e){}};
+    if(!hasF('phone'))return err('Tu amigo ya no tiene teléfono móvil: no puedes contestar.');
+    if(!b||b.status!=='open')return err('Ese chat ya se cerró.');
+    if(m.t==='seen'){b.pfSeen=true;return}
+    if(b.typing)return err(`${b.name} está escribiendo, espera su respuesta.`);
+    if(b.emp)return err('Ese chat lo atiende un empleado.');
+    b.friend=peer.name;
+    if(m.t==='photo'){const q=clamp(Math.round(+m.q||0),0,100)+(S.furn&&S.furn.ring?12:0);const it=itemOf(b)||{};
+      const issue=['está desenfocada','está muy oscura','está quemada de luz','el objeto se ve muy lejos','está demasiado cerca, no se ve entero'][m.iss|0]||'está desenfocada';
+      sendPhoto({id:b.id,who:peer.name,shot:{q:clamp(q,0,100),issue,blur:+m.blur||0,br:+m.br||1,sc:+m.sc||1,icon:it.icon,h:hue(it.name||'')}})}
+    else sendOffer({id:b.id,p:+m.p,who:peer.name});
+    return}
+  return _hostOnMsg(peer,raw)};
+
+/* ---------- celular del amigo ---------- */
+const HX={cam:null,pf:false,hag:false};
+const _hpRender2=hpRender;
+hpRender=async function(soft){
+  if(HP.stage!=='live'||HP.cur==null)return _hpRender2(soft);
+  const el=$('#hp');const c=HP.chats.find(x=>x.id==HP.cur);if(!c){HP.cur=null;return _hpRender2(soft)}
+  const keep=$('#hp-in')?$('#hp-in').value:'';const focus=document.activeElement&&document.activeElement.id==='hp-in';
+  const ms0=$('#hp-msgs');const atBottom=!ms0||ms0.scrollHeight-ms0.scrollTop-ms0.clientHeight<60;const st=ms0?ms0.scrollTop:0;
+  const pats=Array.from({length:Math.min(14,c.patMax||10)},(_,i)=>`<i class="${i<c.pat?'on':''}"></i>`).join('');
+  const chipH=m=>m.c?`<div class="hp-chips">${m.c.map(([v,l])=>`<span class="${v>=0?'up':'dn'}">${v>0?'+':''}${v} ${esc(l)}</span>`).join('')}</div>`:'';
+  const msg=m=>{const me=m.f!=='b';const who=me&&m.w?`<small>${esc(m.w)}${m.f==='emp'?' (empleado)':''}</small>`:'';
+    if(m.ph)return `<div class="hp-m me ph">${who}<div class="hp-photo" style="--h:${m.ph.h}"><span style="filter:blur(${m.ph.blur}px) brightness(${m.ph.br});transform:scale(${m.ph.sc})">${m.ph.icon}</span><b>${m.ph.q} %</b></div></div>${chipH(m)}`;
+    if(m.bph)return `<div class="hp-m them ph"><div class="hp-photo" style="--h:${m.bph.h}"><span>${m.bph.icon}</span></div>${esc(m.bph.cap)}</div>`;
+    if(m.offer)return `<div class="hp-m me">${who}💲 Propongo <b>$${m.offer}</b></div>${chipH(m)}`;
+    return `<div class="hp-m ${me?'me':'them'}">${who}${esc(m.t)}</div>${me?chipH(m):''}`};
+  const cam=HX.cam;
+  el.innerHTML=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">🟢 ${esc(HP.name)}${HP.sold?` · $${HP.earned}`:''}</span></header>
+  <div class="hp-chatv"><div class="hp-ch"><button class="hp-back" data-act="hp-back" aria-label="Volver">‹</button>
+      <button class="hp-avb" data-act="hp-pf" aria-label="Ver perfil"><span class="av" style="--h:${hue(c.name)}">${esc(c.name[0])}</span></button>
+      <div class="hp-cht"><b>${esc(c.name)} <span class="hp-ai ${c.ai?'on':''}">${c.ai?'Cliente con IA':'Motor clásico'}</span></b><small>${c.icon||''} ${esc(c.item||'')} · pides $${c.ask}</small></div>
+      <span class="hp-offer">$${c.offer}</span></div>
+    ${HX.pf?`<div class="hp-pf"><b>@${esc(c.pf.handle)}</b><p>${esc(c.pf.bio)}</p>${c.pf.trait?`<p class="hp-trait">💡 ${esc(c.pf.trait)}</p>`:''}<p class="hp-story"><b>Tu anuncio:</b> «${esc(c.story)}»</p></div>`:''}
+    <div class="hp-bar"><span class="minibar"><i style="width:${c.conv}%;background:${convColor(c.conv)}"></i></span><b>${c.conv} %</b><span class="hp-pat" title="Paciencia">${pats}</span></div>
+    <div class="hp-msgs" id="hp-msgs">${c.msgs.map(msg).join('')}${c.typing?'<div class="hp-m them typing"><i></i><i></i><i></i></div>':''}</div>
+    ${HP.err?`<p class="hp-err">${esc(HP.err)}</p>`:''}
+    ${c.q&&!c.typing?`<div class="hp-q">❓ ${c.q.photo?'Te pidió una foto':'Pregunta: '+esc(c.q.t)}</div>`:''}
+    ${!c.typing&&!c.emp&&(c.qr.length||c.q&&c.q.photo)?`<div class="hp-qr">${c.q&&c.q.photo?'<button class="hp-qrb ph" data-act="hp-cam">📷 Mandar foto</button>':''}${c.qr.filter(x=>!/^📷/.test(x)).map(x=>`<button class="hp-qrb" data-act="hp-qr" data-t="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:''}
+    ${HX.hag?`<form class="hp-hag" data-hp="hag"><span>💲</span><input id="hp-hag" type="number" inputmode="numeric" min="1" value="${c.offer}" aria-label="Tu precio"><button class="hp-btn">Proponer</button><button type="button" class="hp-btn ghost" data-act="hp-hag">×</button></form>`:''}
+    <form class="hp-form" data-hp="send"><button type="button" class="hp-tool" data-act="hp-cam" aria-label="Sacar foto" ${c.typing?'disabled':''}>📷</button><button type="button" class="hp-tool" data-act="hp-hag" aria-label="Proponer precio" ${c.typing?'disabled':''}>💲</button>
+      <textarea id="hp-in" rows="1" placeholder="${c.typing?'Espera su respuesta…':'Responde al cliente…'}">${esc(keep)}</textarea><button class="hp-send" aria-label="Enviar">➤</button></form></div>
+  ${cam?camHTML(c):''}`;
+  const ms=$('#hp-msgs');ms.scrollTop=atBottom?ms.scrollHeight:st;
+  if(focus){const i=$('#hp-in');i.focus();i.setSelectionRange(i.value.length,i.value.length)}
+  if(cam)camUpdate()};
+// cámara del amigo: mismo minijuego (enfoque, luz y zoom)
+function camHTML(c){const k=HX.cam;return `<div class="hp-cam"><div class="hp-camb"><h3>📷 Foto para ${esc(c.name)}</h3>
+  <div class="hp-view" style="--h:${c.h}"><span id="hx-sub">${c.icon||'📦'}</span><i class="hp-grid"></i></div>
+  <p class="hp-camhint" id="hx-hint"></p><div class="hp-lq"><span class="minibar"><i id="hx-qb"></i></span><b id="hx-q">0 %</b></div>
+  ${[['f','🔍 Enfoque'],['l','☀️ Luz'],['z','🔭 Zoom']].map(([s,l])=>`<label class="hp-sl">${l}<input type="range" id="hx-${s}" min="0" max="100" value="${k[s]}"></label>`).join('')}
+  <div class="hp-acts"><button class="hp-btn" data-act="hx-shoot">Sacar y enviar</button><button class="hp-btn ghost" data-act="hx-close">Cancelar</button></div></div></div>`}
+function camVals2(){const k=HX.cam,f=+$('#hx-f').value,l=+$('#hx-l').value,z=+$('#hx-z').value;k.f=f;k.l=l;k.z=z;
+  const ef=Math.abs(f-k.tf),el=l-k.tl,ez=z-k.tz;return {ef,el,ez,blur:+(ef*.14).toFixed(2),br:+clamp(1+el/55,.15,2.3).toFixed(2),sc:+clamp(1+ez/70,.35,2.4).toFixed(2),q:clamp(Math.round(100-(ef+Math.abs(el)*.7+Math.abs(ez)*.6)),0,100)}}
+function camUpdate(){if(!$('#hx-f'))return;const v=camVals2();const s=$('#hx-sub');s.style.filter=`blur(${v.blur}px) brightness(${v.br})`;s.style.transform=`scale(${v.sc})`;
+  $('#hx-q').textContent=v.q+' %';$('#hx-qb').style.width=v.q+'%';$('#hx-qb').style.background=convColor(v.q);
+  const errs=[[v.ef,'Le falta enfoque.'],[Math.abs(v.el)*.7,v.el<0?'Le falta luz.':'Tiene demasiada luz.'],[Math.abs(v.ez)*.6,v.ez<0?'Acércate un poco.':'Aléjate un poco.']].sort((a,b)=>b[0]-a[0]);
+  $('#hx-hint').textContent=v.q>=92?'¡Perfecta! Sácala.':'Pista: '+errs[0][1]}
+document.addEventListener('input',e=>{if(/^hx-/.test(e.target.id))camUpdate()});
+function hxSend(o){if(!HP.ch)return;HP.ch.send(JSON.stringify(Object.assign({id:HP.cur},o)))}
+document.addEventListener('submit',e=>{if(e.target.dataset.hp==='hag'){e.preventDefault();const p=Math.round(+$('#hp-hag').value);if(p>0){hxSend({t:'offer',p});HX.hag=false;hpRender()}}},true);
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='hp-qr'){const i=$('#hp-in');if(i){i.value=t.dataset.t;hpSend()}}
+  if(a==='hp-pf'){HX.pf=!HX.pf;if(HX.pf)hxSend({t:'seen'});hpRender()}
+  if(a==='hp-hag'){HX.hag=!HX.hag;hpRender();setTimeout(()=>$('#hp-hag')&&$('#hp-hag').select(),30)}
+  if(a==='hp-cam'){HX.cam={tf:ri(20,80),tl:ri(25,75),tz:ri(25,75),f:ri(0,100),l:ri(0,100),z:ri(0,100)};hpRender()}
+  if(a==='hx-close'){HX.cam=null;hpRender()}
+  if(a==='hx-shoot'){const v=camVals2();const iss=v.ef>=Math.abs(v.el)*.7&&v.ef>=Math.abs(v.ez)*.6?0:Math.abs(v.el)*.7>=Math.abs(v.ez)*.6?(v.el<0?1:2):(v.ez<0?3:4);
+    hxSend({t:'photo',q:v.q,blur:v.blur,br:v.br,sc:v.sc,iss});HX.cam=null;hpRender()}
+  if(a==='hp-back'){HX.pf=false;HX.hag=false;HX.cam=null}});
+// mientras la cámara está abierta, no redibujar con cada actualización
+const _hpWireRender=hpRender;
+hpRender=function(soft){if(soft&&HX.cam&&$('#hx-f'))return;return _hpWireRender(soft)};
+
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;try{if(!$('#menu').hidden)renderMenu()}catch(_){}});
@@ -4396,6 +4700,7 @@ function renderMenu(){
     if(menuMode==='title'){
       h=(last&&last.dead?`<div class="mdead">💀 En el archivo ${meta.last} moriste de inanición el día ${last.dead}.</div>`:'')+(last&&!last.dead?mcard('m-continue','','▶','Continuar',`Archivo ${meta.last} · Día ${last.day} · guardado ${fmtAgo(last.at)}`,false,`<span class="mstats"><span>${money(last.money)}</span><span>${last.sales||0} ventas</span>${last.icons?`<span>${last.icons}</span>`:''}</span>`):'')
        +mcard('m-view','new','＋','Nueva partida','Empiezas con $20 en tu cuarto',!!last)
+       +mcard('m-helper','','📡','Ayudar a un amigo','Responde los chats de otro jugador desde aquí',true)
        +`<div class="mgrid">${mcard('m-view','files','🗂️','Archivos de guardado',nSlots?`${nSlots} partida${nSlots>1?'s':''} guardada${nSlots>1?'s':''}`:'Ninguna todavía',true)}${mcard('m-view','howto','❓','Cómo se juega','Lo básico en 30 segundos',true)}</div>`+appRow();
     }else{
       h=mcard('m-resume','','▶','Volver al juego',`Archivo ${SLOT} · Día ${S.day} · ${money(S.money)}`,false)
