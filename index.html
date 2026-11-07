@@ -156,7 +156,7 @@ button[disabled]{cursor:not-allowed;opacity:.45}
 #cam-flash.go{animation:flash .45s ease-out}
 @keyframes flash{0%{opacity:.95}100%{opacity:0}}
 .cam-ctl{display:flex;flex-direction:column;gap:12px;width:min(92vw,360px);margin:0 auto}
-.cam-ctl label{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#C9C9D2}
+.cam-ctl label{display:grid;grid-template-columns:62px 1fr 104px;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#C9C9D2}
 .cam-ctl input[type=range]{width:100%;accent-color:#FFD60A}
 .shutter{width:68px;height:68px;border-radius:50%;background:#fff;border:5px solid #3A3A44;margin:4px auto 0;box-shadow:0 0 0 3px #fff}
 .cam-res{width:min(92vw,360px);margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
@@ -673,6 +673,13 @@ input.field.price{font:700 18px var(--f-mono)}
 .pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:0 -4px}
 .pf-grid div{aspect-ratio:1;max-width:100%;display:grid;place-items:center;font-size:clamp(26px,9vw,44px);background:hsl(var(--h) var(--tileS) var(--tileL))}
 
+.cam-st{font-style:normal;font-size:11px;font-weight:700;padding:3px 7px;border-radius:999px;text-align:center;white-space:nowrap;background:#2A2A33;color:#C9C9D2}
+.cam-st.ok{background:#123528;color:#43C98F}.cam-st.near{background:#3A2E10;color:#FFB443}.cam-st.far{background:#3A1820;color:#FF6B75}
+.cam-live{display:flex;flex-direction:column;gap:6px;background:#141418;border-radius:12px;padding:10px 12px}
+.cam-live .bar{background:#26262E}
+.cam-lq{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:#A3A3B0}.cam-lq b{font-size:16px;color:#fff}
+.cam-hint{margin:0;font-size:13px;color:#E8E8EE}
+
 @media (max-width:420px){.tb-stats{width:96px;padding:6px 8px}.tb-stats>span{grid-template-columns:16px 1fr;gap:4px}.tb-stats .num{display:none}.taskbar{gap:6px}.tb-btn{width:36px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -758,10 +765,10 @@ input.field.price{font:700 18px var(--f-mono)}
   <div class="sh-body"><div class="sh-in gut">
     <div class="cam-view" id="cam-view"><div id="cam-subject"></div><div class="cam-grid"></div><div class="cam-corners"></div><div id="cam-flash"></div></div>
     <div class="cam-ctl" id="cam-controls">
-      <label>Enfoque<input type="range" id="cam-f" min="0" max="100"></label>
-      <label>Luz<input type="range" id="cam-l" min="0" max="100"></label>
-      <label>Zoom<input type="range" id="cam-z" min="0" max="100"></label>
-      <p class="cam-tip">El objeto tiene que verse nítido, bien iluminado y entero dentro de las esquinas amarillas.</p>
+      <div class="cam-live"><div class="cam-lq"><span>Calidad estimada</span><b id="cam-lqn" class="num">0 %</b></div><div class="bar"><i id="cam-lqb"></i></div><p id="cam-hint" class="cam-hint"></p></div>
+      <label>Enfoque<input type="range" id="cam-f" min="0" max="100"><em class="cam-st" id="cam-fs"></em></label>
+      <label>Luz<input type="range" id="cam-l" min="0" max="100"><em class="cam-st" id="cam-ls"></em></label>
+      <label>Zoom<input type="range" id="cam-z" min="0" max="100"><em class="cam-st" id="cam-zs"></em></label>
       <button class="shutter" data-act="shoot" aria-label="Sacar foto"></button>
     </div>
     <div class="cam-res" id="cam-result" hidden><span class="eyebrow" style="color:#A3A3B0">Calidad de la foto</span><b id="cam-q">0 %</b><p id="cam-verdict" class="cam-tip"></p>
@@ -2224,7 +2231,17 @@ function openCam(){
 }
 function camVals(){const f=+$('#cam-f').value,l=+$('#cam-l').value,z=+$('#cam-z').value,C=camState;
   return {blur:+(Math.abs(f-C.tf)*.14).toFixed(2),br:+clamp(1+(l-C.tl)/55,.15,2.3).toFixed(2),sc:+clamp(1+(z-C.tz)/70,.35,2.4).toFixed(2),ef:Math.abs(f-C.tf),el:l-C.tl,ez:z-C.tz}}
-function updateCam(){if(!camState)return;const v=camVals();const s=$('#cam-subject');s.style.filter=`blur(${v.blur}px) brightness(${v.br})`;s.dataset.sc=v.sc}
+function updateCam(){if(!camState)return;const v=camVals();const s=$('#cam-subject');s.style.filter=`blur(${v.blur}px) brightness(${v.br})`;s.dataset.sc=v.sc;
+  const st=(el,diff,okT,lowT,highT)=>{const a=Math.abs(diff);el.className='cam-st '+(a<=4?'ok':a<=15?'near':'far');el.textContent=a<=4?okT:(diff<0?lowT:highT)+(a<=15?' (casi)':'')};
+  const df=+$('#cam-f').value-camState.tf;
+  st($('#cam-fs'),df,'Nítido ✓','Súbelo →','← Bájalo');
+  st($('#cam-ls'),v.el,'Bien ✓','Oscura →','← Muy clara');
+  st($('#cam-zs'),v.ez,'Encuadre ✓','Lejos →','← Muy cerca');
+  const q=clamp(Math.round(100-(v.ef*1+Math.abs(v.el)*.7+Math.abs(v.ez)*.6)),0,100);
+  $('#cam-lqn').textContent=q+' %';const b=$('#cam-lqb');b.style.width=q+'%';b.style.backgroundColor=convColor(q);
+  const errs=[[v.ef,'Le falta enfoque: el objeto se ve borroso.'],[Math.abs(v.el)*.7,v.el<0?'Le falta luz: está muy oscura.':'Tiene demasiada luz: se ve quemada.'],[Math.abs(v.ez)*.6,v.ez<0?'Acércate: el objeto se ve muy chico.':'Aléjate un poco: no se ve entero.']].sort((a,b)=>b[0]-a[0]);
+  $('#cam-hint').textContent=q>=92?'¡Perfecta! Saca la foto.':q>=85?'Muy buena. '+errs[0][1].split(':')[0]+' un poquito más y queda perfecta.':'Pista: '+errs[0][1];
+}
 function camLoop(){if(!camState||$('#camera').hidden)return;const t=performance.now()/1000;const s=$('#cam-subject');
   const a=matchMedia('(prefers-reduced-motion: reduce)').matches?0:1.6;
   s.style.transform=`translate(${Math.sin(t*2.1)*a}px,${Math.cos(t*2.7)*a}px) scale(${s.dataset.sc||1})`;requestAnimationFrame(camLoop)}
