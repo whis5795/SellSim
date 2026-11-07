@@ -2158,7 +2158,7 @@ function qType(d){
 // Unidades que indican que el número NO es un precio (días, kilos, años, medidas…)
 const NOT_PRICE=/^\s*(?:o\s+\d+\s*)?(?:dias?|horas?|hs|minutos?|min|segundos?|semanas?|mes(?:es)?|anos?|decadas?|siglos?|kilos?|kilogramos?|kg|kgs|gramos?|gr|g|toneladas?|libras?|lbs?|cm|centimetros?|metros?|mts?|m|mm|milimetros?|pulgadas?|litros?|lts?|l|ml|%|por ciento|veces|vez|piezas?|partes?|unidades?|personas?|duenos?|hijos?|nietos?|patas?|ruedas?|botones?|cuadras?|km|kilometros?|grados?|watts?|w|volts?|v|pisos?|cajones?|paginas?|capitulos?|tomos?|cuerdas?|colores?|ojos?|velas?|anillos?|vueltas?|pasos?|puntos?|estrellas?|numero|cosas?)(?![a-z])/;
 const PRICE_CUE=/(\$|dolar|plata|precio|pago|pagar|pagas|oferta|ofrezco|vend|cobr|cuesta|vale|dejo|rebaja|descuento|barato|caro|menos|mas|final|ultimo|trato|tuyo|tuya|cerramos|cerrar|listo|hecho|acepto|aceptas|ofrec)/;
-function parsePrice(text,b){
+function parsePrice(text,b){parsePrice.weak=false;
   const m=text.match(/(?:\$|us\$|usd)\s?(\d[\d.,]*)|(\d[\d.,]*)\s?(?:d[oó]lares|pesos|usd|bucks|verdes|mangos)/i);
   if(m)return parseInt((m[1]||m[2]).replace(/[.,]/g,''),10);
   const d=norm(text);
@@ -2174,7 +2174,7 @@ function parsePrice(text,b){
     if(/(llega|llegan|tarda|demora|mando|envio|envia|despacho|sale|hace|tiene|tuve|mide|pesa|cabe|caben|vive|queda|esta|calle|edad|cumple)\s*$/.test(d.slice(Math.max(0,r.index-16),r.index+1)))continue;
     // un número suelto muy lejos del precio en juego probablemente no es una oferta
     const ref=b?(b.offer||1):n;
-    if(cue?(n<ref*.25||n>ref*6):(n<ref*.6||n>ref*3))continue;return n}
+    if(cue?(n<ref*.25||n>ref*6):(n<ref*.6||n>ref*3))continue;parsePrice.weak=true;return n}
   if(b&&/(sube|subir|subes|subeme|ofrece mas|ofreceme mas|un poco mas|algo mas de dinero|mas dinero|paga mas|pagar mas|me parece poco|es muy poco|muy poca plata)/.test(d))return niceRound(b.offer*1.15)||b.offer+1;
   return null;
 }
@@ -2585,7 +2585,7 @@ function tick(){
   if(!night()&&!isOffline())for(const it of S.inv){
     if(!it.listed)continue;
     it.tooHigh=it.price>maxWilling(it)*2.2;
-    if(!it.tooHigh&&S.t>=it.nextSpawn&&it.spawned<it.maxBuyers)spawnBuyer(it);
+    if(!it.tooHigh&&S.t>=(it.nextSpawn||0)&&S.buyers.filter(b=>b.itemId===it.id&&b.status==='open').length<Math.min(3,it.maxBuyers||3))spawnBuyer(it);
   }
   const WAIT=b=>(b.persona==='apurado'?180:300)*(S.furn&&S.furn.keyboard?1.3:1);
   for(const b of S.buyers){
@@ -3232,7 +3232,9 @@ async function sendMsg(ext){
   const msg={from:'p',text,chips:[],pending:true};if(ext&&ext.who)msg.who=ext.who;b.msgs.push(msg);
   b.waitingSince=null;b.typing=true;if(!ext){inp.value='';autosize()}if(S.cur===b.id)renderChat();
   const started=performance.now();
-  const price=parsePrice(text,b);
+  let price=parsePrice(text,b);
+  // un número dudoso nunca te baja la oferta: solo cuenta si es claramente un precio
+  if(price&&parsePrice.weak&&price<b.offer)price=null;
   let delta,reply,chips;
   if(aiReady()){
     try{
@@ -5021,22 +5023,24 @@ hpRender=async function(soft){await _hpRenderR(soft);const el=$('#hp');if(!el)re
   const head=el.querySelector('.hp-head');if(head&&HP.stage==='live'){let c=head.querySelector('.hp-clock');if(!c){c=document.createElement('span');c.className='hp-clock';head.querySelector('.hp-logo').after(c)}c.textContent='🕒 '+hpClock()}
   // botón de rechazar en el chat abierto
   const ch=el.querySelector('.hp-ch');const cur=HP.chats.find(x=>x.id==HP.cur);
-  if(ch&&cur&&!ch.querySelector('.hp-rej'))ch.insertAdjacentHTML('beforeend',`<button class="hp-rej" data-act="hp-rej">✖</button>`)};
+  if(ch&&cur&&!ch.querySelector('.hp-rej')){const armed=HR.id==HP.cur&&Date.now()<HR.until;ch.insertAdjacentHTML('beforeend',`<button class="hp-rej ${armed?'armed':''}" data-act="hp-rej" ${armed?'data-armed="1"':''}>${armed?'¿Rechazar?':'✖'}</button>`)}};
+const HR={id:null,until:0};
 setInterval(()=>{const c=$('#hp .hp-clock');if(c)c.textContent='🕒 '+hpClock()},1000);
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hp-rej"]');if(!t||!HP.ch)return;
-  if(t.dataset.armed){HP.ch.send(JSON.stringify({t:'reject',id:HP.cur}));hpToast('Rechazaste la oferta.');HP.cur=null;setTimeout(()=>hpRender(),300);return}
-  t.dataset.armed='1';t.textContent='¿Rechazar?';t.classList.add('armed');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='✖';t.classList.remove('armed')}},3000)});
+  if(t.dataset.armed&&HR.id==HP.cur&&Date.now()<HR.until){HR.until=0;HP.ch.send(JSON.stringify({t:'reject',id:HP.cur}));hpToast('Rechazaste la oferta.');HP.cur=null;setTimeout(()=>hpRender(),300);return}
+  HR.id=HP.cur;HR.until=Date.now()+3500;t.dataset.armed='1';t.textContent='¿Rechazar?';t.classList.add('armed');
+  setTimeout(()=>{const b=$('.hp-rej');if(b&&Date.now()>=HR.until){delete b.dataset.armed;b.textContent='✖';b.classList.remove('armed')}},3600)});
 
 /* ================= OFERTA FINAL: aceptar o rechazar cuando la barra se llena ================= */
 function finalCard(b){return `<div class="cx-final" id="cx-final"><div class="cxf-t"><span>🤝</span><div><b>Oferta final de ${esc(b.name)}</b><small>Te paga ${money(b.offer)} por ${esc((itemOf(b)||{}).name||'el artículo')}</small></div></div>
-  <div class="cxf-a"><button class="btn" data-act="final-yes">Aceptar venta · ${money(b.offer)}</button><button class="btn ghost" data-act="reject-ask">✖ Rechazar</button></div></div>`}
+  <div class="cxf-a"><button class="btn" data-act="final-yes">Aceptar venta · ${money(b.offer)}</button><button class="btn ghost" data-act="final-no">✖ Rechazar</button></div></div>`}
 const _renderChatF=renderChat;
 renderChat=function(keep){_renderChatF(keep);const b=S.buyers.find(x=>x.id===S.cur);const box=$('#c-list');if(!b||!box)return;
   const old=$('#cx-final');if(old)old.remove();
   if(b.status==='open'&&b.final&&b.conv>=100&&!b.typing){box.insertAdjacentHTML('beforeend',finalCard(b));const sc=$('#c-msgs')||box;sc.scrollTop=sc.scrollHeight}
   if(b.final&&b.conv<100)b.final=false};
 function acceptFinal(b,who){if(!b||b.status!=='open'||!b.final)return false;if(who)b.friend=who;winBuyer(b,who);if(S.cur===b.id)renderChat();dirty=true;save();return true}
-document.addEventListener('click',e=>{const t=e.target.closest('[data-act="final-yes"]');if(!t)return;acceptFinal(S.buyers.find(x=>x.id===S.cur))});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="final-yes"],[data-act="final-no"]');if(!t)return;const b=S.buyers.find(x=>x.id===S.cur);if(t.dataset.act==='final-yes')acceptFinal(b);else if(rejectBuyer(b))toast('Rechazaste la oferta final.')});
 // anfitrión recibe la decisión del amigo
 const _hostOnMsgF=hostOnMsg;
 hostOnMsg=function(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
