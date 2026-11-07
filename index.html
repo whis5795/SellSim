@@ -698,6 +698,260 @@ input.field.price{font:700 18px var(--f-mono)}
 .bphoto.glow .bph{box-shadow:inset 0 0 40px rgba(255,220,120,.8)}
 .bphoto.zoom .bph span{transform:scale(1.5)}
 
+/* ---------- chat renovado ---------- */
+.chatx{background:var(--bg)}
+.cx-head{display:flex;align-items:center;gap:10px;padding-block:8px;background:var(--surface);border-bottom:1px solid var(--line);flex:none}
+.cx-head .av{width:38px;height:38px}
+.cx-status{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.cx-status.typing-s{color:var(--good);font-weight:700}
+.cx-deal{display:flex;gap:10px;align-items:center;padding-block:8px;background:var(--surface);border-bottom:1px solid var(--line);flex:none;box-shadow:0 6px 14px rgba(20,26,51,.06);position:relative;z-index:2}
+.cx-deal .thumb-sm{width:42px;height:42px;font-size:24px}
+.cx-di{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.cx-dt{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cx-dt b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cx-meter{display:flex;align-items:center;gap:8px}.cx-meter .bar{flex:1;height:10px}.cx-meter b{font-size:13px}
+.cx-pat{font-size:11px;color:var(--muted)}
+.cx-msgs{background:linear-gradient(var(--bg),var(--bg)),radial-gradient(circle at 1px 1px,var(--line) 1px,transparent 0) 0 0/18px 18px;background-blend-mode:multiply}
+.cx-msgs .msg-list{gap:4px;padding-block:12px}
+.cx-day{display:flex;justify-content:center;margin:10px 0 6px}.cx-day span{font-size:11px;font-weight:700;background:var(--surface);color:var(--muted);padding:3px 10px;border-radius:999px;box-shadow:var(--shadow)}
+.cx-row{display:flex;align-items:flex-end;gap:6px;max-width:88%}
+.cx-row .msg{max-width:100%}
+.cx-av{width:26px;height:26px;font-size:12px;flex:none}.cx-av.sp{width:26px}
+.msg.first{margin-top:6px}
+.msg .bubble{position:relative;padding:8px 12px 18px;font-size:14.5px;line-height:1.35;min-width:70px;box-shadow:0 1px 1px rgba(0,0,0,.06)}
+.msg.b .bubble{background:var(--surface);border-radius:4px 16px 16px 16px}
+.msg.b:not(.first) .bubble{border-radius:16px}
+.msg.p .bubble{border-radius:16px 4px 16px 16px}
+.msg.p:not(.first) .bubble{border-radius:16px}
+.cx-meta{position:absolute;right:9px;bottom:3px;font-size:10px;opacity:.65;font-family:var(--f-mono);white-space:nowrap}
+.photo-msg .cx-meta,.bphoto .cx-meta{position:static;margin-left:6px}
+.tick{font-weight:700;letter-spacing:-3px}.tick.read{color:#7CE0FF}
+.msg.p .chips{gap:3px}
+details.chips summary{list-style:none;display:flex;flex-wrap:wrap;gap:3px;justify-content:flex-end;cursor:pointer}
+details.chips summary::-webkit-details-marker{display:none}
+details.chips[open] summary{display:none}
+.chips-all{display:flex;flex-wrap:wrap;gap:3px;justify-content:flex-end}
+.chip{font-size:10.5px;padding:1px 6px}.chip.tot{font-weight:800}.chip.more{background:var(--surface-2);color:var(--muted)}
+.typing{background:var(--surface)!important;box-shadow:0 1px 1px rgba(0,0,0,.06)}
+.cx-comp .in{gap:6px;padding-block:8px}
+.cx-qr{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.cx-qr::-webkit-scrollbar{display:none}.cx-qr:empty{display:none}
+.cx-q{flex:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--surface-2);border:1.5px solid var(--line);color:var(--ink);white-space:nowrap}
+.cx-q:hover{border-color:var(--cobalt);color:var(--cobalt)}
+.cx-tray{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;animation:pop .2s ease-out}
+.cx-tool{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:600;padding:8px 4px;border-radius:12px;background:var(--surface-2)}
+.cx-tool span{font-size:20px}.cx-tool.danger{color:var(--bad)}
+.cx-plus{width:42px;height:42px;border-radius:50%;background:var(--surface-2);font-size:24px;font-weight:300;flex:none;transition:transform .2s}
+.cx-plus.on{transform:rotate(45deg);background:var(--cobalt);color:var(--cobalt-ink)}
+.cx-comp textarea{border-radius:22px!important;padding:10px 16px!important;min-height:42px!important}
+.cx-send{width:42px;height:42px;border-radius:50%;background:var(--cobalt);color:var(--cobalt-ink);display:grid;place-items:center;flex:none}
+.cx-send svg{width:20px;height:20px}
+.cx-send[disabled],.cx-plus[disabled]{opacity:.4}
+.cx-hint{margin:0;font-size:12px;color:var(--muted);text-align:center}.cx-hint:empty{display:none}
+/* ---------- páginas más compactas ---------- */
+.site-bazarito,.site-tier{font-size:13px}
+.bz-head .bz-in{padding-block:7px;gap:6px 12px}.bz-logo{font-size:21px}.bz-search{padding:6px 10px;font-size:12px}.bz-nav a{font-size:13px;padding:5px 9px}
+.bz-body{padding-block:12px 32px;gap:10px}.bz-hero h1{font-size:22px}.bz-hero p{font-size:12px}
+.bz-grid{grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px}
+.bz-thumb{font-size:38px;aspect-ratio:1}
+.bz-cb{padding:7px 8px 9px;gap:4px}.bz-cb h3{font-size:12.5px}.bz-note{font-size:10.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.bz-seller{font-size:10px}
+.bz-timer{font-size:10px}.bz-price{font-size:13px;padding:1px 6px}
+.bz-buy{flex-wrap:wrap;gap:4px}.bz-bb{display:flex;gap:3px}
+.bz-btn{font-size:11.5px;padding:5px 8px}.bz-btn.alt{background:var(--bz-yel);color:var(--bz-ink)}
+.bz-rib{font-size:10px;top:6px;padding:2px 7px}
+.bz-stock{font-size:10px;font-weight:700;color:var(--bz-teal)}
+.bz-row{padding:10px;gap:10px}.bz-thumb.sm{width:46px;font-size:24px}.bz-h2{font-size:18px}
+.bz-assign{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:2px dashed var(--bz-teal);border-radius:12px;padding:8px 10px;font-size:12px}
+.at-item,.sp-item{padding:9px;gap:10px}.at-ic,.sp-ic{width:46px;height:46px;font-size:28px}.at-ii h3,.sp-ii h3{font-size:14px}.at-ii p,.sp-ii p{font-size:12px}
+.at-logo{font-size:30px}.sp-logo{font-size:24px}.ht-hero h1{font-size:22px}.ht-img{font-size:46px}.ht-b h3{font-size:15px}.ht-b p{font-size:13px}.ht-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.lb-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}.lb-cv{padding:12px;gap:8px}.lb-h1{font-size:22px}
+.ch-card{padding:10px;gap:10px}.ch-ic{font-size:30px}.ch-info h3{font-size:16px}
+/* ingredientes del súper */
+.sp-ing{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.sp-ingb{background:#fff;border:1px solid #DCE8DA;border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.sp-ingb span{font-size:26px}.sp-ingb b{font-size:12px}.sp-ingb small{font-size:11px;opacity:.7}
+/* Cuentero Pro */
+.ct-pro{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border:1.5px solid var(--ct-gold);border-radius:14px;padding:10px 12px;background:rgba(242,193,78,.08)}
+.ct-pro b{display:block;color:var(--ct-gold)}.ct-pro span{font-size:12px;opacity:.85}
+.ct-bot.pro{background:linear-gradient(135deg,#FFF7EC,#FFE9B8);box-shadow:0 0 0 2px var(--ct-gold)}
+/* ---------- tiendas premium ---------- */
+.site-tier{min-height:100%}
+.site-tier .num{font-family:var(--f-mono)}
+.tier-vitrina{--bz-bg:#F2EFE6;--bz-red:#1F4D3A;--bz-ink:#1C2A22;--bz-yel:#D9B45B;--bz-teal:#1F4D3A;background:#F2EFE6;color:#1C2A22}
+.tier-subastas{--bz-bg:#1E0F14;--bz-red:#5A1020;--bz-ink:#F5E6D3;--bz-yel:#E0B04A;--bz-teal:#E0B04A;background:#1E0F14;color:#F5E6D3}
+.tier-lujo{--bz-bg:#0B0B0B;--bz-red:#111;--bz-ink:#F2E3B3;--bz-yel:#D4AF37;--bz-teal:#D4AF37;background:#0B0B0B;color:#F2E3B3}
+.tr-head{background:var(--bz-red);color:#fff;border-bottom:3px solid var(--bz-yel)}
+.tr-head .bz-in{padding-block:14px}.tr-head p{margin:2px 0 0;font-size:12px;opacity:.85}
+.tr-logo{font:400 26px "Young Serif",Georgia,serif;letter-spacing:.04em;color:var(--bz-yel)}
+.site-tier .bz-card{background:rgba(255,255,255,.96);color:#1C1C1C}
+.tier-subastas .bz-card,.tier-lujo .bz-card{background:#1D1D1D;color:#F2E3B3;border:1px solid rgba(212,175,55,.35)}
+.tier-subastas .bz-thumb,.tier-lujo .bz-thumb{background:radial-gradient(circle,#3A2A20,#141414)}
+.site-tier .bz-btn{background:var(--bz-yel);color:#1C1C1C}
+.tr-lock{max-width:420px;margin:0 auto;padding:16vh 20px;text-align:center;display:flex;flex-direction:column;gap:10px}.tr-lock p{margin:0;opacity:.8}.tr-small{font-size:13px}
+/* ---------- bolitas ---------- */
+.site-bolitas{background:radial-gradient(circle at 50% 0,#4C1D95,#14062E 70%);color:#fff;min-height:100%}
+.pk-wrap{max-width:400px;margin:0 auto;padding:18px 16px 30px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.pk-logo{font:800 34px var(--f-display);letter-spacing:.08em;background:linear-gradient(90deg,#FF3D7F,#FF9F1C,#FFE14D);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pk-sub{margin:0;font-size:13px;opacity:.85}
+#pk-canvas{width:100%;max-width:360px;aspect-ratio:9/10;background:rgba(0,0,0,.25);border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.pk-ctl{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;width:100%;font-weight:600}
+.pk-ctl input{accent-color:#FF3D7F}.pk-ctl b{font-size:18px;min-width:52px;text-align:right}
+.pk-btn{width:100%;padding:14px;border-radius:14px;font:800 17px var(--f-display);color:#2A0F4D;background:linear-gradient(90deg,#FFE14D,#FF9F1C);box-shadow:0 6px 0 #B85F00}
+.pk-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #B85F00}
+.pk-last{margin:0;font-size:13px;text-align:center;min-height:2.6em}.pk-fine{margin:0;font-size:11px;opacity:.55}
+/* ---------- asignar ---------- */
+.as-team{display:flex;gap:8px;flex-wrap:wrap}
+.as-emp{display:flex;align-items:center;gap:8px;background:var(--surface);padding:6px 10px;border-radius:12px;box-shadow:var(--shadow)}.as-emp small{display:block;font-size:11px;color:var(--muted)}
+.as-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface);padding:10px;border-radius:12px;box-shadow:var(--shadow)}
+.as-ic{font-size:26px}.as-n{flex:1;min-width:140px}.as-n b{display:block;font-size:13px}.as-n small{font-size:11px;color:var(--muted)}
+.as-row select,.as-row input{border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:8px;padding:6px;font:inherit;font-size:13px}.as-row input{width:56px}
+
+/* ---------- cocina ---------- */
+.ck-intro{margin:0;font-size:13px;color:var(--muted)}
+.ck-pantry{display:flex;flex-wrap:wrap;gap:6px}
+.ck-pantry span{display:flex;align-items:center;gap:3px;background:var(--surface);padding:4px 8px;border-radius:999px;font-size:16px;box-shadow:var(--shadow)}.ck-pantry span.off{opacity:.35}.ck-pantry b{font-size:11px}
+.ck-book{display:flex;flex-direction:column;gap:8px}
+.ck-rec{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14px;padding:10px;box-shadow:var(--shadow)}
+.ck-rec.no{opacity:.75}.ck-ri{font-size:34px}.ck-rb{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.ck-rb small{color:var(--muted);font-size:12px}
+.ck-need{display:flex;flex-wrap:wrap;gap:4px}.ck-need span{font-size:12px;padding:1px 7px;border-radius:999px}.ck-need .ok{background:var(--good-soft);color:var(--good)}.ck-need .miss{background:var(--bad-soft);color:var(--bad)}
+.ck-tip{margin:0;text-align:center;font-weight:600}
+.ck-stage{position:relative;height:330px;max-width:360px;width:100%;margin:0 auto;border-radius:20px;overflow:hidden;background:linear-gradient(#FFF8EC,#F3E2C6);touch-action:none;user-select:none;-webkit-user-select:none}
+.ck-prog{max-width:360px;width:100%;margin:0 auto}
+/* exprimir */
+.sq-orange{position:absolute;left:50%;top:40px;font-size:84px;transform:translate(-50%,0);transition:transform .08s;cursor:grab;filter:drop-shadow(0 6px 6px rgba(0,0,0,.2))}
+.sq-orange.sq-peel{animation:peel .5s}
+@keyframes peel{40%{opacity:0;transform:translate(-50%,40px) scale(.6)}41%{transform:translate(-50%,-40px)}100%{opacity:1;transform:translate(-50%,0)}}
+.sq-cone{position:absolute;left:50%;top:150px;width:110px;height:46px;transform:translateX(-50%);background:linear-gradient(#FFFFFF,#D9DEE7);clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:6px}
+.sq-glass{position:absolute;left:50%;bottom:20px;width:90px;height:120px;transform:translateX(-50%);border:4px solid rgba(255,255,255,.95);border-top:0;border-radius:0 0 18px 18px;background:rgba(255,255,255,.35);overflow:hidden}
+.sq-juice{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#FFB938,#FF8A1A);transition:height .4s cubic-bezier(.2,.8,.2,1)}
+.sq-juice::after{content:"";position:absolute;left:0;right:0;top:-4px;height:8px;background:#FFC85C;border-radius:50%;animation:wave 1.2s ease-in-out infinite}
+@keyframes wave{50%{transform:scaleX(.9) translateY(1px)}}
+.sq-drop{position:absolute;top:190px;width:8px;height:12px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#FF9F1C;animation:drip .8s ease-in forwards}
+@keyframes drip{to{transform:translateY(110px);opacity:.2}}
+/* huevos */
+.cr-eggs{position:absolute;top:24px;left:0;right:0;display:flex;justify-content:center;gap:40px}
+.cr-egg{font-size:60px;position:relative;transition:transform .15s}
+.cr-egg:active{transform:scale(.92)}
+.cr-egg.cracked{animation:wobble .3s}.cr-egg.cracked::after{content:"";position:absolute;left:20%;right:20%;top:46%;height:6px;background:repeating-linear-gradient(60deg,#7A5236 0 3px,transparent 3px 7px)}
+.cr-egg.open{animation:split .5s forwards}
+@keyframes wobble{25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+@keyframes split{to{opacity:0;transform:translateY(40px) scale(.6)}}
+.cr-pan{position:absolute;left:50%;bottom:30px;width:220px;height:150px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#3A3F52 60%,#23273A 61%);box-shadow:0 10px 24px rgba(0,0,0,.35),inset 0 0 0 10px #2B3047;--mix:0}
+.cr-pan::after{content:"";position:absolute;inset:26px;border-radius:50%;background:radial-gradient(circle,#FFE680 0 30%,#FFF3BF 60%,transparent 70%);opacity:var(--mix);transition:opacity .3s}
+.cr-pan.done::after{background:repeating-radial-gradient(circle,#FFE066 0 6px,#FFF3B0 6px 10px);opacity:1;animation:sizzle .3s infinite alternate}
+@keyframes sizzle{to{filter:brightness(1.08)}}
+.cr-butter{position:absolute;left:40%;top:38%;font-size:22px;animation:melt 3s forwards}
+@keyframes melt{to{transform:scale(.3);opacity:0}}
+.cr-yolk{position:absolute;top:44%;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFE680,#FFB400);box-shadow:0 0 0 10px rgba(255,255,255,.85);animation:dropin .4s ease-in;z-index:1}
+@keyframes dropin{from{transform:translateY(-120px)}}
+/* cortar */
+.ch-board{position:absolute;inset:40px 24px;border-radius:18px;background:repeating-linear-gradient(90deg,#C8925C 0 18px,#BC8551 18px 36px);box-shadow:inset 0 0 0 6px #A9743F}
+.ch-veg{position:absolute;left:50%;top:50%;font-size:96px;transform:translate(-50%,-50%);transition:transform .3s}
+.ch-veg.bowl{animation:bowl .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes bowl{from{transform:translate(-50%,-50%) scale(.2)}}
+.ch-cut{position:absolute;left:-10%;right:-10%;height:3px;background:rgba(255,255,255,.9);box-shadow:0 0 8px #fff;animation:cut .5s forwards}
+@keyframes cut{from{transform:scaleX(0)}to{transform:scaleX(1);opacity:0}}
+.ch-pieces{position:absolute;inset:0;pointer-events:none}
+.ch-piece{position:absolute;left:50%;top:50%;font-size:26px;animation:piece .7s ease-out forwards}
+@keyframes piece{to{transform:translate(var(--x),90px) rotate(200deg);opacity:.85}}
+.ch-knife{position:absolute;right:-40px;top:20px;font-size:52px;opacity:0}
+.ch-knife.go{animation:knife .45s ease-in-out}
+@keyframes knife{0%{opacity:1;transform:translate(0,0) rotate(-20deg)}100%{opacity:0;transform:translate(-380px,60px) rotate(-20deg)}}
+/* panqueques */
+.fl-pan{position:absolute;left:50%;top:110px;width:200px;height:120px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#3A3F52 62%,#23273A 63%);box-shadow:0 12px 24px rgba(0,0,0,.3)}
+.fl-pan::after{content:"";position:absolute;right:-90px;top:52px;width:100px;height:16px;border-radius:8px;background:#23273A}
+.fl-cake{position:absolute;inset:26px 36px;border-radius:50%;background:#F7E6B5;box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+.fl-cake.flip{animation:flip .6s cubic-bezier(.3,.7,.4,1)}
+@keyframes flip{40%{transform:translateY(-110px) rotateX(180deg) scale(.9)}100%{transform:rotateX(360deg)}}
+.fl-plate{position:absolute;left:16px;top:20px;display:flex;flex-direction:column-reverse;align-items:center;width:80px}
+.fl-done{display:block;width:70px;height:12px;border-radius:50%;background:#E8A84C;margin-top:-4px;box-shadow:0 2px 0 #C2802F}
+.fl-meter{position:absolute;left:24px;right:24px;bottom:78px;height:14px;border-radius:7px;background:linear-gradient(90deg,#FFF3C4,#F2C14E 55%,#B5651D 80%,#4A2A10)}
+.fl-zone{position:absolute;left:55%;width:20%;top:-4px;bottom:-4px;border:2px solid #fff;border-radius:6px;box-shadow:0 0 0 2px rgba(0,0,0,.2)}
+.fl-meter i{position:absolute;top:-8px;width:4px;height:30px;background:#1C1C1C;border-radius:2px;transform:translateX(-2px)}
+.fl-btn{position:absolute;left:50%;bottom:20px;transform:translateX(-50%)}
+/* sopa */
+.st-pot{position:absolute;left:50%;bottom:30px;width:230px;height:200px;transform:translateX(-50%);border-radius:20px 20px 60px 60px;background:linear-gradient(#8A93AE,#5B6280);box-shadow:0 12px 24px rgba(0,0,0,.3)}
+.st-soup{position:absolute;inset:14px 14px auto;height:120px;border-radius:50%;background:radial-gradient(circle,hsl(28 80% calc(62% - var(--boil,0)*10%)),hsl(20 70% 42%));overflow:hidden;--rot:0deg}
+.st-v{position:absolute;left:50%;top:50%;font-size:26px;transform:rotate(calc(var(--rot) + var(--i)*120deg)) translateX(54px) rotate(calc(-1*var(--rot)))}
+.st-bub{position:absolute;left:calc(14% + var(--i)*13%);bottom:10px;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.6);opacity:var(--boil,0);animation:bub 1s calc(var(--i)*.17s) infinite}
+@keyframes bub{from{transform:translateY(0) scale(.6)}to{transform:translateY(-60px) scale(1.2);opacity:0}}
+.st-steam{position:absolute;left:50%;top:10px;transform:translateX(-50%);display:flex;gap:18px;opacity:0;transition:opacity .4s}
+.st-steam i{width:14px;height:60px;border-radius:50%;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.9));filter:blur(4px);animation:steam 1.6s infinite}
+.st-steam i:nth-child(2){animation-delay:.4s}.st-steam i:nth-child(3){animation-delay:.8s}
+@keyframes steam{from{transform:translateY(20px) scaleY(.6);opacity:0}50%{opacity:1}to{transform:translateY(-30px) scaleY(1.2);opacity:0}}
+/* licuado */
+.bl-jar{position:absolute;left:50%;top:24px;width:130px;height:190px;transform:translateX(-50%);border:5px solid rgba(255,255,255,.95);border-radius:14px 14px 30px 30px;background:rgba(255,255,255,.3);overflow:hidden}
+.bl-jar.on{animation:buzz .08s infinite}
+@keyframes buzz{50%{transform:translateX(calc(-50% + 2px)) rotate(1deg)}}
+.bl-jar.pour{animation:pour .7s forwards}
+@keyframes pour{to{transform:translateX(-30%) rotate(-50deg)}}
+.bl-liq{position:absolute;left:0;right:0;bottom:0;height:62%;background:hsl(48 calc(30% + var(--m,0)*60%) calc(92% - var(--m,0)*20%));display:flex;justify-content:center;align-items:center;gap:6px;font-size:30px}
+.bl-liq span{transition:opacity .4s;opacity:calc(1 - var(--m,0)*1.3)}
+.bl-jar.on .bl-liq{animation:swirl .5s linear infinite}
+@keyframes swirl{50%{border-radius:40% 60% 0 0}}
+.bl-blade{position:absolute;left:50%;bottom:8px;width:60px;height:6px;margin-left:-30px;background:#9AA3B8;border-radius:3px}
+.bl-jar.on .bl-blade{animation:spin .15s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bl-base{position:absolute;left:50%;top:214px;width:160px;height:40px;transform:translateX(-50%);background:#2B3047;border-radius:10px}
+.bl-meter{bottom:60px;background:linear-gradient(90deg,#E9D8A6,#F6E7B0 50%,#BDE6C1 70%,#7CC8F2)}
+.bl-zone{left:70%;width:16%}
+.bl-meter + .row-acts{position:absolute;left:0;right:0;bottom:12px}
+/* limonada */
+.sh-jug{position:absolute;left:50%;top:30px;width:150px;height:230px;margin-left:-75px;border:5px solid rgba(255,255,255,.95);border-top-width:3px;border-radius:16px 16px 34px 34px;background:rgba(255,255,255,.25);overflow:hidden;transition:transform .12s;transform-origin:50% 90%;--dis:0}
+.sh-liq{position:absolute;left:0;right:0;bottom:0;height:75%;background:hsl(54 calc(50% + var(--dis)*40%) calc(86% - var(--dis)*12%))}
+.sh-l,.sh-ice{position:absolute;font-size:30px;animation:float 2s ease-in-out infinite}.sh-l{left:16%;top:20%}.sh-l.b{left:56%;top:44%;animation-delay:.6s}.sh-ice{left:40%;top:10%;font-size:24px}.sh-ice.b{left:66%;top:12%;animation-delay:.9s}
+@keyframes float{50%{transform:translateY(-8px) rotate(8deg)}}
+.sh-sug{position:absolute;left:calc(6% + var(--i)*6.5%);bottom:calc(4% + (var(--i) * 7) % 30 * 1%);width:5px;height:5px;background:#fff;border-radius:1px;opacity:calc(1 - var(--dis)*1.2)}
+/* resultado */
+.ck-done{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding-top:10px}
+.ck-done h3{margin:0;font:800 22px var(--f-display)}.ck-done p{margin:0;color:var(--muted)}
+.ck-burst{position:relative;width:150px;height:150px;display:grid;place-items:center}
+.ck-burst span{font-size:84px;animation:popin .6s cubic-bezier(.2,1.6,.4,1)}
+.ck-burst i{position:absolute;left:50%;top:50%;width:6px;height:18px;margin:-9px 0 0 -3px;border-radius:3px;background:#FFC531;transform:rotate(var(--a)) translateY(-70px);animation:ray 1s ease-out forwards}
+@keyframes popin{from{transform:scale(0) rotate(-30deg)}}
+@keyframes ray{from{transform:rotate(var(--a)) translateY(-20px);opacity:1}to{transform:rotate(var(--a)) translateY(-80px);opacity:0}}
+.ck-gain{display:flex;gap:8px}.ck-gain span{font-weight:800;background:var(--good-soft);color:var(--good);padding:4px 12px;border-radius:999px}
+
+
+/* ---------- menú principal 2.0 ---------- */
+.menu{background:radial-gradient(1200px 600px at 10% -10%,rgba(255,197,49,.45),transparent 60%),radial-gradient(900px 700px at 110% 110%,rgba(242,84,45,.5),transparent 60%),linear-gradient(160deg,#0E1650,#2645F2 55%,#1A2A8C);background-size:140% 140%;animation:menubg 18s ease-in-out infinite alternate}
+@keyframes menubg{to{background-position:100% 60%}}
+.menu-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.menu-bg span{position:absolute;bottom:-60px;opacity:.22;animation:floatup2 linear infinite;filter:saturate(.8)}
+@keyframes floatup2{from{transform:translateY(0) rotate(-10deg)}to{transform:translateY(-120vh) rotate(25deg)}}
+.menu-box{position:relative;max-width:460px;gap:18px}
+.menu-hero{display:flex;flex-direction:column;gap:6px}
+.menu-tagline{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.8}
+.menu-logo{font:800 clamp(50px,15vw,76px)/.88 var(--f-display);letter-spacing:-.05em;display:flex;flex-wrap:wrap;gap:0 .2em;align-items:baseline}
+.menu-logo .ml-1,.menu-logo .ml-2{display:inline-block;background:none;color:#fff;padding:0;border-radius:0;transform:none;animation:dropin2 .7s cubic-bezier(.2,1.4,.4,1) both}
+.menu-logo .ml-2{animation-delay:.08s}
+.ml-tag{position:relative;display:inline-block;background:#FFC531;color:#2A1E00;padding:.02em .22em .06em .38em;border-radius:.12em .3em .3em .12em;transform-origin:8% 50%;animation:dropin2 .7s .16s cubic-bezier(.2,1.4,.4,1) both,swing 3.4s 1s ease-in-out infinite;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.ml-tag i{position:absolute;left:.12em;top:50%;width:.14em;height:.14em;margin-top:-.07em;border-radius:50%;background:#2645F2;box-shadow:inset 0 0 0 2px rgba(0,0,0,.2)}
+@keyframes dropin2{from{opacity:0;transform:translateY(-40px)}}
+@keyframes swing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(3deg)}}
+.menu-tag{margin:2px 0 0;font-size:15px;opacity:.9}
+.menu-body{gap:10px}
+.mcard{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;border-radius:18px;background:#FFC531;color:#2A1E00;box-shadow:0 6px 0 #B8860B,0 18px 40px rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s}
+.mcard:hover{transform:translateY(-2px)}.mcard:active{transform:translateY(4px);box-shadow:0 2px 0 #B8860B}
+.mcard .mi{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:rgba(255,255,255,.45);flex:none}
+.mcard .mt{flex:1;min-width:0;display:flex;flex-direction:column}
+.mcard b{font:800 20px var(--f-display)}.mcard small{font-size:13px;opacity:.8}
+.mcard.alt{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.mcard.alt .mi{background:rgba(255,255,255,.14)}
+.mcard.alt:active{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
+.mstats{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.mstats span{font-size:11px;font-weight:700;background:rgba(0,0,0,.12);padding:2px 8px;border-radius:999px}
+.mcard.alt .mstats span{background:rgba(255,255,255,.14)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mgrid .mcard{flex-direction:column;align-items:flex-start;gap:8px}
+.menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
+.mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
+.mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
+.slot{border-radius:18px;padding:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.slot .slot-icons{font-size:16px;letter-spacing:2px}
+.mhowto{background:rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.mhowto p{margin:0}.mhowto b{color:#FFC531}
+.mimport{background:rgba(255,255,255,.08);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+@media (prefers-reduced-motion: reduce){.menu,.menu-bg span,.ml-tag{animation:none!important}}
+
 @media (max-width:420px){.tb-stats{width:96px;padding:6px 8px}.tb-stats>span{grid-template-columns:16px 1fr;gap:4px}.tb-stats .num{display:none}.taskbar{gap:6px}.tb-btn{width:36px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -745,35 +999,50 @@ input.field.price{font:700 18px var(--f-mono)}
   <div class="row-acts"><button class="btn ghost" data-act="fridge-close">Cerrar</button></div></div></div>
 
 
-<section class="sheet" id="chat" hidden>
-  <div class="sh-head gut">
+<section class="sheet chatx" id="chat" hidden>
+  <div class="cx-head gut">
     <button class="back" data-act="close-chat" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="av av-btn" id="c-av" data-act="profile" aria-label="Ver su perfil">?</button>
-    <div class="sh-title"><b id="c-name">—</b><span id="c-sub">—</span></div>
-    <span class="price-tag" id="c-offer">$0</span>
+    <div class="sh-title"><b id="c-name">—</b><span id="c-persona" class="cx-status">—</span></div>
+    <span id="c-ai" class="ai-pill">…</span>
   </div>
-  <div class="msgs" id="c-msgs">
-    <div class="meter">
-      <div class="labels"><span>Qué tan convencido está</span><span><span class="delta" id="c-delta"></span> <b id="c-pct">0 %</b></span></div>
-      <div class="bar"><i id="c-bar"></i></div>
-      <div class="labels"><span id="c-persona">—</span><span>Paciencia <span class="patience" id="c-pat"></span></span></div>
-      <div class="labels"><span id="c-ai" class="ai-pill">…</span><span></span></div>
+  <div class="cx-deal gut" id="c-deal">
+    <div class="thumb-sm" id="c-thumb"></div>
+    <div class="cx-di">
+      <div class="cx-dt"><b id="c-sub">—</b><span class="price-tag" id="c-offer">$0</span></div>
+      <div class="cx-meter"><div class="bar"><i id="c-bar"></i></div><b id="c-pct" class="num">0 %</b><span class="delta" id="c-delta"></span></div>
+      <span class="cx-pat">Paciencia <span class="patience" id="c-pat"></span></span>
     </div>
-    <div class="msg-list gut" id="c-list"></div>
   </div>
-  <div class="composer"><div class="in gut">
-    <form class="hag" id="haggle" hidden><label for="hag-in">¿Cuánto le pides? El cliente acepta, contraoferta o se ofende.</label><input id="hag-in" type="number" min="1" inputmode="numeric"><button class="btn sm" type="submit">Proponer</button></form>
+  <div class="msgs cx-msgs" id="c-msgs"><div class="msg-list gut" id="c-list"></div></div>
+  <div class="composer cx-comp"><div class="in gut">
+    <div class="cx-qr" id="c-qr"></div>
+    <form class="hag" id="haggle" hidden><label for="hag-in">¿Cuánto le pides? Acepta, contraoferta o se ofende.</label><input id="hag-in" type="number" min="1" inputmode="numeric"><button class="btn sm" type="submit">Proponer</button></form>
+    <div class="cx-tray" id="c-tray" hidden>
+      <button class="cx-tool" id="c-cam" data-act="cam"><span>📷</span>Foto</button>
+      <button class="cx-tool" id="c-hag" data-act="hag-open"><span>💲</span>Regatear</button>
+      <button class="cx-tool" data-act="profile"><span>👤</span>Perfil</button>
+      <button class="cx-tool danger" id="c-reject" data-act="reject"><span>✖</span>Rechazar</button>
+    </div>
     <div class="row">
-      <button class="cam-btn" id="c-cam" data-act="cam" aria-label="Sacar una foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
-      <button class="tool-btn" id="c-hag" data-act="hag-open" aria-label="Regatear el precio">$ Regatear</button>
-      <textarea id="c-input" rows="1" placeholder="Escríbele al cliente…" aria-label="Mensaje"></textarea>
-      <button class="btn" data-act="send" id="c-send">Enviar</button>
+      <button class="cx-plus" id="c-plus" data-act="c-tools" aria-label="Más opciones">+</button>
+      <textarea id="c-input" rows="1" placeholder="Escribe un mensaje…" aria-label="Mensaje"></textarea>
+      <button class="cx-send" data-act="send" id="c-send" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
-    <div class="tools"><span id="c-hint"></span><button class="btn sm danger" data-act="reject" id="c-reject">Rechazar</button></div>
+    <p class="cx-hint" id="c-hint"></p>
   </div></div>
 </section>
 
 
+
+<section class="sheet z2" id="cook" hidden>
+  <div class="sh-head gut"><button class="back" data-act="ck-close" aria-label="Salir de la cocina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b id="ck-title">Recetario</b><span>Tu cocina</span></div></div>
+  <div class="sh-body"><div class="sh-in gut" id="ck-body"></div></div>
+</section>
+<section class="sheet z2" id="assign" hidden>
+  <div class="sh-head gut"><button class="back" data-act="as-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Asignar productos</b><span>Tus empleados venden y envían solos</span></div></div>
+  <div class="sh-body"><div class="sh-in gut" id="as-body"></div></div>
+</section>
 <section class="sheet z2" id="profile" hidden>
   <div class="sh-head gut"><button class="back" data-act="pf-close" aria-label="Volver al chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b id="pf-handle">@</b><span>Perfil</span></div></div>
   <div class="sh-body"><div class="sh-in gut pf" id="pf-body"></div></div>
@@ -835,11 +1104,18 @@ input.field.price{font:700 18px var(--f-mono)}
   <div class="dt-txt"><div id="dt-a"></div><div id="dt-z">Z z z</div><div id="dt-b"></div></div>
 </div>
 
-<div class="menu" id="menu" hidden><div class="menu-box">
-  <div class="menu-logo">Lo Vendo <span>Caro</span></div>
-  <p class="menu-tag">Compra barato. Inventa una historia. Vende caro.</p>
-  <div id="menu-body" class="menu-body"></div>
-</div></div>
+<div class="menu" id="menu" hidden>
+  <div class="menu-bg" aria-hidden="true"><span style="left:41%;animation-delay:-17.1s;animation-duration:18.7s;font-size:23px">🎻</span><span style="left:9%;animation-delay:-14.8s;animation-duration:15.1s;font-size:40px">🚲</span><span style="left:7%;animation-delay:-16.4s;animation-duration:16.6s;font-size:24px">📻</span><span style="left:55%;animation-delay:-7.5s;animation-duration:16.9s;font-size:39px">⌚</span><span style="left:54%;animation-delay:-1.1s;animation-duration:20.8s;font-size:29px">🎩</span><span style="left:80%;animation-delay:-11.3s;animation-duration:25.4s;font-size:40px">🏺</span><span style="left:74%;animation-delay:-7.1s;animation-duration:25.7s;font-size:23px">📷</span><span style="left:71%;animation-delay:-15.5s;animation-duration:17.5s;font-size:26px">🧸</span><span style="left:69%;animation-delay:-2.1s;animation-duration:17.7s;font-size:43px">🎸</span><span style="left:23%;animation-delay:-1.9s;animation-duration:20.9s;font-size:28px">💸</span><span style="left:47%;animation-delay:-1.8s;animation-duration:22.5s;font-size:40px">🏷️</span><span style="left:7%;animation-delay:-11.1s;animation-duration:20.0s;font-size:39px">🕰️</span><span style="left:54%;animation-delay:-14.0s;animation-duration:19.6s;font-size:36px">🗝️</span><span style="left:46%;animation-delay:-5.4s;animation-duration:23.5s;font-size:44px">🎭</span><span style="left:31%;animation-delay:-1.5s;animation-duration:17.6s;font-size:37px">💡</span><span style="left:43%;animation-delay:-13.1s;animation-duration:17.5s;font-size:24px">🪕</span><span style="left:15%;animation-delay:-9.2s;animation-duration:16.0s;font-size:32px">🔭</span><span style="left:19%;animation-delay:-16.8s;animation-duration:19.1s;font-size:43px">🧳</span><span style="left:9%;animation-delay:-13.8s;animation-duration:20.9s;font-size:32px">🎻</span><span style="left:43%;animation-delay:-12.5s;animation-duration:21.1s;font-size:40px">🚲</span><span style="left:58%;animation-delay:-1.2s;animation-duration:15.1s;font-size:30px">📻</span><span style="left:60%;animation-delay:-12.5s;animation-duration:14.8s;font-size:44px">⌚</span></div>
+  <div class="menu-box">
+    <div class="menu-hero">
+      <div class="menu-tagline">Simulador de reventa</div>
+      <div class="menu-logo"><span class="ml-1">Lo</span> <span class="ml-2">Vendo</span> <span class="ml-tag">Caro<i></i></span></div>
+      <p class="menu-tag">Compra barato. Inventa una historia. Convence. Vende caro.</p>
+    </div>
+    <div id="menu-body" class="menu-body"></div>
+    <p class="menu-foot">Tus partidas se guardan en este navegador · v4</p>
+  </div>
+</div>
 
 <div id="coach" hidden>
   <div class="coach-spot" id="coach-spot" hidden></div>
@@ -1146,6 +1422,71 @@ const ABSURD=[
 "Ramón, un elefante de circo, {lo} llevaba en la trompa en cada función de 1957. El público aplaudía más al objeto que al elefante, y Ramón lo aceptó con humildad.",
 ];
 
+/* ---------- más productos baratos del bazar (historias del bot generadas) ---------- */
+[["Despertador de campana","⏰",6,"m"],["Cafetera italiana","☕",8,"f"],["Gafas de sol redondas","🕶️",5,"f"],["Bufanda tejida","🧣",4,"f"],["Guantes de boxeo","🥊",14,"m"],["Raqueta de tenis","🎾",12,"f"],["Balón de básquet","🏀",7,"m"],["Patines de cuatro ruedas","🛼",16,"m"],["Cometa de papel","🪁",3,"f"],["Yoyó de madera","🪀",2,"m"],["Dado gigante","🎲",3,"m"],["Acordeón","🪗",45,"m"],["Saxofón","🎷",48,"m"],["Micrófono antiguo","🎙️",22,"m"],["Fax antiguo","📠",9,"m"],["Lupa de bronce","🔎",6,"f"],["Reloj de arena","⏳",5,"m"],["Vela aromática","🕯️",2,"f"],["Florero de cristal","🏺",9,"m"],["Espejo de mano","🪞",5,"m"],["Abanico de encaje","🪭",4,"m"],["Paraguas de colores","🌂",4,"m"],["Sombrero de paja","👒",5,"m"],["Corbata de seda","👔",3,"f"],["Par de zapatos de charol","👞",9,"m"],["Cartera de cuero","👜",10,"f"],["Mochila de excursión","🎒",8,"f"],["Farol de papel","🏮",3,"m"],["Caracola marina","🐚",2,"f"],["Oso de peluche","🧸",4,"m"],["Robot de juguete","🤖",12,"m"],["Consola de videojuegos vieja","🎮",30,"f"],["Disco de vinilo","💿",6,"m"],["Pelota de rugby","🏉",6,"f"],["Pelota de béisbol firmada","⚾",7,"f"],["Martillo antiguo","🔨",4,"m"],["Candado oxidado","🔒",2,"m"],["Ábaco de madera","🧮",5,"m"],["Flauta dulce","🪈",3,"f"],["Campana de bronce","🔔",8,"f"]].forEach(c=>CATALOG.push([c[0],c[1],c[2],c[3],[]]));
+
+/* ---------- tiendas que se desbloquean ---------- */
+const SHOP_TIERS=[
+ {id:'vitrina',host:'vitrinavintage.com',name:'Vitrina Vintage',need:150,cls:'vitrina',tag:'Antigüedades seleccionadas',items:[["Reloj de pulsera suizo","⌚",140,"m"],["Lámpara de vitral","💡",120,"f"],["Tocadiscos de madera","📻",110,"m"],["Bicicleta de carreras","🚴",160,"f"],["Máquina de escribir de hierro","⌨️",90,"f"],["Cámara réflex clásica","📸",130,"f"],["Chaqueta de aviador","🧥",100,"f"],["Guitarra eléctrica","🎸",200,"f"],["Juego de té de porcelana","🫖",85,"m"],["Baúl de viaje","🧳",95,"m"],["Radio de colección","📻",70,"f"],["Botas de montar","👢",75,"f"]]},
+ {id:'subastas',host:'casadesubastas.com',name:'Casa de Subastas',need:1200,cls:'subastas',tag:'Piezas de colección',items:[["Piano vertical","🎹",700,"m"],["Moto antigua","🏍️",1100,"f"],["Cuadro al óleo","🖼️",800,"m"],["Vestido de alta costura","👗",600,"m"],["Telescopio de bronce","🔭",500,"m"],["Violonchelo","🎻",900,"m"],["Escritorio de caoba","🪑",650,"m"],["Espada de gala","⚔️",750,"f"],["Reloj de péndulo","🕰️",550,"m"],["Globo terráqueo de bronce","🌍",450,"m"]]},
+ {id:'lujo',host:'lujoeterno.com',name:'Lujo Eterno',need:6000,cls:'lujo',tag:'Solo para coleccionistas',items:[["Auto clásico descapotable","🚗",5000,"m"],["Reloj de oro con diamantes","⌚",3000,"m"],["Collar de perlas","📿",2500,"m"],["Primera edición firmada","📕",1800,"f"],["Corona de teatro","👑",2200,"f"],["Velero de colección","⛵",1500,"m"],["Estatua de mármol","🗿",4000,"f"],["Violín de lutier italiano","🎻",4500,"m"]]},
+];
+
+/* ---------- generador de historias (normales y Pro) ---------- */
+const SG={
+ owners:[['la cantante','Rosa Quintana'],['el boxeador','Tito Medina'],['la aviadora','Clotilde Marín'],['el explorador','Ignacio Lamas'],['la actriz','Lidia Monteverde'],['el ajedrecista','Vasili Orlov'],['el mago','Fortunato el Grande'],['la pintora','Delia Ferrer'],['el capitán','Faustino Rey'],['la científica','Irene Salvat'],['el poeta','Julián Casares'],['la bailarina','Mimí Laforet'],['el detective','Raúl Barrios'],['el futbolista','Nico Ferrán']],
+ events:['durante la gran tormenta del puerto','la noche del incendio del Teatro Real','en plena guerra','el día de su último concierto','durante una expedición a la selva','la víspera de su boda','cuando huyó al exilio','en la final del campeonato','durante la revolución','la madrugada del naufragio'],
+ hides:['bajo una tabla del escenario','en el fondo de un baúl','dentro de un piano','en el sótano de un hotel','en una caja de galletas','detrás de un cuadro','en el ático de una estación'],
+ details:['tiene sus iniciales grabadas','conserva una mancha de tinta original','todavía huele a un perfume de época','guarda una dedicatoria escrita a mano','tiene una pequeña cicatriz en un costado','lleva un sello de la fábrica en la base'],
+ proofs:['un certificado de un tasador','una foto de la época publicada en un periódico','una carta firmada','el registro de una subasta'],
+ heirs:['mi abuela Elena','mi abuelo Atilio','mi tía Nélida','mi bisabuelo Faustino','mi madrina Graciela'],
+};
+function srand(seed){let s=seed%2147483647;if(s<=0)s+=2147483646;return()=>(s=s*16807%2147483647)/2147483647}
+function genStory(item,pro,seed){
+  const r=srand(seed||Math.floor(Math.random()*1e9));const pk=a=>a[Math.floor(r()*a.length)];
+  const f=item[3]==='f',obj=item[0].charAt(0).toLowerCase()+item[0].slice(1),Este=f?'Esta':'Este',lo=f?'la':'lo';
+  const [role,name]=pk(SG.owners);const y=1900+Math.floor(r()*85);
+  if(!pro)return pk([
+    `${Este} ${obj} perteneció a ${role} ${name}, que ${lo} llevaba consigo ${pk(SG.events)} en ${y}. Desde entonces ${pk(SG.details)}.`,
+    `${pk(SG.heirs).replace(/^mi /,'Mi ')} ${lo} encontró en ${y} ${pk(SG.hides)}. Dicen que fue de ${role} ${name}, y por eso ${pk(SG.details)}.`,
+    `En ${y}, ${role} ${name} ${lo} usó ${pk(SG.events)}. Es una pieza única que ${pk(SG.details)}.`]);
+  return `${Este} ${obj} perteneció a ${role} ${name}, que ${lo} tenía consigo ${pk(SG.events)} en ${y}. Cuando todo parecía perdido, ${lo} escondió ${pk(SG.hides)}, y desde entonces ${pk(SG.details)}. Años después ${lo} heredó ${pk(SG.heirs)}, que ${lo} cuidó como un tesoro. Es una reliquia única: la respalda ${pk(SG.proofs)}.`;
+}
+function storiesFor(item){if(item[4]&&item[4].length)return item[4];const h=[...item[0]].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7);item[4]=[genStory(item,false,Math.abs(h)+1),genStory(item,false,Math.abs(h)+999),genStory(item,false,Math.abs(h)+77777)];return item[4]}
+
+/* ---------- ingredientes y recetas ---------- */
+const ING={naranja:{n:'Naranjas',i:'🍊',pack:3,price:2},huevo:{n:'Huevos',i:'🥚',pack:6,price:2},mantequilla:{n:'Mantequilla',i:'🧈',pack:2,price:2},lechuga:{n:'Lechuga',i:'🥬',pack:1,price:1},tomate:{n:'Tomates',i:'🍅',pack:3,price:2},pepino:{n:'Pepinos',i:'🥒',pack:2,price:1},harina:{n:'Harina',i:'🌾',pack:3,price:2},leche:{n:'Leche',i:'🥛',pack:2,price:2},zanahoria:{n:'Zanahorias',i:'🥕',pack:3,price:1},papa:{n:'Papas',i:'🥔',pack:3,price:1},cebolla:{n:'Cebollas',i:'🧅',pack:2,price:1},banana:{n:'Bananas',i:'🍌',pack:3,price:2},limon:{n:'Limones',i:'🍋',pack:3,price:1},azucar:{n:'Azúcar',i:'🍬',pack:4,price:1}};
+const RECIPES=[
+ {id:'jugo',n:'Jugo de naranja',i:'🧃',need:{naranja:3},food:10,drink:65,game:'squeeze',how:'Aprieta cada naranja contra el exprimidor.'},
+ {id:'huevos',n:'Huevos revueltos',i:'🍳',need:{huevo:2,mantequilla:1},food:55,drink:0,game:'crack',how:'Rompe los huevos y bátelos en la sartén.'},
+ {id:'ensalada',n:'Ensalada fresca',i:'🥗',need:{lechuga:1,tomate:1,pepino:1},food:45,drink:15,game:'chop',how:'Corta las verduras deslizando el cuchillo.'},
+ {id:'panqueques',n:'Panqueques',i:'🥞',need:{harina:1,leche:1,huevo:1},food:70,drink:0,game:'flip',how:'Dales la vuelta justo cuando estén dorados.'},
+ {id:'sopa',n:'Sopa de verduras',i:'🍲',need:{zanahoria:1,papa:1,cebolla:1},food:60,drink:35,game:'stir',how:'Revuelve en círculos hasta que hierva.'},
+ {id:'licuado',n:'Licuado de banana',i:'🥤',need:{banana:2,leche:1},food:25,drink:60,game:'blend',how:'Mantén apretado y suelta en el punto justo.'},
+ {id:'limonada',n:'Limonada',i:'🍋',need:{limon:2,azucar:1},food:0,drink:80,game:'shake',how:'Agita la jarra hasta que se disuelva el azúcar.'},
+];
+const GENERIC_Q=[
+ {id:'g1',q:'¿Hace cuánto lo tienes?',a:['ano','anos','mes','semana','siempre','hace','NUM','herenc','toda la vida']},
+ {id:'g2',q:'¿Lo usabas seguido?',a:['si','no','poco','mucho','nunca','a veces','guardad','vitrina']},
+ {id:'g3',q:'¿Tiene alguna marca o firma?',a:['marca','firma','grabad','inicial','sello','no tiene','si','no']},
+ {id:'g4',q:'¿Por qué te deshaces de él?',a:['mudanza','espacio','necesito','dinero','viaje','herencia','no lo uso','coleccion','lugar']},
+ {id:'g5',q:'¿Cuánto mide, más o menos?',a:['cm','metro','grande','chico','pequen','mediano','NUM','mano']},
+ {id:'g6',q:'¿Lo puedo ver en persona?',a:['si','no','claro','envio','foto','puedes','donde']},
+ {id:'g7',q:'¿Viene con su caja o algún accesorio?',a:['caja','accesorio','no','si','estuche','funda','solo']},
+ {id:'g8',q:'¿Alguien más preguntó por él?',a:['si','no','varios','nadie','otros','interesad']},
+ {id:'g9',q:'¿Aceptas transferencia?',a:['si','transferencia','efectivo','claro','no','pago']},
+ {id:'g10',q:'¿Lo limpiaste o restauraste alguna vez?',a:['limpi','restaur','nunca','no','si','original','tal cual']},
+ {id:'g11',q:'¿Qué es lo que más te gusta de él?',a:['__any__']},
+ {id:'g12',q:'¿Tienes más cosas parecidas a la venta?',a:['si','no','tengo','solo','unic','otras']},
+ {id:'g13',q:'¿Cuánto pesa?',a:['kilo','gramo','liviano','pesado','poco','NUM']},
+ {id:'g14',q:'¿Tiene algún olor raro? Soy alérgico.',a:['no','olor','huele','limpio','nada','si']},
+ {id:'g15',q:'¿Me lo podrías guardar hasta mañana?',a:['si','no','claro','guardo','reservo','hasta']},
+ {id:'g16',q:'¿Qué harías tú con él si no lo vendieras?',a:['__any__']},
+ {id:'g17',q:'¿Lo envuelves bien para que no se rompa?',a:['si','claro','envuel','burbuja','caja','protej','cuidado']},
+ {id:'g18',q:'¿Tienes alguna foto de cuando era nuevo?',a:['si','no','foto','tengo','album','no tengo']},
+];
+NAMES.push('Carolina','Lorena','Esteban','Mateo','Julia','Renata','Ignacio','Patricia','Fernando','Sara','Bruno','Camila','Adrián','Mónica');
+
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -1190,6 +1531,7 @@ const PERSONAS={
  desconfiado:{label:'Desconfiado',desc:'Cualquier error le pesa el doble',pos:.9,neg:1.45,proof:1.2,story:1,start:-10,w:8,why:'Es para un regalo, y no quiero quedar mal con algo falso.'},
  apurado:{label:'Con prisa',desc:'Poca paciencia, odia los textos largos',pos:1.15,neg:1,proof:1,story:1,start:0,w:8,longPen:true,pat:[8,10],why:'Es un regalo para mañana, por eso tengo prisa.'},
  amable:{label:'Amable',desc:'Le cae bien la buena actitud',pos:1.25,neg:.8,proof:1,story:1,start:6,w:10,why:'Me encantan las cosas con historia, nada más.'},
+ decidido:{label:'Decidido',desc:'Sabe lo que quiere y compra rápido',pos:1.2,neg:1,proof:1,story:1,start:20,w:6,quick:true,why:'Lo vi y me encantó. No necesito pensarlo mucho.',quirks:['No me gusta dar vueltas.']},
  tikismikis:{label:'Tikismikis',desc:'Se fija muchísimo en la ortografía',pos:1,neg:1.1,proof:1,story:1,start:-4,w:6,why:'Busco algo especial, y espero un trato impecable.'},
  regateador:{label:'Regateador',desc:'Siempre quiere un descuento',pos:1,neg:1,proof:1,story:.9,start:-2,w:7,offer:.75,haggler:true,open:'Hola. Voy directo:',why:'Me gusta conseguir buenos precios, es mi deporte.',quirks:['¿Y si me haces un precio especial?','Con un descuentito cerramos más rápido.'],asks:[{id:'pr1',q:'¿Me lo dejas un poco más barato?',a:['descuento','rebaja','te lo dejo','precio','no puedo','fijo','vale','si','no','NUM']}]},
  nostalgico:{label:'Nostálgico',desc:'Se emociona con el pasado y la familia',pos:1.15,neg:.9,proof:1,story:1.3,start:2,w:6,boost:['Emoción','Historia'],why:'Me recuerda a mi infancia. Quiero volver a tener uno.',quirks:['Ay, qué recuerdos me trae esto.','Antes las cosas se hacían para durar.'],
@@ -1229,8 +1571,8 @@ function newGame(){
   S={money:20,day:1,min:8*60,t:0,shop:[],nextShop:0,inv:[],buyers:[],hired:[],cands:[],auto:true,cur:null,lastChat:null,nextId:1,
      sales:0,earned:0,day$:{sales:0,profit:0,jobs:0,spent:0},seenIntro:false,botDay:ri(2,3),botSub:false,botMsgs:[],used:{},
      bills:[],food:100,drink:100,weak:false,fridge:false,fridgeItems:[],deliveries:[],jobsDone:{plates:0,surveys:0,typing:0},
-     shipments:[],drone:false,droneDay:0,loan:null,view:'room',wall:0,door:[],lexUse:{},aiOn:true,tabs:[],tab:null};
-  for(let i=0;i<6;i++)addListing(true);
+     shipments:[],drone:false,droneDay:0,loan:null,view:'room',wall:0,door:[],pantry:{},stove:false,revenue:0,unlocked:[],tshop:{},restock2:false,botPro:false,proStories:[],lexUse:{},aiOn:true,tabs:[],tab:null};
+  restockAll();
   S.cands=genCands();
   const t={id:S.nextId++,url:'buscalo.com',back:[],fwd:[]};S.tabs.push(t);S.tab=t.id;
   return S;
@@ -1239,14 +1581,14 @@ function newGame(){
 let SLOT=1;
 function slotMeta(){try{return JSON.parse(localStorage.getItem('lvc-meta')||'{}')}catch(e){return {}}}
 function setMeta(m){try{localStorage.setItem('lvc-meta',JSON.stringify(m))}catch(e){}}
-function save(){if(!S)return;try{localStorage.setItem('lvc-slot-'+SLOT,JSON.stringify(S));const m=slotMeta();m.last=SLOT;m.slots=m.slots||{};m.slots[SLOT]={day:S.day,money:Math.round(S.money),sales:S.sales,at:Date.now()};setMeta(m)}catch(e){}}
+function save(){if(!S)return;try{localStorage.setItem('lvc-slot-'+SLOT,JSON.stringify(S));const m=slotMeta();m.last=SLOT;m.slots=m.slots||{};m.slots[SLOT]={day:S.day,money:Math.round(S.money),sales:S.sales,at:Date.now(),rev:Math.round(S.revenue||0),staff:S.hired.length,icons:[S.fridge?'🧊':'',S.stove?'🍳':'',S.drone?'🛸':'',S.botPro?'★':S.botSub?'✍️':'',...(S.unlocked||[]).map(u=>({vitrina:'🏛️',subastas:'🔨',lujo:'💎'})[u])].filter(Boolean).join('')};setMeta(m)}catch(e){}}
 function readSlot(n){try{const r=localStorage.getItem('lvc-slot-'+n);return r?JSON.parse(r):null}catch(e){return null}}
 function deleteSlot(n){try{localStorage.removeItem('lvc-slot-'+n);const m=slotMeta();if(m.slots)delete m.slots[n];if(m.last==n){const k=Object.keys(m.slots||{});if(k.length)m.last=+k[0];else delete m.last}setMeta(m)}catch(e){}}
 function migrateOldSave(){try{const old=localStorage.getItem('lvc-save-v3');if(old&&!localStorage.getItem('lvc-slot-1')){const st=JSON.parse(old);localStorage.setItem('lvc-slot-1',old);const m=slotMeta();m.last=1;m.slots=m.slots||{};m.slots[1]={day:st.day,money:Math.round(st.money),sales:st.sales,at:Date.now()};setMeta(m)}localStorage.removeItem('lvc-save-v3')}catch(e){}}
 const night=()=>S.min>=23*60;
 const isOffline=()=>S.bills.some(b=>b.kind==='internet'&&b.due<S.day);
 const droneOn=()=>S.drone&&!S.bills.some(b=>b.kind==='drone'&&b.due<S.day);
-const appliances=()=>(S.fridge?1:0)+(S.drone?1:0);
+const appliances=()=>(S.fridge?1:0)+(S.drone?1:0)+(S.stove?1:0);
 const aiReady=()=>sampleFn&&S.aiOn&&aiState==='ok';
 
 /* ---------- comida y bebida ---------- */
@@ -1263,14 +1605,23 @@ function drain(){
 function consume(f){S.food=clamp(S.food+f.food,0,100);S.drink=clamp(S.drink+f.drink,0,100);renderTaskbar()}
 
 /* ---------- tienda efímera ---------- */
-function addListing(initial){
-  const c=pick(CATALOG);const r=Math.random();const life=ri(30,80);
-  const L={id:S.nextId++,name:c[0],icon:c[1],base:c[2],g:c[3],seller:pick(SELLERS),note:pick(NOTES),exp:S.t+life+(initial?20:0),life:life+(initial?20:0),bought:false,type:'normal'};
-  L.price=Math.max(1,Math.round(c[2]*rand(.6,1.35)));
-  if(r<.08){L.type='mystery';L.price=ri(2,6);L.note='Contenido sorpresa. Puede ser cualquier cosa.'}
-  else if(r<.22){L.type='flash';L.price=Math.max(1,Math.round(L.price*.5))}
-  S.shop.push(L);S.nextShop=S.t+ri(6,12);
+/* cada producto dura 8 minutos; las tiendas se renuevan dos veces al día */
+const LIFE=480;
+function addListing(tierId){
+  const tier=tierId?SHOP_TIERS.find(t=>t.id===tierId):null;
+  const c=tier?pick(tier.items):pick(CATALOG);const r=Math.random();const life=LIFE+ri(-20,20);
+  const L={id:S.nextId++,name:c[0],icon:c[1],base:c[2],g:c[3],seller:pick(SELLERS),note:pick(NOTES),exp:S.t+life,life,bought:false,type:'normal',qty:Math.random()<.35?ri(2,5):1,tier:tierId||null};
+  L.price=Math.max(1,Math.round(c[2]*rand(.6,1.25)));
+  if(!tier){L.price=Math.min(50,L.price);
+    if(r<.08){L.type='mystery';L.price=ri(2,6);L.qty=1;L.note='Contenido sorpresa. Puede ser cualquier cosa.'}
+    else if(r<.22){L.type='flash';L.price=Math.max(1,Math.round(L.price*.5))}}
+  if(tier)(S.tshop[tierId]=S.tshop[tierId]||[]).push(L);else S.shop.push(L);
 }
+function restockAll(){
+  for(let i=0;i<14;i++)addListing();
+  for(const t of SHOP_TIERS)if(S.unlocked.includes(t.id))for(let i=0;i<7;i++)addListing(t.id);
+}
+const allListings=()=>[...S.shop,...Object.values(S.tshop||{}).flat()];
 
 /* ---------- historias: creatividad + coherencia ---------- */
 function spellIssues(text){
@@ -1318,7 +1669,7 @@ function storyScore(t,item){
   if(stale)notes.push({v:-1,l:'Recursos que ya usaste antes'});
   return {score:clamp(s,0,1),cats:Object.keys(cats),kw:[...new Set(found)],years,names,len,sp,conn,notes,sentences};
 }
-const maxWilling=it=>it.base*(1+it.score*8);
+const maxWilling=it=>it.base*(1+it.score*(it.base<60?8:it.base<300?4:it.base<1500?2.6:1.8));
 function wordFor(text,stem){for(const w of (String(text).match(/[A-Za-zÁÉÍÓÚÑáéíóúñü]+/g)||[]))if(strip(w.toLowerCase()).startsWith(stem))return w.toLowerCase();return null}
 
 /* ---------- compradores ---------- */
@@ -1337,13 +1688,21 @@ function spawnBuyer(it){
   const cheap=clamp(14-Math.log10(Math.max(offer,1))*7,0,10);
   const conv=tut?55:clamp(Math.round(48-(ratio-1)*6+it.score*10+P.start+cheap-(it.price>m*1.2?8:0)),6,62);
   const city=pick(CITIES);
-  const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:P.pat?ri(P.pat[0],P.pat[1]):ri(11,14),city:city[0],dist:city[1],
-    msgs:[],status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0};
+  const openNames=new Set(S.buyers.filter(x=>x.status==='open').map(x=>x.name));
+  const name=pick(NAMES.filter(n=>!openNames.has(n)))||pick(NAMES);
+  const prev=S.buyers.find(x=>x.name===name&&x.status!=='open');
+  const fresh={itemId:it.id,offer,conv,patience:P.pat?ri(P.pat[0],P.pat[1]):ri(11,14),status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0,raised:false,allClear:false,sentPhotos:0,photoPromised:false,pendingPhoto:null};
+  let b;
+  if(prev){b=Object.assign(prev,fresh);S.buyers=S.buyers.filter(x=>x!==prev);b.returning=true;b.msgs.push({from:'sys',text:`Nueva conversación sobre: ${it.name}`});b.msgs=b.msgs.slice(-80)}
+  else b=Object.assign({id:S.nextId++,name,persona:pid,city:city[0],dist:city[1],msgs:[]},fresh);
+  const bP=PERSONAS[b.persona]||P;
   b.patMax=b.patience;
-  const pc=(PERSONA_CONCERNS[pid]||['estado']).slice();const extra=pick(Object.keys(CONCERNS).filter(c=>!pc.includes(c)));
+  const pc=(PERSONA_CONCERNS[b.persona]||['estado']).slice();const extra=pick(Object.keys(CONCERNS).filter(c=>!pc.includes(c)));
   b.concerns=Math.random()<.6?pc.concat(extra):pc;b.resolved=[];b.facts={years:[],rel:{}};b.insults=0;
-  const q=nextQuestion(b,it,null);
-  b.msgs.push({from:'b',text:(P.open?P.open+' ':'')+opening(b,it)+' '+q.q});b.q=q;
+  let q=nextQuestion(b,it,null);
+  if(bP.quick){q={id:'qb',q:'¿Sigue disponible? Si me lo confirmas, lo compro ahora mismo.',a:['si','disponible','claro','confirm','trato','tuyo','por supuesto','hecho','vale','sigue']};b.conv=Math.max(b.conv,60)}
+  const hello=b.returning?pick(['¡Hola de nuevo! Soy yo otra vez.','¡Hola otra vez! Me acuerdo de ti.','¡Volví! Ahora me interesa otra cosa.']):(bP.open||'');
+  b.msgs.push({from:'b',text:(hello?hello+' ':'')+opening(b,it)+' '+q.q});b.q=q;
   S.buyers.push(b);
   it.nextSpawn=S.t+Math.round(rand(10,22)/(.45+attract(it)));
   toast(`${b.name} ofrece ${money(offer)} por tu ${low(it.name)}`,'',()=>openChat(b.id));
@@ -1394,7 +1753,7 @@ const CONCERNS={
  confianza:{label:'que seas de fiar',asks:()=>['¿Cómo sé que no me vas a estafar?','¿Qué pasa si llega y no es lo que dices?'],stems:['garantia','devol','reembols','referencia','opinion','calificac','resena','honest','pago al recibir','contra entrega','en persona','comprobante','factura']},
  foto:{label:'verlo con mis propios ojos',asks:()=>['¿Me mandas una foto?','¿Puedo ver una foto antes de decidir?'],photo:true},
 };
-const PERSONA_CONCERNS={regateador:['precio'],nostalgico:['procedencia','estado'],influencer:['foto','estado'],conspiranoico:['procedencia'],abuelita:['envio','confianza'],revendedor:['precio','autenticidad'],poeta:['procedencia'],detective:['autenticidad','procedencia','foto'],fan:['autenticidad'],bromista:['estado'],turista:['envio','precio'],tikismikis:['estado','confianza'],coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
+const PERSONA_CONCERNS={decidido:['estado'],regateador:['precio'],nostalgico:['procedencia','estado'],influencer:['foto','estado'],conspiranoico:['procedencia'],abuelita:['envio','confianza'],revendedor:['precio','autenticidad'],poeta:['procedencia'],detective:['autenticidad','procedencia','foto'],fan:['autenticidad'],bromista:['estado'],turista:['envio','precio'],tikismikis:['estado','confianza'],coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
 const SALES_WORDS=/(precio|envi|compr|vend|pago|pagar|foto|estado|historia|regalo|dinero|oferta|garantia|objeto|articulo|pieza|anuncio|trato|cerrar|cerramos|interes)/;
 function prepBuyer(b){b.concerns=b.concerns||[];b.resolved=b.resolved||[];b.facts=b.facts||{years:[],rel:{}};b.insults=b.insults||0}
 function relNames(text){const out={};for(const m of String(text).matchAll(/\b(bisabuel[oa]|abuel[oa]|t[ií][oa]|padre|madre)\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)/g))out[strip(m[1].toLowerCase())]=m[2];return out}
@@ -1419,6 +1778,8 @@ function nextQuestion(b,it,topic,text){
   opts.push({id:'fv',q:`¿Por qué debería pagar ${money(b.offer)} por esto?`,a:['histor','unic','raro','tasacion','valor','coleccion','pocos','famos'].concat(it.kw)});
   opts.push({id:'fs',q:'¿En qué estado está?',a:CONDITION.concat(['bien','mal','excelente','bueno','usad'])});
   opts.push({id:'fe',q:'¿Haces envíos?',a:SHIP.concat(['si','no','claro','por supuesto'])});
+  for(const g of [...GENERIC_Q].sort(()=>Math.random()-.5).slice(0,4))opts.push(g);
+  opts.sort(()=>Math.random()-.5);
   opts.push({id:'fa',q:'¿Algo más que quieras contarme antes de decidir?',a:['__any__']});
   const av=opts.filter(fresh);
   return take(av.length?(Math.random()<.5?pick(av.slice(0,3)):av[0]):{id:'fz'+b.pmsgs,q:'¿Entonces? Convénceme.',a:['__any__']});
@@ -1764,7 +2125,7 @@ function winBuyer(b,by){
   const profit=b.offer-it.paid;
   b.msgs.push({from:'sys',cls:'win',text:`Vendido por ${money(b.offer)} · ganancia ${profit>=0?'+':''}${money(profit)}`});
   const half=Math.floor(b.offer/2),rest=b.offer-half;
-  S.money+=half;S.sales++;S.earned+=profit;S.day$.sales++;S.day$.profit+=profit;flashMoney(1);
+  S.revenue=(S.revenue||0)+b.offer;S.money+=half;S.sales++;S.earned+=profit;S.day$.sales++;S.day$.profit+=profit;flashMoney(1);
   const sh={id:S.nextId++,name:it.name,icon:it.icon,buyer:b.name,city:b.city,rest};
   sh.pending=true;sh.dist=b.dist;
   S.shipments.push(sh);
@@ -1792,15 +2153,30 @@ function genCands(){
   return Array.from({length:5},()=>{
     const chance=ri(10,maxC)/100;
     const tier=chance<.2?'bad':chance<.35?'ok':chance<.55?'good':'pro';const T=TIERS[tier];
-    const cost=Math.round(Math.pow(chance*100,1.6)*2);
+    const cost=Math.round(Math.pow(chance*100,1.6)*1.4);
     const sk=()=>clamp(Math.round(chance*100+ri(-18,18)),5,98);
     return {id:'c'+(S?S.nextId++:Math.floor(Math.random()*1e9)),name:pick(FIRST)+' '+pick(LAST),age:ri(17,64),tier,title:pick(T.titles),
-      exp:[...T.exp].sort(()=>Math.random()-.5).slice(0,2),quote:pick(T.quote),chance,cost,salary:Math.max(3,Math.round(cost/14)),
+      exp:[...T.exp].sort(()=>Math.random()-.5).slice(0,2),quote:pick(T.quote),chance,cost,salary:Math.max(2,Math.round(cost/18)),
       skills:{Ortografía:tier==='bad'?ri(3,25):sk(),Labia:sk(),Paciencia:sk()}};
   });
 }
 function employeesWork(){
-  if(!S.auto||isOffline())return;
+  if(isOffline())return;
+  for(const h of S.hired){
+    const mine=S.inv.filter(i=>i.assigned===h.id);
+    if(mine.length&&!h.busy){
+      if(!h.nextAuto)h.nextAuto=S.t+ri(20,45);
+      if(S.t>=h.nextAuto){
+        h.nextAuto=S.t+ri(25,60);
+        if(Math.random()<Math.min(.95,h.chance+.35)){
+          const it=mine[0];const price=niceRound(it.base*(1.4+h.chance*2.5)*rand(.85,1.15));
+          S.inv=S.inv.filter(i=>i!==it);S.money+=price;S.revenue=(S.revenue||0)+price;S.sales++;S.earned+=price-it.paid;S.day$.sales++;S.day$.profit+=price-it.paid;flashMoney(1);
+          toast(`${h.name.split(' ')[0]} vendió y envió ${low(it.name)} por ${money(price)} (${price-it.paid>=0?'+':''}${money(price-it.paid)}).`,'good');dirty=true;
+        }
+      }
+    }
+  }
+  if(!S.auto)return;
   for(const h of S.hired){
     if(h.busy){
       const b=S.buyers.find(x=>x.id===h.busy);
@@ -1842,9 +2218,10 @@ function tick(){
   if(!S||menuOpen()||!$('#daytx').hidden)return;
   S.t++;if(S.min<23*60+57)S.min+=3;
   const before=S.shop.length;
-  S.shop=S.shop.filter(l=>l.exp>S.t);
+  S.shop=S.shop.filter(l=>l.exp>S.t);for(const k in S.tshop){const n=S.tshop[k].length;S.tshop[k]=S.tshop[k].filter(l=>l.exp>S.t);if(S.tshop[k].length!==n)dirty=true}
+  if(S.min>=15*60&&!S.restock2){S.restock2=true;restockAll();dirty=true;toast('Las tiendas renovaron sus ofertas de la tarde.')}
+  for(const t of SHOP_TIERS)if(!S.unlocked.includes(t.id)&&S.revenue>=t.need){S.unlocked.push(t.id);for(let i=0;i<7;i++)addListing(t.id);dirty=true;toast(`Te llegó una invitación exclusiva: ${t.host}. Búscala en el navegador.`,'good',()=>{if(inRoom())enterPC();go(t.host)})}
   if(S.shop.length!==before)dirty=true;
-  if(S.shop.length<8&&S.t>=S.nextShop&&!night()){addListing();dirty=true}
   if(!night()&&!isOffline())for(const it of S.inv){
     if(!it.listed)continue;
     it.tooHigh=it.price>maxWilling(it)*2.2;
@@ -1860,6 +2237,7 @@ function tick(){
     if(w>WAIT(b)){b.msgs.push({from:'b',text:'Bueno, veo que no contestas. Adiós.'});loseBuyer(b,'Se cansó de esperar tu respuesta.');if(S.cur===b.id)renderChat()}
   }
   for(const dl of S.deliveries.filter(x=>S.t>=x.at)){
+    if(dl.ing){S.door.push({uid:S.nextId++,ing:dl.ing,day:S.day});toast(`Tocan la puerta: llegaron ${ING[dl.ing].n.toLowerCase()}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});dirty=true;continue}
     const F=FOOD.find(f=>f.id===dl.food);
     S.door.push({uid:S.nextId++,id:F.id,day:S.day});
     toast(`Tocan la puerta: llegó ${low(F.name)}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});
@@ -1902,7 +2280,7 @@ function endDay(){
   }
   S.day++;S.min=8*60;
   const rotten=S.fridgeItems.filter(f=>f.day<=S.day-2),rotDoor=S.door.filter(f=>f.day<=S.day-2);
-  if(rotten.length||rotDoor.length){toast(`Se pudrió: ${[...rotten,...rotDoor].map(r=>low(FOOD.find(f=>f.id===r.id).name)).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f));S.door=S.door.filter(f=>!rotDoor.includes(f))}
+  if(rotten.length||rotDoor.length){toast(`Se pudrió: ${[...rotten,...rotDoor].map(r=>r.ing?ING[r.ing].n.toLowerCase():low(FOOD.find(f=>f.id===r.id).name)).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f));S.door=S.door.filter(f=>!rotDoor.includes(f))}
   for(const sh of S.shipments.filter(x=>x.day&&x.day<=S.day))deliverShipment(sh);
   S.food=clamp(S.food-10,0,100);S.drink=clamp(S.drink-10,0,100);
   for(const h of S.hired)addBill('salary',`Sueldo de ${h.name}`,h.salary,S.day,{emp:h.id});
@@ -1913,9 +2291,9 @@ function endDay(){
   }
   if(S.drone&&S.day>S.droneDay&&(S.day-S.droneDay)%7===0)addBill('drone','Servicio de drones (semana)',50,S.day+1);
   S.cands=genCands();S.jobsDone={plates:0,surveys:0,typing:0};
-  S.shop=[];for(let i=0;i<6;i++)addListing(true);
+  S.shop=[];S.tshop={};S.restock2=false;restockAll();
   S.day$={sales:0,profit:0,jobs:0,spent:0};
-  S.buyers=S.buyers.filter(b=>b.status==='open'||b.id===S.lastChat);
+  const closed=S.buyers.filter(b=>b.status!=='open');if(closed.length>40){const drop=new Set(closed.slice(0,closed.length-40).map(b=>b.id));S.buyers=S.buyers.filter(b=>!drop.has(b.id)||b.id===S.lastChat)}
   $('#night').hidden=true;dirty=true;S.view='room';S.wall=0;roomKey='';save();
   playDayTransition(summary,()=>{renderRoom();
     if(S.day===S.botDay)toast('Cuentero.ai ya está en línea. Búscalo en el buscador.');
@@ -1935,11 +2313,15 @@ const INDEX=[
  {url:'comeya.com',title:'ComeYa · Comida rápida a domicilio',snip:'Hot dogs, hamburguesas y papas en minutos. Barato, rápido y poco nutritivo.',kw:['comida rapida','rapida','pedir comida','comida','comer','hambre','hamburgues','hot dog','papas','delivery','domicilio','pedido','refresco','gaseosa','chatarra','basura','fast','almuerzo','cena','sed']},
  {url:'superpronto.com',title:'SuperPronto · Supermercado en línea',snip:'Compras del súper con envío a domicilio. Comida sana que llena de verdad.',kw:['supermercado','super','mercado','compras','abarrotes','verdura','carne','agua','leche','bebida','sed','alimento','comida sana','fruta','sano','saludable','despensa']},
  {url:'hogartotal.com',title:'Hogar Total · Muebles y electrodomésticos',snip:'Refrigeradores, drones de entrega y todo para tu casa y tu negocio.',kw:['mueble','electrodomest','refrigerador','heladera','nevera','dron','drone','entrega','envio','reparto','hogar','casa','electro','aparato','logistica','mas rapido','acelerar']},
+ {url:'bolitas.com',title:'Bolitas · El juego de la suerte',snip:'Suelta bolitas y mira dónde caen: cuanto más lejos del centro, más ganas. Apuestas de $20 a $100.',kw:['apuesta','apostar','casino','juego','jugar','bolita','suerte','plinko','azar','ganar','premio','loteria']},
+ {url:'vitrinavintage.com',locked:'vitrina',title:'Vitrina Vintage · Antigüedades seleccionadas',snip:'Objetos de colección de $70 a $250. Solo con invitación.',kw:['antiguedad','vintage','coleccion','caro','premium','exclusiv','mejor','reliquia']},
+ {url:'casadesubastas.com',locked:'subastas',title:'Casa de Subastas · Piezas de colección',snip:'Pianos, motos, cuadros y joyas. Solo con invitación.',kw:['subasta','coleccion','caro','premium','exclusiv','arte','lujo']},
+ {url:'lujoeterno.com',locked:'lujo',title:'Lujo Eterno',snip:'Autos clásicos, oro y diamantes. Solo con invitación.',kw:['lujo','oro','diamante','millonario','exclusiv','caro','premium','auto']},
  {url:'dicciomundo.org',title:'Dicciomundo · Dudas de ortografía',snip:'Las faltas más comunes y cómo evitarlas. «Porque» no se escribe «xq».',kw:['diccionario','ortografia','falta','tilde','acento','escribir bien','gramatica','palabra','dicciomundo','corrector']},
  {url:'comoserrico.net',title:'Cómo ser rico en 3 días (método secreto)',snip:'Un gurú financiero revela el truco que los bancos odian.',kw:['rico','millonario','facil','exito','secreto','dinero facil','hacerse rico']},
 ];
 const ESSENTIAL=['buscalo.com','cuentasclaras.com','trabajitos.com','comeya.com','superpronto.com','bancoconfianza.com'];
-const FAV={'buscalo.com':['b','#2B50E8'],'bazarito.com':['B','#F2542D'],'cuentero.ai':['C','#7A1E36'],'empleaya.com':['E','#0F766E'],'trabajitos.com':['T','#E4A11B'],'cuentasclaras.com':['=','#2F5D50'],'bancoconfianza.com':['$','#0B3D91'],'comeya.com':['C','#E63946'],'superpronto.com':['S','#2E7D32'],'hogartotal.com':['H','#3B3A8F'],'dicciomundo.org':['D','#1B2A4A'],'comoserrico.net':['!','#C200C2']};
+const FAV={'buscalo.com':['b','#2B50E8'],'bazarito.com':['B','#F2542D'],'cuentero.ai':['C','#7A1E36'],'empleaya.com':['E','#0F766E'],'trabajitos.com':['T','#E4A11B'],'cuentasclaras.com':['=','#2F5D50'],'bancoconfianza.com':['$','#0B3D91'],'comeya.com':['C','#E63946'],'superpronto.com':['S','#2E7D32'],'hogartotal.com':['H','#3B3A8F'],'dicciomundo.org':['D','#1B2A4A'],'bolitas.com':['●','#7B2FF7'],'vitrinavintage.com':['V','#1F4D3A'],'casadesubastas.com':['S','#5A1020'],'lujoeterno.com':['L','#111111'],'comoserrico.net':['!','#C200C2']};
 
 function parseUrl(u){u=String(u).trim().toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'');const i=u.indexOf('/');return i<0?{host:u,path:''}:{host:u.slice(0,i),path:u.slice(i+1).replace(/\/$/,'')}}
 const curTab=()=>S.tabs.find(t=>t.id===S.tab)||S.tabs[0];
@@ -1956,7 +2338,7 @@ function omni(text){
 }
 function search(q){
   const d=strip(q.toLowerCase());const words=d.split(/[^a-z0-9]+/).filter(w=>w.length>=2);
-  return INDEX.map(s=>{
+  return INDEX.filter(s=>!s.locked||S.unlocked.includes(s.locked)).map(s=>{
     let sc=0;
     for(const k of s.kw){
       if(k.includes(' ')){if(d.includes(k.trim()))sc+=2;continue}
@@ -1991,6 +2373,10 @@ function route(url){
     case 'superpronto.com':return pageSuper();
     case 'hogartotal.com':return pageHogar();
     case 'dicciomundo.org':return pageDic();
+    case 'bolitas.com':return pageBolitas();
+    case 'vitrinavintage.com':return pageTier('vitrina');
+    case 'casadesubastas.com':return pageTier('subastas');
+    case 'lujoeterno.com':return pageTier('lujo');
     case 'comoserrico.net':return pageRico();
     default:{const w=host.replace(/\..*/,'');return {title:'No se puede acceder',host,cls:'sys',html:`<div class="sys-page"><div class="sys-ico">:(</div><h1>No se puede acceder a este sitio</h1><p>No encontramos <b>${esc(host||url)}</b>. Revisa la dirección o búscalo en el buscador.</p><button class="btn" data-go="buscalo.com/buscar?q=${encodeURIComponent(w)}">Buscar «${esc(w)}»</button></div>`}}
   }
@@ -1998,10 +2384,12 @@ function route(url){
 let lastRenderedUrl=null;
 function renderPage(force){
   const t=curTab();const r=route(t.url);const page=$('#page');
+  if(!force&&r.static&&lastRenderedUrl===t.url&&page.dataset.host===r.host)return;
   const keep={};page.querySelectorAll('input[id],textarea[id]').forEach(el=>{keep[el.id]=el.value});
   const act=document.activeElement&&page.contains(document.activeElement)?document.activeElement.id:null;
   let sel=null;if(act){const a=document.activeElement;try{sel=[a.selectionStart,a.selectionEnd]}catch(e){}}
-  page.className='page site-'+r.cls;page.innerHTML=r.html;
+  page.className='page site-'+r.cls;page.innerHTML=r.html;page.dataset.host=r.host||'';
+  if(r.host==='bolitas.com'&&!PK.raf)PK.raf=requestAnimationFrame(pkLoop);
   if(!force||lastRenderedUrl===t.url){for(const id in keep){const el=page.querySelector('#'+CSS.escape(id));if(el&&el.type!=='checkbox')el.value=keep[id]}}
   if(act){const el=page.querySelector('#'+CSS.escape(act));if(el){el.focus();if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
   t.title=r.title;t.host=r.host||parseUrl(t.url).host;lastRenderedUrl=t.url;
@@ -2062,7 +2450,13 @@ function pageBazarito(path){
   const list=S.shop.filter(l=>!l.bought);
   return {title:'Bazarito · Ofertas relámpago',host:'bazarito.com',cls:'bazarito',html:bzHeader('home')+`<div class="bz-in bz-body">
     <div class="bz-hero"><div><h1>Ofertas relámpago</h1><p>Cada cosa dura segundos. Si parpadeas, se la lleva otro.</p></div>${night()?'<span class="bz-night">De noche casi nadie publica</span>':''}</div>
-    ${list.length?`<div class="bz-grid">${list.map(l=>`<article class="bz-card ${l.type}">
+    ${list.length?`<div class="bz-grid">${list.map(l=>productCard(l)).join('')}</div>`:`<div class="bz-empty">No hay ofertas ahora. Vuelven a la tarde o mañana temprano.</div>`}</div>`};
+}
+function buyBtns(l){
+  const multi=S.hired.length&&l.qty>1;
+  return `<button class="bz-btn" data-act="buy" data-id="${l.id}" ${S.money<l.price?'disabled':''}>Comprar</button>${multi?`<button class="bz-btn alt" data-act="buy-all" data-id="${l.id}" ${S.money<l.price*l.qty?'disabled':''}>×${l.qty}</button>`:''}`;
+}
+function productCard(l){return `<article class="bz-card ${l.type}">
       ${l.type==='flash'?'<span class="bz-rib">−50 %</span>':l.type==='mystery'?'<span class="bz-rib mys">Misterio</span>':''}
       <div class="bz-thumb" style="--h:${hue(l.name)}">${l.type==='mystery'?'📦':l.icon}</div>
       <div class="bz-cb">
@@ -2070,8 +2464,24 @@ function pageBazarito(path){
         <p class="bz-note">«${esc(l.note)}»</p>
         <p class="bz-seller">@${l.seller}</p>
         <div class="bz-timer" data-exp="${l.exp}" data-life="${l.life}"><i></i><span>Se va en <b class="t num"></b></span></div>
-        <div class="bz-buy"><span class="bz-price num">${money(l.price)}</span><button class="bz-btn" data-act="buy" data-id="${l.id}" ${S.money<l.price?'disabled':''}>Comprar</button></div>
-      </div></article>`).join('')}</div>`:`<div class="bz-empty">No hay ofertas ahora. Espera unos segundos.</div>`}</div>`};
+        ${l.qty>1?`<span class="bz-stock">Quedan ${l.qty}</span>`:''}
+        <div class="bz-buy"><span class="bz-price num">${money(l.price)}</span><span class="bz-bb">${buyBtns(l)}</span></div>
+      </div></article>`}
+function pageTier(id){
+  const t=SHOP_TIERS.find(x=>x.id===id);
+  if(!S.unlocked.includes(id))return {title:t.name,host:t.host,cls:'tier tier-'+t.cls,html:`<div class="tr-lock"><div class="tr-logo">${t.name}</div><p>Acceso solo con invitación.</p><p class="tr-small">Sigue vendiendo: cuando tus ventas lleguen a ${money(t.need)}, te enviaremos una.</p></div>`};
+  const list=(S.tshop[id]||[]).filter(l=>!l.bought);
+  return {title:t.name,host:t.host,cls:'tier tier-'+t.cls,html:`<header class="tr-head"><div class="bz-in"><div class="tr-logo">${t.name}</div><p>${t.tag} · se renueva dos veces al día</p></div></header>
+  <div class="bz-in bz-body">${list.length?`<div class="bz-grid">${list.map(l=>productCard(l)).join('')}</div>`:'<div class="bz-empty">Sin piezas disponibles por ahora. Vuelve más tarde.</div>'}</div>`};
+}
+function pageBolitas(){
+  return {static:true,title:'Bolitas · Juego de la suerte',host:'bolitas.com',cls:'bolitas',html:`<div class="pk-wrap">
+    <div class="pk-logo">BOLITAS</div><p class="pk-sub">Cuanto más lejos del centro cae, más ganas.</p>
+    <canvas id="pk-canvas" width="360" height="400" aria-label="Tablero de bolitas"></canvas>
+    <div class="pk-ctl"><label for="pk-bet">Apuesta</label><input id="pk-bet" type="range" min="20" max="100" step="5" value="20"><b id="pk-betn" class="num">$20</b></div>
+    <button class="pk-btn" data-act="pk-drop" ${S.money<20?'disabled':''}>Soltar bolita</button>
+    <p class="pk-last" id="pk-last">Tienes ${money(S.money)}. Mínimo $20, máximo $100 por bolita.</p>
+    <p class="pk-fine">Juega con responsabilidad: en promedio, la casa siempre gana.</p></div>`};
 }
 function bzShip(){
   if(!S.shipments.length)return '';
@@ -2080,13 +2490,15 @@ function bzShip(){
 }
 function bzInv(){
   if(!S.inv.length)return bzShip()+`<div class="bz-empty"><b>No tienes nada para vender.</b><br>Compra algo barato en Ofertas y vuelve aquí para publicarlo con una buena historia.</div>`;
-  return bzShip()+`<h2 class="bz-h2">Mis cosas</h2>`+S.inv.map(it=>{
+  const assignBar=S.hired.length?`<div class="bz-assign"><span>Tus empleados pueden vender y enviar productos solos.</span><button class="bz-btn" data-act="assign-open">Asignar productos</button></div>`:'';
+  return bzShip()+`<h2 class="bz-h2">Mis cosas</h2>`+assignBar+S.inv.map(it=>{
     const open=S.buyers.filter(b=>b.itemId===it.id&&b.status==='open').length;
-    const st=!it.listed?'<span class="bz-pill">Sin publicar</span>':it.tooHigh?'<span class="bz-pill bad">Nadie pregunta: precio muy alto para esa historia</span>':`<span class="bz-pill live">Publicado · ${open} interesado${open===1?'':'s'}</span>`;
+    const who=it.assigned&&S.hired.find(h=>h.id===it.assigned);
+    const st=who?`<span class="bz-pill live">Lo vende ${esc(who.name.split(' ')[0])}</span>`:!it.listed?'<span class="bz-pill">Sin publicar</span>':it.tooHigh?'<span class="bz-pill bad">Nadie pregunta: precio muy alto para esa historia</span>':`<span class="bz-pill live">Publicado · ${open} interesado${open===1?'':'s'}</span>`;
     return `<div class="bz-row"><div class="bz-thumb sm" style="--h:${hue(it.name)}">${it.icon}</div><div class="bz-ri">
       <b>${esc(it.name)}</b><span class="bz-sub">Pagaste <span class="num">${money(it.paid)}</span>${it.listed?` · Pides <span class="num">${money(it.price)}</span> · gancho ${Math.round(it.score*100)} %`:''}</span>${st}
       ${it.listed?`<p class="bz-story">«${esc(it.story)}»</p>${it.aiNote?`<p class="bz-ai">Jurado IA: ${esc(it.aiNote)}</p>`:''}`:''}
-      <div class="bz-acts">${it.listed?(open?'<button class="bz-btn ghost" data-go="bazarito.com/mensajes">Ver mensajes</button>':`<button class="bz-btn ghost" data-act="edit" data-id="${it.id}">Editar anuncio</button>`):`<button class="bz-btn" data-act="edit" data-id="${it.id}">Publicar</button>`}</div>
+      <div class="bz-acts">${who?`<button class="bz-btn ghost" data-act="unassign" data-id="${it.id}">Quitar a ${esc(who.name.split(' ')[0])}</button>`:it.listed?(open?'<button class="bz-btn ghost" data-go="bazarito.com/mensajes">Ver mensajes</button>':`<button class="bz-btn ghost" data-act="edit" data-id="${it.id}">Editar anuncio</button>`):`<button class="bz-btn" data-act="edit" data-id="${it.id}">Publicar</button>`}</div>
     </div></div>`}).join('');
 }
 function bzChats(){
@@ -2122,11 +2534,12 @@ function pageCuentero(){
     <button class="ct-btn" data-act="bot-sub" ${S.money<50?'disabled':''}>${S.money<50?'Te faltan '+money(50-S.money):'Suscribirme'}</button></div></div>`};
   const mine=[...new Set(S.inv.map(i=>i.name))];
   return {title:'Cuentero.ai · Tu escritor',host:'cuentero.ai',cls:'cuentero',html:`<div class="ct-wrap chat">
-    <div class="ct-bar"><div class="ct-logo sm">Cuentero<span>.ai</span></div><span class="ct-on">● Suscrito</span></div>
+    <div class="ct-bar"><div class="ct-logo sm">Cuentero<span>.ai</span></div><span class="ct-on">● ${S.botPro?'Pro':'Suscrito'}</span></div>
+    ${S.botPro?'':`<div class="ct-pro"><div><b>Cuentero Pro</b><span>Historias de 90 % o más de gancho, a medida.</span></div><button class="ct-btn" data-act="bot-pro" ${S.money<70?'disabled':''}>${S.money<70?'Te faltan '+money(70-S.money):'Mejorar · $70'}</button></div>`}
     <div class="ct-log" id="bot-log">${[{from:'bot',text:'Hola, soy Cuentero. Dime qué objeto quieres vender y te invento un pasado glorioso.'},...S.botMsgs].map(m=>m.from==='me'?`<div class="ct-me">${esc(m.text)}</div>`:
-      `<div class="ct-bot ${m.crazy?'crazy':''}"><span class="ct-who">Cuentero${m.crazy?' · 🤪 exclusiva absurda':''}</span>${m.pre?`<p class="ct-pre">${esc(m.pre)}</p>`:''}<p>${esc(m.text)}</p>${m.story&&m.item?`<div class="ct-row">${S.inv.some(i=>i.name===m.item)?`<button class="ct-use" data-act="bot-use" data-item="${esc(m.item)}" data-story="${esc(m.story)}">Usar en el anuncio</button>`:'<span class="ct-note">Compra este objeto para usar la historia.</span>'}<button class="ct-use alt" data-act="bot-crazy" data-item="${esc(m.item)}">Una más loca</button></div>`:''}</div>`).join('')}
+      `<div class="ct-bot ${m.crazy?'crazy':''} ${m.pro?'pro':''}"><span class="ct-who">Cuentero${m.crazy?' · 🤪 exclusiva absurda':m.pro?' · ★ Pro (90 %+)':''}</span>${m.pre?`<p class="ct-pre">${esc(m.pre)}</p>`:''}<p>${esc(m.text)}</p>${m.story&&m.item?`<div class="ct-row">${S.inv.some(i=>i.name===m.item)?`<button class="ct-use" data-act="bot-use" data-item="${esc(m.item)}" data-story="${esc(m.story)}">Usar en el anuncio</button>`:'<span class="ct-note">Compra este objeto para usar la historia.</span>'}<button class="ct-use alt" data-act="bot-crazy" data-item="${esc(m.item)}">Una más loca</button></div>`:''}</div>`).join('')}
       ${botTyping?'<div class="ct-bot typing"><i></i><i></i><i></i></div>':''}</div>
-    ${mine.length?`<div class="ct-chips"><span>Tus cosas:</span>${mine.map(n=>`<button data-act="bot-ask" data-item="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}
+    ${mine.length?`<div class="ct-chips"><span>Tus cosas:</span>${mine.map(n=>`<button data-act="${S.botPro?'bot-pro-ask':'bot-ask'}" data-item="${esc(n)}">${S.botPro?'★ ':''}${esc(n)}</button>`).join('')}</div>`:''}
     <form class="ct-form" id="bot-form"><input id="bot-in" placeholder="Ej: una historia para una tetera" autocomplete="off" aria-label="Pídele una historia"><button class="ct-btn">Pedir</button></form></div>`};
 }
 function botAsk(text){
@@ -2139,10 +2552,13 @@ function botAsk(text){
     if(!item)S.botMsgs.push({from:'bot',text:'No conozco ese objeto. Prueba con algo que tengas, por ejemplo: '+CATALOG.slice(0,4).map(c=>low(c[0])).join(', ')+'…'});
     else{
       const wantsCrazy=/(loca|loco|absurd|gracios|rara|raro|delirant|disparat|exclusiv|chistos)/.test(d);
-      const used=S.used[item[0]]||[];const free=item[4].map((s,i)=>i).filter(i=>!used.includes(i));
+      const wantsPro=S.botPro&&/(pro|★)/.test(d);
+      const used=S.used[item[0]]||[];const free=storiesFor(item).map((s,i)=>i).filter(i=>!used.includes(i));
       S.absUsed=S.absUsed||[];let freeAbs=ABSURD.map((s,i)=>i).filter(i=>!S.absUsed.includes(i));
       if(!freeAbs.length){S.absUsed=[];freeAbs=ABSURD.map((s,i)=>i)}
-      if(wantsCrazy||!free.length){
+      if(wantsPro){let best=null,bs=-1;for(let k=0;k<30;k++){const st=genStory(item,true);const sc=storyScore(st,{name:item[0]}).score;if(sc>bs){bs=sc;best=st}if(sc>=.9)break}
+        S.proStories=(S.proStories||[]).concat(best).slice(-60);S.botMsgs.push({from:'bot',text:best,story:best,item:item[0],pro:true})}
+      else if(wantsCrazy||!free.length){
         const i=pick(freeAbs);S.absUsed.push(i);const f=item[3]==='f';
         const txt=ABSURD[i].replace(/\{Este\}/g,f?'Esta':'Este').replace(/\{este\}/g,f?'esta':'este').replace(/\{Lo\}/g,f?'La':'Lo').replace(/\{lo\}/g,f?'la':'lo').replace(/\{o\}/g,f?'a':'o').replace(/\{obj\}/g,low(item[0]));
         S.botMsgs.push({from:'bot',text:txt,story:txt,item:item[0],crazy:true,pre:free.length?'':'Ya usé mis historias serias sobre esto. Esta es exclusiva y un poco más… creativa:'});
@@ -2232,7 +2648,7 @@ function pageBanco(){
 function foodCard(F,site){return `<article class="${site}-item"><div class="${site}-ic">${F.icon}</div><div class="${site}-ii"><h3>${F.name}</h3><p>${F.desc}</p>
   <div class="${site}-st">${F.food?`<span>Comida +${F.food}</span>`:''}${F.drink?`<span>Bebida +${F.drink}</span>`:''}</div></div>
   <div class="${site}-buy"><b class="num">${money(F.price)}</b><button data-act="order" data-id="${F.id}" ${S.money<F.price?'disabled':''}>Pedir</button></div></article>`}
-function pendingFor(kind){const p=S.deliveries.filter(d=>FOOD.find(f=>f.id===d.food).kind===kind);return p.length?Math.max(0,Math.min(...p.map(d=>d.at))-S.t):null}
+function pendingFor(kind){const p=S.deliveries.filter(d=>d.food&&FOOD.find(f=>f.id===d.food).kind===kind);return p.length?Math.max(0,Math.min(...p.map(d=>d.at))-S.t):null}
 function pageComeYa(){
   const w=pendingFor('junk');
   return {title:'ComeYa · Comida rápida',host:'comeya.com',cls:'altoque',html:`<div class="at-head"><div class="at-in"><div class="at-logo">COME YA</div><p>Comida rápida a domicilio · llega en minutos</p></div></div>
@@ -2245,6 +2661,9 @@ function pageSuper(){
   return {title:'SuperPronto · Supermercado',host:'superpronto.com',cls:'super',html:`<div class="sp-head"><div class="sp-in"><div class="sp-logo">Super<b>Pronto</b></div><p>Envío a domicilio en unos 30 minutos</p></div></div>
   <div class="sp-in sp-body">${w!=null?`<div class="sp-pend">Pedido en camino · llega en ${w} s</div>`:''}
   <h2 class="sp-h2">Despensa y bebidas</h2>${FOOD.filter(f=>f.kind==='super').map(f=>foodCard(f,'sp')).join('')}
+  <h2 class="sp-h2">Ingredientes para cocinar</h2>
+  <p class="sp-note">${S.stove?'Llegan a tu puerta y se guardan en la despensa de la cocina.':'Necesitas una cocina para usarlos: se compra en tiendas de muebles.'} Tienes: ${Object.entries(S.pantry||{}).filter(([k,v])=>v>0).map(([k,v])=>ING[k].i+'×'+v).join(' ')||'nada'}.</p>
+  <div class="sp-ing">${Object.entries(ING).map(([k,g])=>`<button class="sp-ingb" data-act="order-ing" data-id="${k}" ${S.money<g.price?'disabled':''}><span>${g.i}</span><b>${g.n}</b><small>×${g.pack} · ${money(g.price)}</small></button>`).join('')}</div>
   <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p></div>`};
 }
 function order(id){
@@ -2263,6 +2682,7 @@ function pageHogar(){
     <div class="ht-grid">
     ${card('🧊','Refrigerador con congelador','Guarda comida y bebida para después. Lo que no consumas para el segundo día se pudre.',money(FRIDGE_PRICE),S.fridge,S.money>=FRIDGE_PRICE?'buy-fridge':null,S.money<FRIDGE_PRICE&&!S.fridge?`<p class="ht-miss">Te faltan ${money(FRIDGE_PRICE-S.money)}</p>`:'')}
     ${card('🛸','Servicio de drones de entrega','Tus ventas se entregan el mismo día, estén donde estén los clientes, y cobras el resto ese mismo día. Pago inicial de $200 y $50 por semana.',money(DRONE_PRICE),S.drone,S.money>=DRONE_PRICE?'buy-drone':null,S.money<DRONE_PRICE&&!S.drone?`<p class="ht-miss">Te faltan ${money(DRONE_PRICE-S.money)}</p>`:S.drone&&!droneOn()?'<p class="ht-miss">Servicio suspendido: paga la factura de drones.</p>':'')}
+    ${card('🍳','Cocina con horno','Cocina recetas con ingredientes del súper: llenan mucho más el hambre y la sed.',money(100),S.stove,S.money>=100?'buy-stove':null,S.money<100&&!S.stove?`<p class="ht-miss">Te faltan ${money(100-S.money)}</p>`:'')}
     ${card('🚐','Camioneta de reparto','Para llevar cosas grandes.','—',false,null)}
     ${card('🏬','Bodega','Más espacio para guardar mercancía.','—',false,null)}
     </div></div>`};
@@ -2287,37 +2707,61 @@ function openChat(id){
   if(isOffline()){toast('Sin internet: paga la factura en Cuentas Claras.');return}
   if(S.view!=='pc'){S.view='pc';$('#room').hidden=true;renderPage(true)}
   S.cur=id;S.lastChat=id;b.unread=0;window._lastDelta=null;
-  $('#chat').hidden=false;$('#haggle').hidden=true;renderChat();renderTaskbar();renderMini();dirty=true;
+  $('#chat').hidden=false;$('#haggle').hidden=true;$('#c-tray').hidden=true;$('#c-plus').classList.remove('on');renderChat();renderTaskbar();renderMini();dirty=true;
 }
 function closeChat(){S.cur=null;$('#chat').hidden=true;$('#profile').hidden=true;dirty=true;renderPage();renderMini()}
 function renderAIBadge(){const el=$('#c-ai');if(!el)return;const on=aiReady();el.textContent=on?'Cliente con IA':aiState==='checking'?'…':'Motor clásico';el.className='ai-pill '+(on?'on':'')}
+function quickReplies(b,it){
+  const out=[];const q=b.q;
+  if(b.status!=='open'||b.emp)return out;
+  if(q&&q.id==='qb')out.push('¡Hola! Sí, sigue disponible. Es tuyo.');
+  if(b.pmsgs===0)out.push('¡Hola! Gracias por tu interés.');
+  if(q&&q.photo)out.push('📷 Mandar una foto');
+  else if(q&&q.concern){out.push({envio:'Sí, lo envío a todo el país en pocos días.',estado:'Está en muy buen estado, sin golpes.',autenticidad:'Es original: tengo un certificado.',procedencia:'Era de mi familia; lo heredé.',precio:'Vale eso por su historia: es una pieza única.',confianza:'Tiene garantía de devolución de 7 días.',foto:'📷 Mandar una foto'}[q.concern])}
+  else if(q){const qq=strip(q.q.toLowerCase());out.push(/envi|llegar|internacional/.test(qq)?'Sí, hago envíos.':/estado|golpes|detalle/.test(qq)?'Está en muy buen estado.':/cuanto|precio|barato|vale/.test(qq)?'Te lo dejo a un precio justo.':'Sí, claro.')}
+  if(out.length<3)out.push('¿Qué es lo que más te preocupa?');
+  return [...new Set(out)].slice(0,3);
+}
 function renderChat(keepScroll){
-  const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const it=itemOf(b);const P=PERSONAS[b.persona];
+  const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const it=itemOf(b);const P=PERSONAS[b.persona]||PERSONAS.amable;
   b.unread=0;
   $('#c-av').textContent=b.name[0];$('#c-av').style.setProperty('--h',hue(b.name));
-  $('#c-name').textContent=b.name;$('#c-sub').textContent=(it?it.name:'Artículo vendido')+(it&&it.listed?` · pides ${money(it.price)}`:'');
+  $('#c-name').textContent=b.name;
+  $('#c-persona').textContent=b.typing?'escribiendo…':b.status==='won'?'Compró tu artículo':b.status==='lost'?'Se fue':b.seenProfile?`${P.label} · ${b.city}`:'en línea · toca su foto para ver su perfil';
+  $('#c-persona').classList.toggle('typing-s',!!b.typing);
+  $('#c-thumb').textContent=it?it.icon:'📦';$('#c-thumb').style.setProperty('--h',hue(it?it.name:'x'));
+  $('#c-sub').textContent=(it?it.name:'Artículo vendido')+(it&&it.listed?` · pides ${money(it.price)}`:'');
   $('#c-offer').textContent=money(b.offer);
   $('#c-pct').textContent=Math.round(b.conv)+' %';
   const bar=$('#c-bar');bar.style.width=b.conv+'%';bar.style.backgroundColor=convColor(b.conv);
   const dl=$('#c-delta');const ld=window._lastDelta;if(ld!=null){dl.textContent=(ld>=0?'+':'')+ld;dl.style.color=ld>=0?'var(--good)':'var(--bad)'}else dl.textContent='';
-  $('#c-persona').textContent=b.seenProfile?`${P.label} · vive en ${b.city}`:'Toca su foto para ver su perfil';
   $('#c-pat').textContent='●'.repeat(Math.max(0,b.patience))+'○'.repeat(Math.max(0,b.patMax-b.patience));
   renderAIBadge();
   const box=$('#c-msgs');const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
-  $('#c-list').innerHTML=b.msgs.map(m=>{
-    if(m.from==='sys')return `<div class="msg sys ${m.cls||''}">${esc(m.text)}</div>`;
-    if(m.from==='emp')return `<div class="msg emp"><span class="who">${esc(m.who)} (tu empleado)</span><div class="bubble">${esc(m.text)}</div></div>`;
-    const chips=m.chips&&m.chips.length?`<div class="chips">${m.chips.map(c=>`<span class="chip ${c.v>0?'up':c.v<0?'down':''}">${c.v>0?'+':c.v<0?'−':''}${c.v?Math.abs(c.v)+' ':''}${esc(c.l)}</span>`).join('')}</div>`:(m.pending?'<div class="chips"><span class="chip">Leyendo…</span></div>':'');
-    if(m.bphoto)return `<div class="msg b"><div class="bphoto ${m.bphoto.sty}"><div class="bph" style="--h:${m.bphoto.h}"><span>${m.bphoto.icon}</span></div><p>${esc(m.bphoto.cap)}</p></div></div>`;
-    if(m.photo)return `<div class="msg p"><div class="photo-msg"><div class="ph" style="--h:${m.photo.h};filter:blur(${m.photo.blur}px) brightness(${m.photo.br})"><span style="transform:scale(${m.photo.sc})">${m.photo.icon}</span></div><span class="ph-q">Calidad ${m.photo.q} %</span></div>${chips}</div>`;
-    if(m.offer)return `<div class="msg p"><div class="bubble offer-b">Propongo <b class="num">${money(m.offer)}</b></div>${chips}</div>`;
-    return `<div class="msg ${m.from}"><div class="bubble">${esc(m.text)}</div>${chips}</div>`;
-  }).join('')+(b.typing||b.emp?'<div class="typing"><i></i><i></i><i></i></div>':'');
+  let lastDay=null,prevFrom=null;
+  $('#c-list').innerHTML=b.msgs.map((m,idx)=>{
+    if(!m.at)m.at=[S.day,S.min];
+    let sep='';if(m.at[0]!==lastDay){lastDay=m.at[0];sep=`<div class="cx-day"><span>${lastDay===S.day?'Hoy':lastDay===S.day-1?'Ayer':'Día '+lastDay}</span></div>`;prevFrom=null}
+    const tm=`${String(Math.floor(m.at[1]/60)).padStart(2,'0')}:${String(m.at[1]%60).padStart(2,'0')}`;
+    if(m.from==='sys'){prevFrom=null;return sep+`<div class="msg sys ${m.cls||''}">${esc(m.text)}</div>`}
+    const first=prevFrom!==m.from;prevFrom=m.from;
+    const tot=m.chips?m.chips.reduce((a,c)=>a+c.v,0):0;
+    const chips=m.chips&&m.chips.length?`<details class="chips"><summary><span class="chip ${tot>=0?'up':'down'} tot">${tot>=0?'+':'−'}${Math.abs(tot)}</span>${m.chips.filter(c=>c.v).slice(0,3).map(c=>`<span class="chip ${c.v>0?'up':'down'}">${c.v>0?'+':'−'}${Math.abs(c.v)} ${esc(c.l)}</span>`).join('')}${m.chips.filter(c=>c.v).length>3?`<span class="chip more">+${m.chips.filter(c=>c.v).length-3}</span>`:''}</summary><div class="chips-all">${m.chips.map(c=>`<span class="chip ${c.v>0?'up':c.v<0?'down':''}">${c.v>0?'+':c.v<0?'−':''}${c.v?Math.abs(c.v)+' ':''}${esc(c.l)}</span>`).join('')}</div></details>`:(m.pending?'<div class="chips"><span class="chip">Leyendo…</span></div>':'');
+    const meta=`<span class="cx-meta">${tm}${m.from==='p'?` <b class="tick ${m.pending?'':'read'}">✓✓</b>`:''}</span>`;
+    const av=m.from==='b'&&first?`<span class="av cx-av" style="--h:${hue(b.name)}">${esc(b.name[0])}</span>`:m.from==='b'?'<span class="cx-av sp"></span>':'';
+    if(m.from==='emp')return sep+`<div class="msg emp ${first?'first':''}"><span class="who">${esc(m.who)} (tu empleado)</span><div class="bubble">${esc(m.text)}${meta}</div></div>`;
+    if(m.bphoto)return sep+`<div class="cx-row b">${av}<div class="msg b ${first?'first':''}"><div class="bphoto ${m.bphoto.sty}"><div class="bph" style="--h:${m.bphoto.h}"><span>${m.bphoto.icon}</span></div><p>${esc(m.bphoto.cap)}${meta}</p></div></div></div>`;
+    if(m.photo)return sep+`<div class="msg p ${first?'first':''}"><div class="photo-msg"><div class="ph" style="--h:${m.photo.h};filter:blur(${m.photo.blur}px) brightness(${m.photo.br})"><span style="transform:scale(${m.photo.sc})">${m.photo.icon}</span></div><span class="ph-q">Calidad ${m.photo.q} %${meta}</span></div>${chips}</div>`;
+    if(m.offer)return sep+`<div class="msg p ${first?'first':''}"><div class="bubble offer-b">💲 Propongo <b class="num">${money(m.offer)}</b>${meta}</div>${chips}</div>`;
+    if(m.from==='b')return sep+`<div class="cx-row b">${av}<div class="msg b ${first?'first':''}"><div class="bubble">${esc(m.text)}${meta}</div></div></div>`;
+    return sep+`<div class="msg ${m.from} ${first?'first':''}"><div class="bubble">${esc(m.text)}${meta}</div>${chips}</div>`;
+  }).join('')+(b.typing||b.emp?`<div class="cx-row b"><span class="av cx-av" style="--h:${hue(b.name)}">${esc(b.name[0])}</span><div class="typing"><i></i><i></i><i></i></div></div>`:'');
   if(!keepScroll||atBottom)box.scrollTop=box.scrollHeight;
   const open=b.status==='open'&&!b.emp;
-  ['#c-input','#c-send','#c-cam','#c-hag'].forEach(s=>$(s).disabled=!open||b.typing);
+  ['#c-input','#c-send','#c-cam','#c-hag','#c-plus'].forEach(s=>$(s).disabled=!open||b.typing);
   $('#c-reject').hidden=b.status!=='open';
-  $('#c-hint').textContent=b.status==='won'?'Venta cerrada.':b.status==='lost'?'Este cliente se fue.':b.emp?'Tu empleado está negociando…':b.typing?`${b.name} está escribiendo…`:b.q&&b.q.photo?'Te pidió una foto: toca la cámara.':b.q?'Responde su pregunta.':'Saluda, sé cortés y respalda tu historia.';
+  $('#c-qr').innerHTML=open&&!b.typing?quickReplies(b,it).map(t=>`<button class="cx-q" data-act="qr" data-t="${esc(t)}">${esc(t)}</button>`).join(''):'';
+  $('#c-hint').textContent=b.status==='won'?'Venta cerrada. Envíalo por la ventana de tu cuarto.':b.status==='lost'?'Este cliente se fue.':b.emp?'Tu empleado está negociando…':b.q&&b.q.photo?'Te pidió una foto: toca + y luego Foto.':b.q?'Responde su pregunta.':'';
 }
 function finishTurn(b,delta,reply,delay){
   b.conv=clamp(b.conv+delta,0,100);window._lastDelta=delta;
@@ -2336,7 +2780,7 @@ async function sendMsg(){
   const b=S.buyers.find(x=>x.id===S.cur);if(!b||b.status!=='open'||b.typing||b.emp)return;
   const it=itemOf(b);if(!it)return;
   const P=PERSONAS[b.persona];
-  const form=formCheck(text,b);
+  const form=formCheck(text,b);const wasQuick=b.q&&b.q.id==='qb';
   const msg={from:'p',text,chips:[],pending:true};b.msgs.push(msg);
   b.waitingSince=null;b.typing=true;inp.value='';autosize();renderChat();
   const started=performance.now();
@@ -2357,6 +2801,7 @@ async function sendMsg(){
   }else{const ev=evaluateLocal(text,b,it,form);delta=ev.delta;chips=ev.chips;reply=buyerReply(b,ev,it)}
   if(price){const hag=haggle(b,price,it);delta+=hag.delta;chips=chips.concat(hag.chips);const keep=reply.match(/¿[^?]*\?\s*$/);reply=hag.reply+(keep?' '+keep[0].trim():'')}else b.patience--;
   delta=Math.min(34,delta);
+  if(wasQuick&&!form.f.insult&&/(^|[^a-z])(si|disponible|claro|confirm|trato|tuyo|por supuesto|hecho|vale|sigue)/.test(norm(text))){delta=100;reply='¡Perfecto! Lo compro.'}
   b.pmsgs++;b.last=norm(text).trim();
   msg.chips=chips;msg.pending=false;
   const waited=performance.now()-started;
@@ -2458,6 +2903,7 @@ async function publish(){
     catch(e){aiFail(e)}
     btn.disabled=false;btn.textContent='Publicar anuncio';
   }
+  if((S.proStories||[]).includes(story))score=Math.max(score,.9+Math.random()*.1);
   for(const s of r.kw)S.lexUse[s]=(S.lexUse[s]||0)+1;
   Object.assign(it,{story,price,score,kw:r.kw,listed:true,aiNote:note,spawned:it.spawned||0,maxBuyers:2+Math.round(score*3),nextSpawn:S.t+ri(3,7)});
   drain();
@@ -2598,10 +3044,12 @@ document.addEventListener('click',e=>{
     case 'new-tab':go('buscalo.com',true);setTimeout(()=>$('#bs-q')&&$('#bs-q').focus(),30);break;
     case 'back':{const tb=curTab();if(tb.back.length){tb.fwd.push(tb.url);tb.url=tb.back.pop();renderPage(true)}break}
     case 'fwd':{const tb=curTab();if(tb.fwd.length){tb.back.push(tb.url);tb.url=tb.fwd.pop();renderPage(true)}break}
-    case 'buy':{const l=S.shop.find(x=>x.id==id);if(!l||l.bought||S.money<l.price)break;
-      S.money-=l.price;S.day$.spent+=l.price;l.bought=true;flashMoney(-1);
-      let c=CATALOG.find(x=>x[0]===l.name);if(l.type==='mystery')c=pick(CATALOG);
-      S.inv.push({id:S.nextId++,name:c[0],icon:c[1],g:c[3],base:c[2],paid:l.price,listed:false,price:0,story:'',score:0,kw:[],spawned:0});
+    case 'buy':case 'buy-all':{const l=allListings().find(x=>x.id==id);if(!l||l.bought)break;
+      const n=a==='buy-all'?l.qty:1;if(S.money<l.price*n)break;
+      S.money-=l.price*n;S.day$.spent+=l.price*n;l.qty=(l.qty||1)-n;if(l.qty<=0)l.bought=true;flashMoney(-1);
+      let c=[l.name,l.icon,l.base,l.g];if(l.type==='mystery')c=pick(CATALOG);
+      for(let k=0;k<n;k++)S.inv.push({id:S.nextId++,name:c[0],icon:c[1],g:c[3],base:c[2],paid:l.price,listed:false,price:0,story:'',score:0,kw:[],spawned:0});
+      if(n>1){toast(`Compraste ${n} × ${low(c[0])}. Asígnalos a un empleado en Mis cosas.`,'',()=>go('bazarito.com/mis-cosas'));dirty=true;save();break}
       toast(l.type==='mystery'?`¡La caja traía ${c[3]==='f'?'una':'un'} ${low(c[0])}!`:`Compraste ${art({g:c[3]})} ${low(c[0])}. Publícalo en Mis cosas.`,'',()=>go('bazarito.com/mis-cosas'));
       dirty=true;save();break}
     case 'edit':openEditor(+id);break;
@@ -2611,7 +3059,9 @@ document.addEventListener('click',e=>{
     case 'open-chat':openChat(+id);break;
     case 'close-chat':closeChat();break;
     case 'send':sendMsg();break;
-    case 'hag-open':{const b=S.buyers.find(x=>x.id===S.cur);if(!b)break;const it=itemOf(b);$('#hag-in').value=it?Math.max(b.offer+1,Math.min(it.price,niceRound(b.offer*1.25))):b.offer;$('#haggle').hidden=!$('#haggle').hidden;if(!$('#haggle').hidden)$('#hag-in').focus();break}
+    case 'c-tools':$('#c-tray').hidden=!$('#c-tray').hidden;$('#c-plus').classList.toggle('on',!$('#c-tray').hidden);break;
+    case 'qr':{const v=t.dataset.t;if(v.startsWith('📷')){openCam();break}$('#c-input').value=v;autosize();$('#c-input').focus();break}
+    case 'hag-open':$('#c-tray').hidden=true;{const b=S.buyers.find(x=>x.id===S.cur);if(!b)break;const it=itemOf(b);$('#hag-in').value=it?Math.max(b.offer+1,Math.min(it.price,niceRound(b.offer*1.25))):b.offer;$('#haggle').hidden=!$('#haggle').hidden;if(!$('#haggle').hidden)$('#hag-in').focus();break}
     case 'hag-send':sendOffer();break;
     case 'reject':{const b=S.buyers.find(x=>x.id===S.cur);if(b&&b.status==='open'){b.msgs.push({from:'sys',cls:'lose',text:'Rechazaste la oferta.'});b.status='lost';renderChat();dirty=true}break}
     case 'cam':openCam();break;
@@ -2624,11 +3074,18 @@ document.addEventListener('click',e=>{
     case 'fire':{const h=S.hired.find(x=>x.id===id);if(h&&!h.busy){S.hired=S.hired.filter(x=>x!==h);toast(`Despediste a ${h.name}.`);dirty=true;save()}else if(h)toast('Espera a que termine la conversación que está atendiendo.');break}
     case 'bot-sub':if(S.money>=50){S.money-=50;S.botSub=true;flashMoney(-1);toast('Te suscribiste a Cuentero.ai.');dirty=true;save()}break;
     case 'bot-ask':botAsk(`Escríbeme una historia para: ${t.dataset.item}`);break;
+    case 'bot-pro':if(S.money>=70){S.money-=70;S.botPro=true;S.botSub=true;flashMoney(-1);toast('¡Ahora tienes Cuentero Pro!','good');dirty=true;save()}break;
+    case 'bot-pro-ask':botAsk(`Historia Pro (★) para: ${t.dataset.item}`);break;
     case 'bot-crazy':botAsk(`Ahora una historia loca y absurda para: ${t.dataset.item}`);break;
     case 'bot-use':{const it=S.inv.find(i=>i.name===t.dataset.item&&!i.listed)||S.inv.find(i=>i.name===t.dataset.item);if(it)openEditor(it.id,t.dataset.story);break}
     case 'pay':payBill(+id);break;
     case 'loan':takeLoan(+id);break;
     case 'order':order(id);break;
+    case 'buy-stove':if(!S.stove&&S.money>=100){S.money-=100;S.stove=true;flashMoney(-1);toast('¡Cocina instalada! Ve a la cocina de tu cuarto.','good');dirty=true;save()}break;
+    case 'order-ing':{const g=ING[id];if(!g||S.money<g.price)break;S.money-=g.price;S.day$.spent+=g.price;flashMoney(-1);const w=ri(15,25);S.deliveries.push({ing:id,at:S.t+w});toast(`Pediste ${g.n.toLowerCase()}. Llega en ${w} s a tu puerta.`);dirty=true;save();break}
+    case 'assign-open':openAssign();break;
+    case 'unassign':{const it=S.inv.find(i=>i.id==id);if(it){it.assigned=null;dirty=true;save()}break}
+    case 'pk-drop':plinkoDrop();break;
     case 'buy-fridge':if(!S.fridge&&S.money>=FRIDGE_PRICE){S.money-=FRIDGE_PRICE;S.fridge=true;flashMoney(-1);toast('¡Refrigerador nuevo! Ahora la comida se guarda.');dirty=true;save()}break;
     case 'buy-drone':if(!S.drone&&S.money>=DRONE_PRICE){S.money-=DRONE_PRICE;S.drone=true;S.droneDay=S.day;flashMoney(-1);toast('Drones activados: tus ventas se entregan en el día.');dirty=true;save()}break;
     case 'job':openJob(id);break;
@@ -2693,7 +3150,9 @@ function leavePC(){
 }
 function turn(dir){S.wall=(S.wall+dir+4)%4;turnDir=dir;roomKey='';renderRoom();save()}
 function pickup(uid){
-  const p=S.door.find(x=>x.uid===uid);if(!p)return;const F=FOOD.find(f=>f.id===p.id);
+  const p=S.door.find(x=>x.uid===uid);if(!p)return;
+  if(p.ing){const g=ING[p.ing];S.door=S.door.filter(x=>x!==p);S.pantry[p.ing]=(S.pantry[p.ing]||0)+g.pack;toast(`Guardaste ${g.n.toLowerCase()} (×${g.pack}) en la despensa.`,'good');roomKey='';renderRoom();save();return}
+  const F=FOOD.find(f=>f.id===p.id);
   if(S.fridge){pendingPkg=uid;$('#pkg-title').textContent=F.name;$('#pkg-text').textContent=`${F.food?'Comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'Bebida +'+F.drink:''}. ¿Te lo comes ahora o lo guardas?`;$('#pkg').hidden=false;return}
   S.door=S.door.filter(x=>x!==p);consume(F);toast(`Te comiste: ${low(F.name)}.`,'good');roomKey='';renderRoom();save();
 }
@@ -2739,19 +3198,26 @@ function wallSVG(w,sky){
    <rect x="262" y="210" width="16" height="24" rx="3" fill="#F3F5FA" stroke="#C8CEDB"/><rect x="267" y="216" width="6" height="10" rx="2" fill="#C8CEDB"/>
    <g transform="translate(58 150)"><circle cx="0" cy="0" r="4" fill="#3A3F52"/><path d="M-16 6 Q0 -2 16 6 L22 70 L-22 70 Z" fill="#2645F2"/><path d="M-6 6 L0 26 L6 6" fill="none" stroke="#1A33C4" stroke-width="2"/></g>
    <rect x="112" y="378" width="136" height="16" rx="4" fill="#8A3B2E"/><text x="180" y="390" font-size="9" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#F2C9A8" font-family="Figtree,sans-serif">BIENVENIDO</text>
-   ${pk.map((p,i)=>bag(i<3?20+i*42:228+(i-3)*42,FOOD.find(f=>f.id===p.id),p.uid,p.day<=S.day-1)).join('')}`}
-  if(w===2)return base+`
+   ${pk.map((p,i)=>bag(i<3?20+i*42:228+(i-3)*42,p.ing?{name:ING[p.ing].n,icon:ING[p.ing].i}:FOOD.find(f=>f.id===p.id),p.uid,p.day<=S.day-1)).join('')}`}
+  if(w===2){const pan=Object.entries(S.pantry||{}).filter(([k,v])=>v>0).slice(0,8);return base+`
    <rect x="-2000" y="190" width="4400" height="110" fill="var(--rm-tile)"/>
    <g stroke="var(--rm-tileline)" stroke-width="1">${Array.from({length:6},(_,i)=>`<line x1="-2000" y1="${208+i*18}" x2="2400" y2="${208+i*18}"/>`).join('')}${Array.from({length:30},(_,i)=>`<line x1="${-300+i*24}" y1="190" x2="${-300+i*24}" y2="300"/>`).join('')}</g>
-   <rect x="300" y="254" width="16" height="22" rx="3" fill="#F3F5FA" stroke="#C8CEDB"/><circle cx="305" cy="262" r="1.6" fill="#8A90A3"/><circle cx="311" cy="262" r="1.6" fill="#8A90A3"/><circle cx="308" cy="270" r="1.4" fill="#8A90A3"/>
+   ${S.stove?`<g class="hot" data-act="cook"><title>Cocinar</title><rect x="10" y="88" width="172" height="294" fill="transparent"/>
+     <rect x="14" y="110" width="160" height="12" rx="3" fill="#7A5236"/>
+     ${pan.map(([k,v],i)=>`<text x="${26+i*19}" y="106" font-size="15">${ING[k].i}</text>`).join('')}
+     <rect x="14" y="282" width="164" height="96" rx="4" fill="#DDE3EC"/><rect x="14" y="276" width="164" height="12" rx="3" fill="#C2CAD8"/>
+     <circle cx="56" cy="282" r="14" fill="#2B3047"/><circle cx="56" cy="282" r="9" fill="none" stroke="#5B6280" stroke-width="2"/><circle cx="134" cy="282" r="14" fill="#2B3047"/><circle cx="134" cy="282" r="9" fill="none" stroke="#5B6280" stroke-width="2"/>
+     <rect x="30" y="300" width="132" height="62" rx="6" fill="#2B3047"/><rect x="40" y="310" width="112" height="38" rx="4" fill="#3E4563"/><rect x="70" y="352" width="52" height="5" rx="2" fill="#AEB7C9"/>
+     <g transform="translate(118 236)"><ellipse cx="16" cy="38" rx="22" ry="7" fill="#3A3F52"/><rect x="-2" y="20" width="36" height="18" rx="4" fill="#4A5068"/><path d="M8 10 q8 -14 16 0" fill="none" stroke="#C8CEDB" stroke-width="2" opacity=".7"/></g></g>`:
+   `<rect x="14" y="200" width="164" height="176" rx="10" fill="none" stroke="var(--rm-dash)" stroke-width="2.5" stroke-dasharray="8 7"/>
+    <text x="96" y="284" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">Aquí va</text><text x="96" y="302" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">la cocina</text>`}
    ${S.fridge?`<g class="hot" data-act="open-fridge"><title>Abrir el refrigerador</title>
-     <rect x="112" y="140" width="136" height="236" rx="12" fill="#E9EEF6"/><rect x="112" y="140" width="136" height="236" rx="12" fill="none" stroke="#B9C2D3" stroke-width="2"/>
-     <line x1="114" y1="226" x2="246" y2="226" stroke="#B9C2D3" stroke-width="2"/><rect x="226" y="160" width="7" height="48" rx="3" fill="#AEB7C9"/><rect x="226" y="242" width="7" height="70" rx="3" fill="#AEB7C9"/>
-     <rect x="134" y="250" width="40" height="30" rx="2" fill="#FFF7C2" transform="rotate(-6 154 265)"/><circle cx="154" cy="250" r="4" fill="#E5484D"/>
-     ${S.fridgeItems.length?`<circle cx="244" cy="146" r="13" fill="#2645F2"/><text x="244" y="151" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace">${S.fridgeItems.length}</text>`:''}
-     <rect x="122" y="372" width="14" height="8" fill="#9AA3B8"/><rect x="224" y="372" width="14" height="8" fill="#9AA3B8"/></g>`:
-   `<rect x="112" y="150" width="136" height="226" rx="12" fill="none" stroke="var(--rm-dash)" stroke-width="2.5" stroke-dasharray="8 7"/>
-    <text x="180" y="254" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">Aquí cabe</text><text x="180" y="272" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">un refrigerador</text>`}`;
+     <rect x="206" y="140" width="130" height="236" rx="12" fill="#E9EEF6"/><rect x="206" y="140" width="130" height="236" rx="12" fill="none" stroke="#B9C2D3" stroke-width="2"/>
+     <line x1="208" y1="226" x2="334" y2="226" stroke="#B9C2D3" stroke-width="2"/><rect x="314" y="160" width="7" height="48" rx="3" fill="#AEB7C9"/><rect x="314" y="242" width="7" height="70" rx="3" fill="#AEB7C9"/>
+     <rect x="226" y="250" width="40" height="30" rx="2" fill="#FFF7C2" transform="rotate(-6 246 265)"/><circle cx="246" cy="250" r="4" fill="#E5484D"/>
+     ${S.fridgeItems.length?`<circle cx="332" cy="146" r="13" fill="#2645F2"/><text x="332" y="151" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace">${S.fridgeItems.length}</text>`:''}</g>`:
+   `<rect x="206" y="150" width="130" height="226" rx="12" fill="none" stroke="var(--rm-dash)" stroke-width="2.5" stroke-dasharray="8 7"/>
+    <text x="271" y="254" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">Aquí cabe</text><text x="271" y="272" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">un refrigerador</text>`}`}
   return base+`
    ${(()=>{const pend=S.shipments.filter(s=>s.pending);return `<g class="hot ${pend.length?'pc':''}" data-act="ship-window"><title>Enviar paquetes por la ventana</title>
      <rect x="146" y="70" width="150" height="140" rx="4" fill="#F3F5FA"/><rect x="154" y="78" width="134" height="124" fill="url(#sky)"/>
@@ -2771,7 +3237,7 @@ function wallSVG(w,sky){
 function roomHint(){
   if(S.wall===0)return 'Toca la computadora para usarla';
   if(S.wall===1)return S.door.length?`Tienes ${S.door.length} pedido${S.door.length>1?'s':''} en la puerta: tócalo para recogerlo`:'Aquí llegan tus pedidos de comida';
-  if(S.wall===2)return S.fridge?'Toca el refrigerador para comer algo':'La cocina está vacía';
+  if(S.wall===2)return S.stove?'Toca la cocina para preparar una receta'+(S.fridge?' o el refrigerador para comer':''):S.fridge?'Toca el refrigerador para comer algo':'La cocina está vacía';
   const pend=S.shipments.filter(s=>s.pending).length;
   if(pend)return `Tienes ${pend} paquete${pend>1?'s':''} para enviar: toca la ventana`;
   return night()?'Ya es tarde: toca la cama para dormir':'Toca la cama para dormir o la ventana para enviar paquetes';
@@ -2786,7 +3252,7 @@ function renderRoomHUD(){
 function renderRoom(){
   if(!S)return;const r=$('#room');r.hidden=!inRoom();if(r.hidden)return;
   const sky=skyAt(S.min);
-  const key=[S.shipments.filter(s=>s.pending).length,S.wall,S.door.map(p=>p.uid+':'+(p.day<=S.day-1)).join(),S.fridge,S.fridgeItems.length,sky.a,S.wall===3?S.min:'',S.buyers.filter(b=>b.status==='open'&&b.unread).length].join('|');
+  const key=[S.stove,JSON.stringify(S.pantry||{}),S.shipments.filter(s=>s.pending).length,S.wall,S.door.map(p=>p.uid+':'+(p.day<=S.day-1)).join(),S.fridge,S.fridgeItems.length,sky.a,S.wall===3?S.min:'',S.buyers.filter(b=>b.status==='open'&&b.unread).length].join('|');
   renderRoomHUD();
   if(key===roomKey)return;roomKey=key;
   const svg=$('#rm-scene');
@@ -2814,6 +3280,7 @@ document.addEventListener('click',e=>{
   else if(a==='open-fridge')openFridge();
   else if(a==='fridge-close')$('#fridge').hidden=true;
   else if(a==='use-bed')openNight();
+  else if(a==='cook')openCook();
   else if(a==='ship-window'){const n=dispatchAll();toast(n?`Enviaste ${n} paquete${n>1?'s':''} por la ventana${droneOn()?': los drones los entregan hoy':''}.`:'No hay paquetes para enviar. Cuando vendas algo, aparecerá aquí.',n?'good':'');roomKey='';renderRoom()}
 });
 document.addEventListener('keydown',e=>{if(!inRoom()||menuOpen()||e.target.matches('input,textarea'))return;if(e.key==='ArrowLeft')turn(-1);if(e.key==='ArrowRight')turn(1)});
@@ -2872,6 +3339,192 @@ document.addEventListener('click',e=>{
   if(t.dataset.act==='pf-follow'){const b=S.buyers.find(x=>x.id===S.cur);if(b){b.followed=!b.followed;if(b.followed&&!b.followBonus){b.followBonus=true;b.conv=clamp(b.conv+3,0,100);toast(`A ${b.name} le gustó que lo sigas (+3).`)}openProfile()}}
 });
 
+/* ================= COCINA: RECETAS Y MINIJUEGOS ================= */
+let CK=null;
+const have=(k)=>(S.pantry||{})[k]||0;
+const canCook=r=>Object.entries(r.need).every(([k,n])=>have(k)>=n);
+function openCook(){CK=null;$('#cook').hidden=false;renderBook()}
+function closeCook(){CK=null;$('#cook').hidden=true;roomKey='';renderRoom()}
+function renderBook(){
+  $('#ck-title').textContent='Recetario';
+  $('#ck-body').innerHTML=`<p class="ck-intro">Cocinar llena mucho más que la comida rápida. Compra ingredientes en el supermercado: llegan a tu puerta y van a la despensa.</p>
+  <div class="ck-pantry">${Object.entries(ING).map(([k,g])=>`<span class="${have(k)?'':'off'}">${g.i}<b class="num">${have(k)}</b></span>`).join('')}</div>
+  <div class="ck-book">${RECIPES.map(r=>`<article class="ck-rec ${canCook(r)?'':'no'}"><div class="ck-ri">${r.i}</div><div class="ck-rb"><b>${r.n}</b>
+    <div class="ck-need">${Object.entries(r.need).map(([k,n])=>`<span class="${have(k)>=n?'ok':'miss'}">${ING[k].i} ${have(k)}/${n}</span>`).join('')}</div>
+    <small>${r.food?'Comida +'+r.food:''}${r.food&&r.drink?' · ':''}${r.drink?'Bebida +'+r.drink:''}</small></div>
+    <button class="btn sm" data-act="ck-start" data-id="${r.id}" ${canCook(r)?'':'disabled'}>Cocinar</button></article>`).join('')}</div>`;
+}
+function startRecipe(id){
+  const r=RECIPES.find(x=>x.id===id);if(!r||!canCook(r))return;
+  for(const [k,n] of Object.entries(r.need))S.pantry[k]-=n;save();
+  CK={r,t0:performance.now(),q:100};$('#ck-title').textContent=r.n;
+  GAMES[r.game](r);
+}
+function ckTime(){return (performance.now()-CK.t0)/1000}
+function ckFinish(q){
+  const r=CK.r;q=Math.round(clamp(q,40,100));const k=.55+.45*q/100;
+  const food=Math.round(r.food*k),drink=Math.round(r.drink*k);
+  consume({food,drink});save();
+  $('#ck-body').innerHTML=`<div class="ck-done"><div class="ck-burst">${Array.from({length:12},(_,i)=>`<i style="--a:${i*30}deg"></i>`).join('')}<span>${r.i}</span></div>
+   <h3>${q>=90?'¡Te salió perfecto!':q>=70?'¡Muy rico!':'Comestible… más o menos'}</h3><p>Calidad <b class="num">${q} %</b></p>
+   <div class="ck-gain">${food?`<span>🍔 +${food}</span>`:''}${drink?`<span>💧 +${drink}</span>`:''}</div>
+   <div class="row-acts" style="justify-content:center"><button class="btn" data-act="ck-book">Volver al recetario</button><button class="btn ghost" data-act="ck-close">Salir de la cocina</button></div></div>`;
+  toast(`Cocinaste ${r.n.toLowerCase()}: comida ${S.food} %, bebida ${S.drink} %.`,'good');
+}
+const prog=(p,txt)=>{const b=$('#ck-prog i');if(b)b.style.width=clamp(p,0,100)+'%';if(txt!=null&&$('#ck-tip'))$('#ck-tip').textContent=txt};
+const stageHTML=(inner,tip)=>`<p class="ck-tip" id="ck-tip">${tip}</p><div class="ck-stage" id="ck-stage">${inner}</div><div class="bar ck-prog" id="ck-prog"><i style="width:0%;background:var(--good)"></i></div>`;
+const timeQ=(ideal)=>100-Math.max(0,ckTime()-ideal)*3;
+
+const GAMES={
+/* --- exprimir naranjas --- */
+squeeze(r){
+  $('#ck-body').innerHTML=stageHTML(`<div class="sq-orange" id="sq-o">🍊</div><div class="sq-cone"></div><div class="sq-glass"><div class="sq-juice" id="sq-j"></div></div><div id="sq-drops"></div>`,'Arrastra la naranja hacia abajo con fuerza contra el exprimidor.');
+  const st=$('#ck-stage'),o=$('#sq-o');let y0=null,done=0,per=0,orange=1;const total=9;
+  st.onpointerdown=e=>{y0=e.clientY;st.setPointerCapture(e.pointerId)};
+  st.onpointermove=e=>{if(y0==null)return;const dy=clamp(e.clientY-y0,0,90);o.style.transform=`translate(-50%,${dy}px) scaleY(${1-dy/400})`;
+    if(dy>=80&&!o.dataset.hit){o.dataset.hit=1;done++;per++;
+      for(let i=0;i<5;i++){const d=document.createElement('i');d.className='sq-drop';d.style.left=(46+Math.random()*8)+'%';d.style.animationDelay=(i*60)+'ms';$('#sq-drops').appendChild(d);setTimeout(()=>d.remove(),900)}
+      $('#sq-j').style.height=(done/total*85)+'%';prog(done/total*100,`¡Bien! Naranja ${orange} de 3: ${per}/3 apretones.`);
+      if(per>=3&&orange<3){per=0;orange++;o.classList.add('sq-peel');setTimeout(()=>{o.classList.remove('sq-peel')},500)}
+      if(done>=total){st.onpointermove=null;setTimeout(()=>ckFinish(timeQ(14)),700)}}};
+  st.onpointerup=st.onpointercancel=()=>{y0=null;o.dataset.hit='';o.style.transform='translate(-50%,0)'};
+},
+/* --- romper huevos y batir --- */
+crack(r){
+  $('#ck-body').innerHTML=stageHTML(`<div class="cr-eggs"><button class="cr-egg" data-n="0">🥚</button><button class="cr-egg" data-n="1">🥚</button></div><div class="cr-pan" id="cr-pan"><div class="cr-butter">🧈</div></div>`,'Toca cada huevo dos veces para romperlo sobre la sartén.');
+  const st=$('#ck-stage'),pan=$('#cr-pan');let broken=0,ang=0,last=null,stirring=false;
+  st.querySelectorAll('.cr-egg').forEach(egg=>egg.onclick=()=>{
+    if(egg.classList.contains('open'))return;
+    if(!egg.classList.contains('cracked')){egg.classList.add('cracked');return}
+    egg.classList.add('open');broken++;const y=document.createElement('i');y.className='cr-yolk';y.style.left=(30+broken*22)+'%';pan.appendChild(y);
+    prog(broken*15);if(broken===2){stirring=true;pan.classList.add('ready');prog(30,'¡Ahora bate! Mueve el dedo en círculos dentro de la sartén.')}
+  });
+  pan.onpointerdown=e=>{pan.setPointerCapture(e.pointerId);last=null};
+  pan.onpointermove=e=>{if(!stirring||!(e.buttons||e.pointerType==='touch'))return;const b=pan.getBoundingClientRect();const a=Math.atan2(e.clientY-b.top-b.height/2,e.clientX-b.left-b.width/2);
+    if(last!=null){let d=a-last;if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;ang+=Math.abs(d)}last=a;
+    const p=ang/(Math.PI*2*3);pan.style.setProperty('--mix',Math.min(1,p));pan.querySelectorAll('.cr-yolk').forEach((y,i)=>y.style.transform=`rotate(${ang*57+i*120}deg) translateX(${18*(1-Math.min(1,p))}px)`);
+    prog(30+p*70);if(p>=1){stirring=false;pan.classList.add('done');setTimeout(()=>ckFinish(timeQ(12)),600)}};
+},
+/* --- cortar verduras --- */
+chop(r){
+  const veg=Object.keys(r.need).map(k=>ING[k].i);let i=0,cuts=0,miss=0;
+  $('#ck-body').innerHTML=stageHTML(`<div class="ch-board"><div class="ch-veg" id="ch-v">${veg[0]}</div><div class="ch-pieces" id="ch-p"></div><div class="ch-knife" id="ch-k">🔪</div></div>`,'Desliza el dedo de lado a lado sobre la verdura para cortarla.');
+  const st=$('#ck-stage');let sx=null,sy=null;
+  st.onpointerdown=e=>{sx=e.clientX;sy=e.clientY;st.setPointerCapture(e.pointerId)};
+  st.onpointerup=e=>{if(sx==null)return;const dx=Math.abs(e.clientX-sx),dy=Math.abs(e.clientY-sy);const v=$('#ch-v').getBoundingClientRect();const midY=(sy+e.clientY)/2;sx=null;
+    if(dx>90&&dy<70&&midY>v.top-30&&midY<v.bottom+30){cuts++;const k=$('#ch-k');k.classList.remove('go');void k.offsetWidth;k.classList.add('go');
+      const line=document.createElement('i');line.className='ch-cut';line.style.top=(30+Math.random()*40)+'%';$('#ch-v').appendChild(line);
+      const pc=document.createElement('span');pc.className='ch-piece';pc.textContent=veg[i];pc.style.setProperty('--x',(Math.random()*160-80)+'px');$('#ch-p').appendChild(pc);
+      prog((i*4+cuts)/(veg.length*4)*100);
+      if(cuts>=4){cuts=0;i++;if(i>=veg.length){$('#ch-v').textContent='🥗';$('#ch-v').classList.add('bowl');st.onpointerup=null;setTimeout(()=>ckFinish(timeQ(12)-miss*6),800)}else{$('#ch-v').innerHTML=veg[i];prog(null,`¡Listo! Ahora: ${ING[Object.keys(r.need)[i]].n.toLowerCase()}.`)}}}
+    else{miss++;prog(null,'Desliza más largo y de lado a lado, justo sobre la verdura.')}};
+},
+/* --- voltear panqueques --- */
+flip(r){
+  $('#ck-body').innerHTML=stageHTML(`<div class="fl-plate" id="fl-plate"></div><div class="fl-pan"><div class="fl-cake" id="fl-c"></div></div><div class="fl-meter"><span class="fl-zone"></span><i id="fl-n"></i></div><button class="btn fl-btn" id="fl-b">¡Voltear!</button>`,'Dale la vuelta cuando la aguja esté en la zona dorada.');
+  let d=0,n=0,scores=[],run=true,lastT=performance.now();
+  const loop=t=>{if(!CK||!run)return;d+=(t-lastT)/1000*24;lastT=t;if(d>100)d=100;$('#fl-n').style.left=d+'%';
+    const c=$('#fl-c');c.style.background=`hsl(${42-d*.3} ${60+d*.2}% ${88-d*.55}%)`;requestAnimationFrame(loop)};requestAnimationFrame(loop);
+  $('#fl-b').onclick=()=>{const s=clamp(100-Math.abs(d-65)*2.2,20,100);scores.push(s);n++;
+    const c=$('#fl-c');c.classList.remove('flip');void c.offsetWidth;c.classList.add('flip');
+    prog(n/3*100,s>=85?'¡Perfecto, dorado!':s>=60?'Bien, un poco '+(d<65?'pálido':'tostado')+'.':(d<65?'Muy crudo…':'¡Se quemó un poco!'));
+    const p=document.createElement('i');p.className='fl-done';$('#fl-plate').appendChild(p);
+    if(n>=3){run=false;$('#fl-b').disabled=true;setTimeout(()=>ckFinish(scores.reduce((a,b)=>a+b,0)/3),800)}else{d=0}};
+},
+/* --- remover la sopa --- */
+stir(r){
+  const veg=Object.keys(r.need).map(k=>ING[k].i);
+  $('#ck-body').innerHTML=stageHTML(`<div class="st-steam" id="st-s"><i></i><i></i><i></i></div><div class="st-pot" id="st-p"><div class="st-soup" id="st-soup">${veg.map((v,i)=>`<span class="st-v" style="--i:${i}">${v}</span>`).join('')}${Array.from({length:6},(_,i)=>`<b class="st-bub" style="--i:${i}"></b>`).join('')}</div></div>`,'Revuelve en círculos dentro de la olla hasta que hierva.');
+  const pot=$('#st-p');let ang=0,last=null;
+  pot.onpointerdown=e=>{pot.setPointerCapture(e.pointerId);last=null};
+  pot.onpointermove=e=>{if(!(e.buttons||e.pointerType==='touch'))return;const b=pot.getBoundingClientRect();const a=Math.atan2(e.clientY-b.top-b.height/2,e.clientX-b.left-b.width/2);
+    if(last!=null){let dd=a-last;if(dd>Math.PI)dd-=2*Math.PI;if(dd<-Math.PI)dd+=2*Math.PI;ang+=Math.abs(dd)}last=a;
+    const p=Math.min(1,ang/(Math.PI*2*4));$('#st-soup').style.setProperty('--rot',(ang*57)+'deg');$('#st-soup').style.setProperty('--boil',p);$('#st-s').style.opacity=p;prog(p*100,p<.5?'Sigue revolviendo…':p<1?'¡Ya casi hierve!':'¡Hirviendo!');
+    if(p>=1){pot.onpointermove=null;setTimeout(()=>ckFinish(timeQ(12)),700)}};
+},
+/* --- licuar --- */
+blend(r){
+  $('#ck-body').innerHTML=stageHTML(`<div class="bl-jar" id="bl-j"><div class="bl-liq" id="bl-l"><span>🍌</span><span>🥛</span></div><div class="bl-blade"></div></div><div class="bl-base"></div><div class="fl-meter bl-meter"><span class="fl-zone bl-zone"></span><i id="bl-n"></i></div>
+    <div class="row-acts" style="justify-content:center"><button class="btn" id="bl-h">Mantener para licuar</button><button class="btn ghost" id="bl-s">Servir</button></div>`,'Mantén apretado y suelta cuando la textura esté en la zona verde.');
+  let m=0,hold=false,last=performance.now();const j=$('#bl-j'),h=$('#bl-h');
+  const loop=t=>{if(!CK)return;if(hold){m=Math.min(100,m+(t-last)/1000*28)}last=t;$('#bl-n').style.left=m+'%';$('#bl-l').style.setProperty('--m',m/100);j.classList.toggle('on',hold);requestAnimationFrame(loop)};requestAnimationFrame(loop);
+  const on=e=>{e.preventDefault();hold=true},off=()=>{hold=false;prog(m,m<70?'Todavía tiene grumos.':m<=86?'¡Textura perfecta! Sírvelo.':'Demasiado líquido…')};
+  h.onpointerdown=on;h.onpointerup=off;h.onpointerleave=off;h.onpointercancel=off;
+  $('#bl-s').onclick=()=>{if(m<15){prog(null,'Primero licúalo un poco.');return}j.classList.add('pour');setTimeout(()=>ckFinish(100-Math.abs(m-78)*2.5),700)};
+},
+/* --- agitar la limonada --- */
+shake(r){
+  $('#ck-body').innerHTML=stageHTML(`<div class="sh-jug" id="sh-j"><div class="sh-liq"><span class="sh-l">🍋</span><span class="sh-l b">🍋</span><span class="sh-ice">🧊</span><span class="sh-ice b">🧊</span>${Array.from({length:14},(_,i)=>`<b class="sh-sug" style="--i:${i}"></b>`).join('')}</div></div>`,'Mueve el dedo rápido de lado a lado sobre la jarra para agitarla.');
+  const jug=$('#sh-j');let dist=0,lx=null,vel=0;
+  const st=$('#ck-stage');
+  st.onpointermove=e=>{if(lx!=null){const dx=e.clientX-lx;dist+=Math.abs(dx);vel=clamp(dx*1.5,-25,25);jug.style.transform=`rotate(${vel}deg)`}lx=e.clientX;
+    const p=Math.min(1,dist/4000);jug.style.setProperty('--dis',p);prog(p*100,p<1?'¡Agita, agita!':'¡Lista!');
+    if(p>=1){st.onpointermove=null;jug.style.transform='';setTimeout(()=>ckFinish(timeQ(10)),600)}};
+  st.onpointerleave=()=>{lx=null;jug.style.transform=''};
+},
+};
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='ck-start')startRecipe(t.dataset.id);
+  if(a==='ck-book'){CK=null;renderBook()}
+  if(a==='ck-close')closeCook();
+});
+
+/* ================= ASIGNAR PRODUCTOS A EMPLEADOS ================= */
+function openAssign(){renderAssign();$('#assign').hidden=false}
+function renderAssign(){
+  const free=S.inv.filter(i=>!i.listed&&!i.assigned);
+  const groups={};for(const it of free)(groups[it.name]=groups[it.name]||[]).push(it);
+  const emps=S.hired;
+  $('#as-body').innerHTML=`<p class="tip">Asigna productos sin publicar a un empleado: los vende y los envía solo, sin que tengas que chatear. Cuanto mejor es el empleado, más rápido vende y a mejor precio.</p>
+  <div class="as-team">${emps.map(h=>{const n=S.inv.filter(i=>i.assigned===h.id).length;return `<div class="as-emp"><span class="av sm" style="--h:${hue(h.name)}">${esc(h.name[0])}</span><span><b>${esc(h.name.split(' ')[0])}</b><small>${Math.round(h.chance*100)} % · ${n} producto${n===1?'':'s'}</small></span></div>`}).join('')}</div>
+  ${Object.keys(groups).length?Object.entries(groups).map(([name,list])=>`<div class="as-row"><span class="as-ic">${list[0].icon}</span><span class="as-n"><b>${esc(name)}</b><small>Tienes ${list.length} sin publicar</small></span>
+    <select id="as-e-${hue(name)}" aria-label="Empleado">${emps.map(h=>`<option value="${h.id}">${esc(h.name.split(' ')[0])}</option>`).join('')}</select>
+    <input id="as-q-${hue(name)}" type="number" min="1" max="${list.length}" value="${list.length}" aria-label="Cantidad">
+    <button class="btn sm" data-act="as-do" data-name="${esc(name)}">Asignar</button></div>`).join(''):'<div class="bz-empty">No tienes productos sin publicar. Compra varios iguales con el botón ×N de las tiendas.</div>'}`;
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='as-close'){$('#assign').hidden=true;dirty=true}
+  if(a==='as-do'){const name=t.dataset.name,k=hue(name);const emp=$('#as-e-'+k).value;let q=Math.max(1,+$('#as-q-'+k).value||1);
+    const list=S.inv.filter(i=>i.name===name&&!i.listed&&!i.assigned);let n=0;for(const it of list){if(n>=q)break;it.assigned=emp;n++}
+    const h=S.hired.find(x=>x.id===emp);toast(`${h.name.split(' ')[0]} se encarga de ${n} × ${low(name)}.`,'good');renderAssign();dirty=true;save()}
+});
+
+/* ================= BOLITAS ================= */
+const PK={rows:10,mult:[10,4,2,1.2,.6,.3,.6,1.2,2,4,10],balls:[],flash:-1,raf:null};
+function pkGeom(cv){const w=cv.width,h=cv.height,top=40,gap=(h-110)/PK.rows,sx=w/(PK.rows+2);return {w,h,top,gap,sx}}
+function pkPeg(r,i,g){return {x:g.w/2+(i-r/2)*g.sx,y:g.top+r*g.gap}}
+function plinkoDrop(){
+  const bet=+($('#pk-bet')||{value:20}).value;if(S.money<bet){toast('No te alcanza para esa apuesta.');return}
+  S.money-=bet;flashMoney(-1);renderTaskbar();
+  const path=[];let k=0;for(let r=0;r<PK.rows;r++){path.push(k);if(Math.random()<.5)k++}
+  PK.balls.push({path,slot:k,bet,t:0,hue:ri(0,360)});
+  if(!PK.raf)PK.raf=requestAnimationFrame(pkLoop);
+}
+function pkLoop(ts){
+  const cv=$('#pk-canvas');if(!cv){PK.raf=null;PK.balls=[];return}
+  const ctx=cv.getContext('2d'),g=pkGeom(cv);
+  ctx.clearRect(0,0,g.w,g.h);
+  for(let r=0;r<PK.rows;r++)for(let i=0;i<=r;i++){const p=pkPeg(r,i,g);ctx.beginPath();ctx.arc(p.x,p.y,3.2,0,6.28);ctx.fillStyle='rgba(255,255,255,.85)';ctx.fill()}
+  const n=PK.mult.length,sw=g.w/n,sy=g.h-46;
+  PK.mult.forEach((m,i)=>{const hot=m>=4,mid=m>=1.2;ctx.fillStyle=PK.flash===i?'#FFF':hot?'#FF3D7F':mid?'#FF9F1C':'#4C3A8F';
+    ctx.beginPath();ctx.roundRect(i*sw+2,sy,sw-4,34,6);ctx.fill();ctx.fillStyle=PK.flash===i?'#2A0F4D':'#fff';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='center';ctx.fillText('×'+m,i*sw+sw/2,sy+21)});
+  const now=performance.now();
+  for(const b of [...PK.balls]){
+    if(!b.start)b.start=now;const step=110,el=(now-b.start)/step;const r=Math.floor(el),f=el-r;
+    let x,y;
+    if(r<PK.rows-1){const a=pkPeg(r,b.path[r],g),c=pkPeg(r+1,b.path[r+1],g);x=a.x+(c.x-a.x)*f;y=a.y+(c.y-a.y)*f-Math.sin(f*Math.PI)*8-6}
+    else{const a=pkPeg(PK.rows-1,b.path[PK.rows-1],g);const tx=b.slot*sw+sw/2;const ff=Math.min(1,(el-(PK.rows-1))/1.4);x=a.x+(tx-a.x)*ff;y=a.y+(sy+10-a.y)*ff-Math.sin(ff*Math.PI)*8;
+      if(ff>=1){PK.balls=PK.balls.filter(o=>o!==b);const win=Math.round(b.bet*PK.mult[b.slot]);S.money+=win;flashMoney(win>=b.bet?1:-1);PK.flash=b.slot;setTimeout(()=>{PK.flash=-1},350);
+        const last=$('#pk-last');if(last)last.textContent=`Cayó en ×${PK.mult[b.slot]}: apostaste ${money(b.bet)} y recibiste ${money(win)}. Tienes ${money(S.money)}.`;
+        if(win>b.bet)toast(`¡Bolita en ×${PK.mult[b.slot]}! Ganaste ${money(win)}.`,'good');renderTaskbar();save();continue}}
+    ctx.beginPath();ctx.arc(x,y,7,0,6.28);ctx.fillStyle=`hsl(${b.hue} 90% 62%)`;ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+  }
+  PK.raf=requestAnimationFrame(pkLoop);
+}
+document.addEventListener('input',e=>{if(e.target.id==='pk-bet')$('#pk-betn').textContent=money(e.target.value)});
+
 /* ================= MENÚ Y PARTIDAS ================= */
 let menuMode='title',menuView='main',menuConfirm=null,menuMsg='';
 const fmtAgo=ts=>{const s=Math.round((Date.now()-ts)/1000);if(s<60)return 'hace un momento';const m=Math.round(s/60);if(m<60)return `hace ${m} min`;const h=Math.round(m/60);if(h<24)return `hace ${h} h`;return `hace ${Math.round(h/24)} d`};
@@ -2882,42 +3535,40 @@ function slotCard(n,purpose){
   const m=(slotMeta().slots||{})[n];const cur=S&&SLOT===n&&menuMode==='pause';
   const conf=menuConfirm&&menuConfirm.slot===n;
   if(conf)return `<div class="slot confirm"><b>${menuConfirm.kind==='del'?'¿Borrar esta partida para siempre?':'¿Reemplazar esta partida por una nueva?'}</b><div class="slot-acts"><button class="mbtn danger" data-act="m-${menuConfirm.kind==='del'?'del-yes':'new-yes'}" data-id="${n}">Sí</button><button class="mbtn ghost" data-act="m-cancel">Cancelar</button></div></div>`;
-  if(!m)return `<div class="slot empty"><span class="slot-n">Ranura ${n}</span><b>Vacía</b>${purpose==='new'?`<button class="mbtn" data-act="m-new-slot" data-id="${n}">Empezar aquí</button>`:''}</div>`;
-  return `<div class="slot ${cur?'cur':''}"><span class="slot-n">Ranura ${n}${cur?' · en juego':''}</span><b>Día ${m.day} · <span class="num">${money(m.money)}</span></b><span class="slot-meta">${m.sales||0} ventas · guardada ${fmtAgo(m.at)}</span>
+  if(!m)return `<div class="slot empty"><span class="slot-n">Archivo ${n}</span><b>Vacío</b><div class="slot-acts"><button class="mbtn" data-act="m-new-slot" data-id="${n}">Nueva partida aquí</button></div></div>`;
+  return `<div class="slot ${cur?'cur':''}"><span class="slot-n">Archivo ${n}${cur?' · en juego':''}</span><b>Día ${m.day} · <span class="num">${money(m.money)}</span></b>
+    <span class="slot-meta">${m.sales||0} ventas · ${money(m.rev||0)} vendidos · ${m.staff||0} empleado${m.staff===1?'':'s'} · guardado ${fmtAgo(m.at)}</span>${m.icons?`<span class="slot-icons">${m.icons}</span>`:''}
     <div class="slot-acts">${purpose==='new'?`<button class="mbtn" data-act="m-new-slot" data-id="${n}">Reemplazar</button>`:`<button class="mbtn" data-act="m-load" data-id="${n}" ${cur?'disabled':''}>${cur?'Cargada':'Cargar'}</button>`}
     <button class="mbtn ghost" data-act="m-export" data-id="${n}">Exportar</button><button class="mbtn ghost" data-act="m-del" data-id="${n}">Borrar</button></div></div>`;
 }
+const mcard=(act,id,icon,title,sub,alt,extra)=>`<button class="mcard ${alt?'alt':''}" data-act="${act}" ${id?`data-id="${id}"`:''}><span class="mi">${icon}</span><span class="mt"><b>${title}</b><small>${sub}</small>${extra||''}</span></button>`;
 function renderMenu(){
-  const meta=slotMeta();const last=meta.last&&(meta.slots||{})[meta.last];
+  const meta=slotMeta();const last=meta.last&&(meta.slots||{})[meta.last];const nSlots=Object.keys(meta.slots||{}).length;
+  const head=t=>`<div class="mhead"><button class="mback" data-act="m-back" aria-label="Volver">‹</button><h2>${t}</h2></div>`;
   let h='';
   if(menuView==='main'){
     if(menuMode==='title'){
-      h=`${last?`<button class="mbig" data-act="m-continue"><b>Continuar</b><span>Ranura ${meta.last} · Día ${last.day} · ${money(last.money)}</span></button>`:''}
-      <button class="mbig ${last?'alt':''}" data-act="m-view" data-id="new"><b>Nueva partida</b><span>Empiezas con $20 y un navegador</span></button>
-      ${Object.keys(meta.slots||{}).length?`<button class="mbig alt" data-act="m-view" data-id="load"><b>Cargar partida</b><span>${Object.keys(meta.slots).length} guardada${Object.keys(meta.slots).length>1?'s':''}</span></button>`:''}
-      <button class="mlink" data-act="m-view" data-id="import">Importar una partida con un código</button>`;
+      h=(last?mcard('m-continue','','▶','Continuar',`Archivo ${meta.last} · Día ${last.day} · guardado ${fmtAgo(last.at)}`,false,`<span class="mstats"><span>${money(last.money)}</span><span>${last.sales||0} ventas</span>${last.icons?`<span>${last.icons}</span>`:''}</span>`):'')
+       +mcard('m-view','new','＋','Nueva partida','Empiezas con $20 en tu cuarto',!!last)
+       +`<div class="mgrid">${mcard('m-view','files','🗂️','Archivos de guardado',nSlots?`${nSlots} partida${nSlots>1?'s':''} guardada${nSlots>1?'s':''}`:'Ninguna todavía',true)}${mcard('m-view','howto','❓','Cómo se juega','Lo básico en 30 segundos',true)}</div>`;
     }else{
-      h=`<button class="mbig" data-act="m-resume"><b>Volver al juego</b><span>Ranura ${SLOT} · Día ${S.day}</span></button>
-      <button class="mbig alt" data-act="m-save"><b>Guardar ahora</b><span>${menuMsg||'El juego también guarda solo cada pocos segundos'}</span></button>
-      <button class="mbig alt" data-act="m-view" data-id="load"><b>Partidas</b><span>Cargar, exportar o borrar</span></button>
-      <button class="mbig alt" data-act="m-tut"><b>Repetir el tutorial</b><span>Un repaso guiado de lo básico</span></button>
-      <button class="mlink" data-act="m-title">Salir al menú principal</button>`;
+      h=mcard('m-resume','','▶','Volver al juego',`Archivo ${SLOT} · Día ${S.day} · ${money(S.money)}`,false)
+       +`<div class="mgrid">${mcard('m-save','','💾','Guardar ahora',menuMsg||'También se guarda solo',true)}${mcard('m-view','files','🗂️','Archivos de guardado','Cargar, exportar, importar',true)}${mcard('m-tut','','🎓','Repetir tutorial','Repaso guiado',true)}${mcard('m-title','','🏠','Menú principal','Guarda y sale',true)}</div>`;
     }
-  }else if(menuView==='new'||menuView==='load'){
-    h=`<p class="mhint">${menuView==='new'?'Elige dónde guardar la nueva partida.':'Tus partidas guardadas en este navegador.'}</p>
-    <div class="slots">${[1,2,3].map(n=>slotCard(n,menuView)).join('')}</div>
-    ${menuView==='load'?'<button class="mlink" data-act="m-view" data-id="import">Importar una partida con un código</button>':''}
-    <button class="mlink" data-act="m-back">‹ Volver</button>`;
+  }else if(menuView==='new'){
+    h=head('Nueva partida')+`<p class="mhint">Elige en qué archivo guardarla.</p><div class="slots">${[1,2,3].map(n=>slotCard(n,'new')).join('')}</div>`;
+  }else if(menuView==='files'||menuView==='load'){
+    h=head('Archivos de guardado')+`<p class="mhint">Tres archivos en este navegador. Exporta un código para llevar tu partida a otro dispositivo o guardar una copia.</p>
+    <div class="slots">${[1,2,3].map(n=>slotCard(n,'load')).join('')}</div>
+    <div class="mimport"><b>Importar una partida</b><textarea class="mcode" id="m-imp" placeholder="Pega aquí un código LVC1:…"></textarea>
+    <div class="slot-acts">${[1,2,3].map(n=>`<button class="mbtn ${(meta.slots||{})[n]?'ghost':''}" data-act="m-import" data-id="${n}">Al archivo ${n}${(meta.slots||{})[n]?' (reemplaza)':''}</button>`).join('')}</div>
+    <p class="mhint err" id="m-imp-err">${menuMsg&&menuMsg.startsWith('Ese código')?esc(menuMsg):''}</p></div>`;
   }else if(menuView==='export'){
-    h=`<p class="mhint">Copia este código y guárdalo donde quieras. Con él puedes recuperar la partida en otro navegador o dispositivo.</p>
+    h=head('Exportar partida')+`<p class="mhint">Copia este código y guárdalo donde quieras. Con él recuperas la partida en cualquier navegador.</p>
     <textarea class="mcode" id="m-code" readonly>${esc(menuMsg)}</textarea>
-    <div class="slot-acts"><button class="mbtn" data-act="m-copy">Copiar código</button><button class="mbtn ghost" data-act="m-view" data-id="load">‹ Volver</button></div><p class="mhint" id="m-copied"></p>`;
-  }else if(menuView==='import'){
-    h=`<p class="mhint">Pega el código de una partida exportada y elige la ranura donde guardarla.</p>
-    <textarea class="mcode" id="m-imp" placeholder="LVC1:…"></textarea>
-    <div class="slot-acts">${[1,2,3].map(n=>`<button class="mbtn ${(slotMeta().slots||{})[n]?'ghost':''}" data-act="m-import" data-id="${n}">Ranura ${n}${(slotMeta().slots||{})[n]?' (reemplaza)':''}</button>`).join('')}</div>
-    <p class="mhint err" id="m-imp-err">${menuMsg&&menuView==='import'?esc(menuMsg):''}</p>
-    <button class="mlink" data-act="m-back">‹ Volver</button>`;
+    <div class="slot-acts"><button class="mbtn" data-act="m-copy">Copiar código</button></div><p class="mhint" id="m-copied"></p>`;
+  }else if(menuView==='howto'){
+    h=head('Cómo se juega')+`<div class="mhowto"><p>🛒 <b>Compra barato</b> en bazarito.com desde la computadora de tu cuarto.</p><p>✍️ <b>Inventa una historia</b> para cada objeto: fechas, nombres y detalles suben su valor.</p><p>💬 <b>Convence</b> a cada cliente por chat: responde lo que pregunta, no te contradigas y mira su perfil.</p><p>📦 <b>Envía</b> lo vendido por la ventana para cobrar el resto.</p><p>🍔 <b>Come y bebe</b>: la comida llega a tu puerta. Y duerme en la cama para pasar el día.</p><p>🔎 Todo lo demás lo encuentras <b>buscando en el navegador</b>.</p></div>`;
   }
   $('#menu-body').innerHTML=h;
 }
@@ -2942,7 +3593,7 @@ document.addEventListener('click',e=>{
   switch(a){
     case 'm-continue':loadSlot(slotMeta().last);break;
     case 'm-view':menuView=t.dataset.id;menuConfirm=null;menuMsg='';renderMenu();break;
-    case 'm-back':menuView='main';menuConfirm=null;menuMsg='';renderMenu();break;
+    case 'm-back':if(menuView==='export'){menuView='files';menuMsg='';menuConfirm=null;renderMenu();break}menuView='main';menuConfirm=null;menuMsg='';renderMenu();break;
     case 'm-cancel':menuConfirm=null;renderMenu();break;
     case 'm-new-slot':if((slotMeta().slots||{})[n]){menuConfirm={slot:n,kind:'new'};renderMenu()}else newInSlot(n);break;
     case 'm-new-yes':newInSlot(n);break;
@@ -2985,11 +3636,11 @@ const STEPS=[
  {target:()=>S.buyers.some(b=>b.status==='open')?(onBazar('mensajes')?'.bz-chat':'.tb-btn[data-act=msgs]'):null,title:'Llega un cliente',
   text:()=>S.buyers.some(b=>b.status==='open')?'¡Te escribió alguien! Abre tus mensajes y toca su conversación.':'Espera unos segundos: ya te van a escribir…',
   enter:m=>{const it=tutItem(m);S.tutBuyer=true;if(it){it.nextSpawn=S.t+4;it.tooHigh=false;if(it.price>maxWilling(it)*2)it.price=niceRound(maxWilling(it))}},wait:()=>S.cur!=null},
- {target:'.meter',title:'La barra de confianza',text:'Muestra qué tan convencido está. Si llega al 100 %, compra; si llega a 0, se va. Arriba ves su oferta y su paciencia.',next:'Siguiente'},
+ {target:'#c-deal',title:'La barra de confianza',text:'Muestra qué tan convencido está. Si llega al 100 %, compra; si llega a 0, se va. Aquí también ves su oferta y su paciencia.',next:'Siguiente'},
  {target:'#c-input',title:'Respóndele',text:'Saluda, responde exactamente lo que te preguntó y escribe sin faltas. Luego pulsa Enviar.',enter:m=>{const b=S.buyers.find(x=>x.id===S.cur);m.bid=S.cur;m.pm0=b?b.msgs.filter(x=>x.from==='p').length:0},
   wait:m=>{const b=S.buyers.find(x=>x.id===m.bid);return b&&b.msgs.filter(x=>x.from==='p'&&!x.pending).length>m.pm0}},
  {target:()=>{const c=document.querySelectorAll('#c-list .msg.p .chips');return c.length?c[c.length-1]:null},title:'Qué sumó y qué restó',text:'Debajo de cada mensaje ves por qué subió o bajó la barra. Úsalo para mejorar el siguiente.',next:'Siguiente'},
- {target:'#c-hag',title:'Fotos y regateo',text:'Con la cámara le mandas fotos (enfócalas bien) y con Regatear le pides otro precio. Sigue hablando hasta cerrar la venta.',next:'Siguiente'},
+ {target:'#c-plus',title:'Fotos y regateo',text:'Con + mandas fotos y regateas el precio. Arriba del teclado tienes respuestas rápidas que puedes editar antes de enviar.',next:'Siguiente'},
  {target:'[data-act=close-chat]',title:'Sal cuando quieras',text:'Puedes salir del chat: el cliente espera un rato y te avisa si se impacienta.',wait:()=>S.cur==null||$('#chat').hidden,action:{label:'Salir del chat',fn:()=>closeChat()}},
  {target:'.tb-stats',title:'Comida y bebida',text:'Trabajar cansa. Si alguna baja del 15 % no puedes hacer nada, así que pide comida cuando haga falta.',next:'Siguiente'},
  {target:'#tb-end',title:'Levántate',text:'Cuando quieras, levántate de la computadora para volver a tu cuarto.',wait:()=>inRoom()},
