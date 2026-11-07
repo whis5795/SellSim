@@ -976,6 +976,14 @@ details.chips[open] summary{display:none}
 .sheet{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
 body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
 [class$="-st"] .eta{background:transparent!important;color:inherit!important;opacity:.7;font-weight:600}
+.sum-line.dead{background:#2A0A0F;color:#FFB3BA;font-weight:700;border:1.5px solid #D3343F}
+.dead-ov{z-index:95;background:radial-gradient(circle at 50% 30%,#3A0D14,#07080C 70%)!important;animation:deadIn 1.2s ease-out}
+@keyframes deadIn{from{opacity:0}}
+.dead-ov .box{text-align:center;animation:deadBox .9s .3s ease-out both}@keyframes deadBox{from{transform:translateY(24px);opacity:0}}
+.dead-ic{font-size:56px;filter:grayscale(1);animation:deadSkull 2.4s ease-in-out infinite}@keyframes deadSkull{50%{transform:translateY(-4px) rotate(-4deg)}}
+.dead-p{margin:0;font-size:14px;opacity:.8}
+.mdead{background:rgba(0,0,0,.3);color:#FFC9CE;padding:10px 14px;border-radius:14px;font-size:13px;font-weight:600}
+.slot.dead{opacity:.85;background:rgba(60,10,18,.45)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -1136,6 +1144,12 @@ body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
   <span class="eyebrow">Resumen del día</span><h2>¿Terminas el día?</h2>
   <div id="night-body" style="display:flex;flex-direction:column;gap:8px"></div>
   <div class="row-acts"><button class="btn" data-act="sleep">Dormir hasta mañana</button><button class="btn ghost" data-act="night-close">Seguir un rato</button></div>
+</div></div>
+
+<div class="overlay dead-ov" id="dead" hidden><div class="box">
+  <div class="dead-ic">💀</div><span class="eyebrow">Fin de la partida</span><h2>Moriste de inanición</h2>
+  <div id="dead-body" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div class="row-acts"><button class="btn" data-act="d-new">Nueva partida</button><button class="btn ghost" data-act="d-menu">Menú principal</button></div>
 </div></div>
 
 <div class="daytx" id="daytx" hidden aria-live="polite">
@@ -1656,7 +1670,7 @@ function newGame(){
 let SLOT=1;
 function slotMeta(){try{return JSON.parse(localStorage.getItem('lvc-meta')||'{}')}catch(e){return {}}}
 function setMeta(m){try{localStorage.setItem('lvc-meta',JSON.stringify(m))}catch(e){}}
-function save(){if(!S)return;try{localStorage.setItem('lvc-slot-'+SLOT,JSON.stringify(S));const m=slotMeta();m.last=SLOT;m.slots=m.slots||{};m.slots[SLOT]={day:S.day,money:Math.round(S.money),sales:S.sales,at:Date.now(),rev:Math.round(S.revenue||0),staff:S.hired.length,icons:[S.fridge?'🧊':'',S.stove?'🍳':'',S.drone?'🛸':'',S.botPro?'★':S.botSub?'✍️':'',...(S.unlocked||[]).map(u=>({vitrina:'🏛️',subastas:'🔨',lujo:'💎'})[u])].filter(Boolean).join('')};setMeta(m)}catch(e){}}
+function save(){if(!S)return;try{localStorage.setItem('lvc-slot-'+SLOT,JSON.stringify(S));const m=slotMeta();m.last=SLOT;m.slots=m.slots||{};m.slots[SLOT]={dead:S.dead||0,day:S.day,money:Math.round(S.money),sales:S.sales,at:Date.now(),rev:Math.round(S.revenue||0),staff:S.hired.length,icons:[S.fridge?'🧊':'',S.stove?'🍳':'',S.drone?'🛸':'',S.botPro?'★':S.botSub?'✍️':'',...(S.unlocked||[]).map(u=>({vitrina:'🏛️',subastas:'🔨',lujo:'💎'})[u])].filter(Boolean).join('')};setMeta(m)}catch(e){}}
 function readSlot(n){try{const r=localStorage.getItem('lvc-slot-'+n);return r?JSON.parse(r):null}catch(e){return null}}
 function deleteSlot(n){try{localStorage.removeItem('lvc-slot-'+n);const m=slotMeta();if(m.slots)delete m.slots[n];if(m.last==n){const k=Object.keys(m.slots||{});if(k.length)m.last=+k[0];else delete m.last}setMeta(m)}catch(e){}}
 function migrateOldSave(){try{const old=localStorage.getItem('lvc-save-v3');if(old&&!localStorage.getItem('lvc-slot-1')){const st=JSON.parse(old);localStorage.setItem('lvc-slot-1',old);const m=slotMeta();m.last=1;m.slots=m.slots||{};m.slots[1]={day:st.day,money:Math.round(st.money),sales:st.sales,at:Date.now()};setMeta(m)}localStorage.removeItem('lvc-save-v3')}catch(e){}}
@@ -2404,16 +2418,29 @@ function openNight(){
     </div>
     <div class="sum-line ${hungry?'bad':'ok'}">Comida ${Math.round(S.food)} % ${hungry?'· menos de 70 %: mañana estarás débil':'· bien alimentado'}</div>
     <div class="sum-line ${thirsty?'bad':'ok'}">Bebida ${Math.round(S.drink)} % ${thirsty?'· menos de 70 %: mañana estarás débil':'· bien hidratado'}</div>
+    ${(hungry||thirsty)&&(S.starve||0)>=STARVE_DEATH-1?'<div class="sum-line dead">💀 Si duermes así, mueres de inanición y se termina la partida. Come y bebe algo antes de dormir.</div>':(hungry||thirsty)&&(S.starve||0)>=1?`<div class="sum-line bad">Sería tu segundo día seguido mal alimentado. Al ${STARVE_DEATH}.º mueres de inanición.</div>`:''}
     ${due.length?`<div class="sum-line bad">Tienes ${due.length} factura${due.length>1?'s':''} que vence${due.length>1?'n':''} hoy (${money(due.reduce((a,b)=>a+b.amount,0))}). Si no pagas, suben un 10 %${due.some(b=>b.kind==='salary')?' y los empleados sin pago renuncian':''}${due.some(b=>b.kind==='internet')?', y te cortan internet':''}.</div>`:'<div class="sum-line ok">No tienes facturas vencidas.</div>'}
     ${S.fridgeItems.some(f=>f.day<=S.day-1)?'<div class="sum-line bad">Hay comida en el refrigerador que se pudre esta noche.</div>':''}
     ${S.shipments.some(s=>s.pending)?`<div class="sum-line bad">Tienes ${S.shipments.filter(s=>s.pending).length} paquete${S.shipments.filter(s=>s.pending).length>1?'s':''} sin enviar: hasta que no los envíes por la ventana no cobras el resto.</div>`:''}
     ${S.door.length?`<div class="sum-line bad">Dejaste ${S.door.length} pedido${S.door.length>1?'s':''} en la puerta. Sin refrigerador se pudre${S.door.length>1?'n':''} si no lo${S.door.length>1?'s':''} comes.</div>`:''}`;
   $('#night').hidden=false;
 }
+const STARVE_DEATH=3;
+function gameOver(){
+  S.dead=S.day;$('#night').hidden=true;save();
+  $('#dead-body').innerHTML=`<div class="sum-grid">
+      <div><b class="num">${S.day}</b><span>Días vividos</span></div>
+      <div><b class="num">${S.sales}</b><span>Ventas</span></div>
+      <div><b class="num">${money(S.revenue||0)}</b><span>Vendido</span></div></div>
+    <p class="dead-p">Pasaste ${STARVE_DEATH} días seguidos sin comer ni beber lo suficiente (menos de 70 %). Te quedaron ${money(S.money)} en la cuenta.</p>`;
+  $('#dead').hidden=false;
+}
 function endDay(){
   const d=S.day;
   const summary={day:d,sales:S.day$.sales,profit:S.day$.profit};
   S.weak=S.food<70||S.drink<70;
+  S.starve=S.weak?(S.starve||0)+1:0;
+  if(S.starve>=STARVE_DEATH){gameOver();return}
   for(const b of [...S.bills].filter(b=>b.due<=d)){
     if(b.kind==='salary'){const h=S.hired.find(x=>x.id===b.emp);if(h){S.hired=S.hired.filter(x=>x!==h);toast(`${h.name} renunció porque no le pagaste.`)}S.bills=S.bills.filter(x=>x!==b)}
     else{b.amount=Math.ceil(b.amount*1.1);b.late=true}
@@ -2437,7 +2464,8 @@ function endDay(){
   $('#night').hidden=true;dirty=true;S.view='room';S.wall=0;roomKey='';save();
   playDayTransition(summary,()=>{renderRoom();
     if(S.day===S.botDay)toast('Cuentero.ai ya está en línea. Búscalo en el buscador.');
-    if(S.weak)toast('Amaneciste débil: hoy convences un 25 % menos.');
+    if(S.starve>=STARVE_DEATH-1)toast(`⚠️ Llevas ${S.starve} días seguidos sin comer bien. Si terminas otro día así, mueres de inanición.`,'bad');
+    else if(S.weak)toast('Amaneciste débil: hoy convences un 25 % menos.');
     renderTaskbar();renderPage();
   });
 }
@@ -3178,6 +3206,7 @@ function renderStats(){
   $('#stats-body').innerHTML=`${bar(S.food,'Comida','🍔')}${bar(S.drink,'Bebida','💧')}
   <p class="st-note">Cada venta, anuncio o trabajito tiene 1 posibilidad entre 4 de bajar tu comida un ${DRAIN} % y 1 entre 5 de bajar tu bebida otro ${DRAIN} %. Necesitas al menos 70 % de las dos al terminar el día o mañana amanecerás débil. Por debajo del ${DRAIN} % no puedes trabajar.</p>
   ${S.weak?'<p class="st-weak">Hoy estás débil: convences un 25 % menos.</p>':''}
+  ${(S.starve||0)>=1?`<p class="st-weak">💀 Llevas ${S.starve} día${S.starve>1?'s':''} seguido${S.starve>1?'s':''} mal alimentado. Si terminas ${STARVE_DEATH-S.starve>1?STARVE_DEATH-S.starve+' días más':'otro día'} con comida o bebida bajo 70 %, mueres de inanición.</p>`:'<p class="tip">Si terminas 3 días seguidos con comida o bebida bajo 70 %, mueres de inanición.</p>'}
   <h3 class="st-h">Refrigerador</h3>
   ${S.fridge?(items?items+'<p class="st-note">Para comer, ve a la cocina de tu cuarto.</p>':'<p class="st-note">Vacío. Lo que guardes ahí se pudre si no lo consumes para el segundo día.</p>'):'<p class="st-note">No tienes refrigerador: tu cocina está vacía y los pedidos hay que comerlos al recogerlos en la puerta.</p>'}
   <h3 class="st-h">Clientes</h3>
@@ -3847,6 +3876,8 @@ function slotCard(n,purpose){
   const conf=menuConfirm&&menuConfirm.slot===n;
   if(conf)return `<div class="slot confirm"><b>${menuConfirm.kind==='del'?'¿Borrar esta partida para siempre?':'¿Reemplazar esta partida por una nueva?'}</b><div class="slot-acts"><button class="mbtn danger" data-act="m-${menuConfirm.kind==='del'?'del-yes':'new-yes'}" data-id="${n}">Sí</button><button class="mbtn ghost" data-act="m-cancel">Cancelar</button></div></div>`;
   if(!m)return `<div class="slot empty"><span class="slot-n">Archivo ${n}</span><b>Vacío</b><div class="slot-acts"><button class="mbtn" data-act="m-new-slot" data-id="${n}">Nueva partida aquí</button></div></div>`;
+  if(m.dead&&!cur)return `<div class="slot dead"><span class="slot-n">Archivo ${n} · terminada</span><b>💀 Moriste el día ${m.dead}</b><span class="slot-meta">${m.sales||0} ventas · ${money(m.rev||0)} vendidos · ${fmtAgo(m.at)}</span>
+    <div class="slot-acts"><button class="mbtn" data-act="m-new-slot" data-id="${n}">Nueva partida aquí</button><button class="mbtn ghost" data-act="m-del" data-id="${n}">Borrar</button></div></div>`;
   return `<div class="slot ${cur?'cur':''}"><span class="slot-n">Archivo ${n}${cur?' · en juego':''}</span><b>Día ${m.day} · <span class="num">${money(m.money)}</span></b>
     <span class="slot-meta">${m.sales||0} ventas · ${money(m.rev||0)} vendidos · ${m.staff||0} empleado${m.staff===1?'':'s'} · guardado ${fmtAgo(m.at)}</span>${m.icons?`<span class="slot-icons">${m.icons}</span>`:''}
     <div class="slot-acts">${purpose==='new'?`<button class="mbtn" data-act="m-new-slot" data-id="${n}">Reemplazar</button>`:`<button class="mbtn" data-act="m-load" data-id="${n}" ${cur?'disabled':''}>${cur?'Cargada':'Cargar'}</button>`}
@@ -3860,7 +3891,7 @@ function renderMenu(){
   let h='';
   if(menuView==='main'){
     if(menuMode==='title'){
-      h=(last?mcard('m-continue','','▶','Continuar',`Archivo ${meta.last} · Día ${last.day} · guardado ${fmtAgo(last.at)}`,false,`<span class="mstats"><span>${money(last.money)}</span><span>${last.sales||0} ventas</span>${last.icons?`<span>${last.icons}</span>`:''}</span>`):'')
+      h=(last&&last.dead?`<div class="mdead">💀 En el archivo ${meta.last} moriste de inanición el día ${last.dead}.</div>`:'')+(last&&!last.dead?mcard('m-continue','','▶','Continuar',`Archivo ${meta.last} · Día ${last.day} · guardado ${fmtAgo(last.at)}`,false,`<span class="mstats"><span>${money(last.money)}</span><span>${last.sales||0} ventas</span>${last.icons?`<span>${last.icons}</span>`:''}</span>`):'')
        +mcard('m-view','new','＋','Nueva partida','Empiezas con $20 en tu cuarto',!!last)
        +`<div class="mgrid">${mcard('m-view','files','🗂️','Archivos de guardado',nSlots?`${nSlots} partida${nSlots>1?'s':''} guardada${nSlots>1?'s':''}`:'Ninguna todavía',true)}${mcard('m-view','howto','❓','Cómo se juega','Lo básico en 30 segundos',true)}</div>`+appRow();
     }else{
@@ -3903,7 +3934,7 @@ function afterLoad(){
   S.cur=null;$('#chat').hidden=true;$('#fridge').hidden=true;$('#pkg').hidden=true;$('#editor').hidden=true;$('#job').hidden=true;$('#stats').hidden=true;
   lastRenderedUrl=null;roomKey='';renderTaskbar();renderPage(true);renderMini();renderRoom();
 }
-function loadSlot(n){const st=readSlot(n);if(!st){menuMsg='No se pudo leer esa partida.';renderMenu();return}SLOT=n;S=st;afterLoad();save();closeMenu();tutStop();toast(`Partida cargada: día ${S.day}.`)}
+function loadSlot(n){const st=readSlot(n);if(!st){menuMsg='No se pudo leer esa partida.';renderMenu();return}if(st.dead){menuMsg='En esa partida moriste: empieza una nueva.';renderMenu();return}SLOT=n;S=st;afterLoad();save();closeMenu();tutStop();toast(`Partida cargada: día ${S.day}.`)}
 function newInSlot(n){SLOT=n;newGame();save();afterLoad();closeMenu();tutStart()}
 function exportCode(n){const st=SLOT===n&&S?S:readSlot(n);return 'LVC1:'+btoa(unescape(encodeURIComponent(JSON.stringify(st))))}
 function importCode(code,n){
@@ -3918,6 +3949,8 @@ document.addEventListener('click',e=>{
   switch(a){
     case 'm-install':doInstall();break;
     case 'm-fs':toggleFS();break;
+    case 'd-new':$('#dead').hidden=true;newInSlot(SLOT);break;
+    case 'd-menu':$('#dead').hidden=true;openMenu('title');break;
     case 'm-continue':loadSlot(slotMeta().last);break;
     case 'm-view':menuView=t.dataset.id;menuConfirm=null;menuMsg='';renderMenu();break;
     case 'm-back':if(menuView==='export'){menuView='files';menuMsg='';menuConfirm=null;renderMenu();break}menuView='main';menuConfirm=null;menuMsg='';renderMenu();break;
