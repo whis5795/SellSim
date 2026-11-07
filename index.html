@@ -5131,19 +5131,31 @@ const typingIn=()=>{const a=document.activeElement,hp=$('#hp');return a&&hp&&hp.
 hpRender=async function(soft){
   if(!typingIn())return _hpRenderK(soft);
   const live=$('#hp');const tmp=document.createElement('div');
-  live.id='hp-live';tmp.id='hp';tmp.style.cssText='position:fixed;left:-9999px;top:0;width:'+live.clientWidth+'px;visibility:hidden';document.body.appendChild(tmp);
+  // aislar la pantalla real: durante el dibujo de prueba nadie puede tocar sus elementos (ni el scroll ni el foco)
+  const om0=live.querySelector('#hp-msgs');const keepB=om0?om0.scrollHeight-om0.scrollTop-om0.clientHeight:0,keepT=om0?om0.scrollTop:0;
+  const ids=[...live.querySelectorAll('[id]')];ids.forEach(x=>{x.dataset.lid=x.id;x.id='L_'+x.id});
+  live.id='hp-live';tmp.id='hp';tmp.style.cssText='position:fixed;left:-9999px;top:0;width:'+live.clientWidth+'px;height:'+live.clientHeight+'px;visibility:hidden;pointer-events:none';document.body.appendChild(tmp);
   try{await _hpRenderK(soft)}catch(e){}
-  tmp.remove();live.id='hp';
+  tmp.remove();live.id='hp';ids.forEach(x=>{x.id=x.dataset.lid;delete x.dataset.lid});
   const sel=['.hp-bar','.hp-offer','.hp-q','.hp-qr','.hp-err','.hp-stats','.hb-stat','.hp-role','.hp-clock'];
   // mensajes: copiar el contenido manteniendo el scroll
   const nm=tmp.querySelector('#hp-msgs'),om=live.querySelector('#hp-msgs');
-  if(nm&&om&&nm.innerHTML!==om.innerHTML){const atB=om.scrollHeight-om.scrollTop-om.clientHeight<60,st=om.scrollTop;om.innerHTML=nm.innerHTML;om.scrollTop=atB?om.scrollHeight:st}
+  if(nm&&om&&nm.innerHTML!==om.innerHTML){om.innerHTML=nm.innerHTML;om.scrollTop=keepB<60?om.scrollHeight:keepT}else if(om)om.scrollTop=keepB<60?om.scrollHeight-om.clientHeight:keepT;
   for(const s of sel){const n=tmp.querySelector(s),o=live.querySelector(s);if(n&&o&&n.innerHTML!==o.innerHTML)o.innerHTML=n.innerHTML;else if(n&&!o&&s!=='.hp-clock'){/* aparece algo nuevo: se agrega al soltar el teclado */HX.pendingFull=true}}
   // lista de chats o de compras: actualizar sin tocar el campo activo
   for(const s of ['.hb-list']){const n=tmp.querySelector(s),o=live.querySelector(s);if(n&&o&&!o.contains(document.activeElement)&&n.innerHTML!==o.innerHTML){const st=o.scrollTop;o.innerHTML=n.innerHTML;o.scrollTop=st}}
 };
 // al cerrar el teclado, dibujar lo que haya quedado pendiente
 document.addEventListener('focusout',e=>{if(!$('#hp')||!$('#hp').contains(e.target))return;setTimeout(()=>{if(!typingIn()&&HX.pendingFull){HX.pendingFull=false;hpRender(true)}},150)});
+
+/* al abrir o cerrar el teclado, el chat del ayudante mantiene a la vista los mismos mensajes (anclado abajo) */
+const HKB={fromBottom:0};
+document.addEventListener('scroll',e=>{const m=e.target;if(m&&m.id==='hp-msgs')HKB.fromBottom=Math.max(0,m.scrollHeight-m.scrollTop-m.clientHeight)},true);
+function hpAnchor(){const m=$('#hp-msgs');if(!m)return;const fb=HKB.fromBottom<60?0:HKB.fromBottom;m.scrollTop=m.scrollHeight-m.clientHeight-fb}
+if(window.visualViewport){let raf=0;const on=()=>{if(!$('#hp'))return;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>requestAnimationFrame(hpAnchor))};
+  visualViewport.addEventListener('resize',on);visualViewport.addEventListener('scroll',on)}
+document.addEventListener('focusin',e=>{if(e.target.id==='hp-in'){HKB.fromBottom=HKB.fromBottom<60?0:HKB.fromBottom;[80,250,500].forEach(t=>setTimeout(hpAnchor,t))}});
+document.addEventListener('focusout',e=>{if(e.target.id==='hp-in')[80,250,500].forEach(t=>setTimeout(hpAnchor,t))});
 
 /* ================= NAVEGADOR DEL AYUDANTE: las mismas páginas web que el anfitrión ================= */
 // El anfitrión dibuja la página con su partida y se la manda; los toques del amigo se ejecutan en la partida del anfitrión.
