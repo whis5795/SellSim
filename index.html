@@ -1045,6 +1045,45 @@ body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
 .mprev{margin:4px 0}.mpc{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 12px}.mpc-i{font-size:26px}.mpc b{display:block;font-size:15px}.mpc small{opacity:.75;font-size:12px}
 .mxp{display:flex;flex-wrap:wrap;gap:8px}.mdet summary{cursor:pointer;font-size:12.5px;opacity:.75;margin:6px 0}.mfile{cursor:pointer}
 #m-drop.over{outline:2px dashed rgba(255,255,255,.6);outline-offset:3px}.mhint.ok{color:#9FE8B8}.mhint code{font-size:11px;background:rgba(0,0,0,.25);padding:1px 5px;border-radius:5px}
+
+/* emparejar amigos */
+.em-friend{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--cobalt) 14%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--cobalt) 35%,var(--line));border-radius:16px;padding:12px;margin-bottom:12px;flex-wrap:wrap}
+.em-fi{font-size:28px}.em-fb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px}.em-fb span{font-size:12.5px;color:var(--muted)}.em-fb .em-fl{color:var(--good);font-weight:700}
+.pr-box{position:relative;max-height:calc(var(--vvh,100vh) - 32px);overflow-y:auto}
+.pr-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:24px;color:var(--muted);cursor:pointer}
+.pr-step{display:flex;gap:12px;margin-top:12px}.pr-step>b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--cobalt);color:#fff;display:grid;place-items:center;font-size:13px}
+.pr-step>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}.pr-p{margin:0;font-size:13.5px;color:var(--muted)}
+.pr-qr{background:#fff;border-radius:14px;padding:8px;width:min(240px,100%);align-self:center}.pr-qr svg{display:block;width:100%;height:auto}
+.pr-code{width:100%;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:11.5px 'JetBrains Mono',monospace;padding:8px;resize:vertical;word-break:break-all;box-sizing:border-box}
+.pr-err{color:var(--bad);font-size:13px;margin:0}#pr-cam{width:100%;border-radius:12px;background:#000}
+.pr-friends{display:flex;gap:6px;flex-wrap:wrap}.pr-f{background:var(--good-soft);color:var(--good);font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:999px}
+/* modo ayudante (celular del amigo) */
+body.helper{background:var(--bg)}
+#hp{position:fixed;top:var(--vvt,0);left:0;right:0;height:var(--vvh,100%);display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;z-index:100}
+.hp-head{display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:#0E1650;color:#fff}
+.hp-logo{font:800 18px 'Bricolage Grotesque',sans-serif}.hp-logo span{background:#FFC93C;color:#1A1400;padding:0 6px;border-radius:6px;margin-left:2px}
+.hp-role{font-size:12px;font-weight:700;opacity:.9}
+.hp-main{padding:22px 18px;display:flex;flex-direction:column;gap:12px;max-width:520px;margin:0 auto;width:100%;box-sizing:border-box;overflow-y:auto}
+.hp-main h2{margin:0;font:800 24px 'Bricolage Grotesque',sans-serif}.hp-main p{margin:0;color:var(--muted);font-size:14.5px}
+.hp-lab{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px}.hp-lab input{font:inherit;font-size:16px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.hp-btn{background:var(--cobalt);color:#fff;border:0;border-radius:14px;padding:13px 16px;font:800 15px inherit;cursor:pointer}.hp-btn.ghost{background:var(--surface-2);color:var(--ink)}
+.hp-acts{display:flex;gap:8px;flex-wrap:wrap}.hp-small{font-size:12.5px!important}.hp-qr{width:min(280px,90%)}
+.hp-list{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.hp-chat{display:flex;gap:10px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;font:inherit;color:inherit;cursor:pointer}
+.hp-ci{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.hp-ci small{font-weight:500;color:var(--muted)}.hp-sub{font-size:12.5px;color:var(--muted)}
+.hp-empty{text-align:center;color:var(--muted);padding:40px 16px}
+.hp-chatv{flex:1;display:flex;flex-direction:column;min-height:0}
+.hp-ch{display:flex;gap:10px;align-items:center;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--line)}.hp-ch small{display:block;color:var(--muted);font-size:12px}
+.hp-back{background:var(--surface-2);border:0;border-radius:10px;width:34px;height:34px;font-size:22px;color:var(--ink);cursor:pointer}
+.hp-bar{display:flex;gap:10px;align-items:center;padding:8px 14px;background:var(--surface)}.hp-bar .minibar{flex:1}
+.hp-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px}
+.hp-m{max-width:80%;padding:8px 12px;border-radius:16px;font-size:14.5px;line-height:1.35;white-space:pre-wrap}.hp-m small{display:block;font-size:11px;opacity:.75;font-weight:700}
+.hp-m.them{align-self:flex-start;background:var(--surface);border:1px solid var(--line)}.hp-m.me{align-self:flex-end;background:var(--cobalt);color:#fff}.hp-m.typing{opacity:.6;font-style:italic}
+.hp-err{margin:0;padding:6px 14px;color:var(--bad);font-size:13px;background:var(--bad-soft)}
+.hp-form{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
+.hp-form textarea{flex:1;font:inherit;font-size:16px;padding:10px 12px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);resize:none}
+.hp-send{width:46px;height:46px;border-radius:50%;border:0;background:var(--cobalt);color:#fff;font-size:18px;cursor:pointer}
+.hp-toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#111628;color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;font-size:13.5px;z-index:120;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
 .mback{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px}
@@ -1152,6 +1191,11 @@ body.kb-open #c-hint{display:none}body.kb-open .sheet{padding-bottom:0}
   <div class="ph-bar"><span id="ph-time">08:00</span><span class="ph-notch"></span><span>📶 🔋</span></div>
   <div class="ph-head"><b>Mensajes</b><button class="ph-x" data-act="phone-close" aria-label="Guardar el teléfono">×</button></div>
   <div class="ph-body" id="ph-body"></div><div class="ph-home" data-act="phone-close"></div>
+</div></div>
+<div class="overlay" id="pair" hidden><div class="box pr-box">
+  <span class="eyebrow">Amigos ayudantes</span><h2>Invita a un amigo</h2>
+  <div id="pr-body"></div>
+  <button class="pr-x" data-act="pr-close" aria-label="Cerrar">×</button>
 </div></div>
 <section class="sheet z2" id="cups" hidden>
   <div class="sh-head gut"><button class="back" data-act="cu-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Mis cupones</b><span>Descuentos que encontraste navegando</span></div></div>
@@ -3048,7 +3092,7 @@ function renderChat(keepScroll){
     if(m.photo)return sep+`<div class="msg p ${first?'first':''}"><div class="photo-msg"><div class="ph" style="--h:${m.photo.h};filter:blur(${m.photo.blur}px) brightness(${m.photo.br})"><span style="transform:scale(${m.photo.sc})">${m.photo.icon}</span></div><span class="ph-q">Calidad ${m.photo.q} %${meta}</span></div>${chips}</div>`;
     if(m.offer)return sep+`<div class="msg p ${first?'first':''}"><div class="bubble offer-b">💲 Propongo <b class="num">${money(m.offer)}</b>${meta}</div>${chips}</div>`;
     if(m.from==='b')return sep+`<div class="cx-row b">${av}<div class="msg b ${first?'first':''}"><div class="bubble">${esc(m.text)}${meta}</div></div></div>`;
-    return sep+`<div class="msg ${m.from} ${first?'first':''}"><div class="bubble">${esc(m.text)}${meta}</div>${chips}</div>`;
+    return sep+`<div class="msg ${m.from} ${first?'first':''}">${m.who?`<span class="who">${esc(m.who)} (tu amigo)</span>`:''}<div class="bubble">${esc(m.text)}${meta}</div>${chips}</div>`;
   }).join('')+(b.typing||b.emp?`<div class="cx-row b"><span class="av cx-av" style="--h:${hue(b.name)}">${esc(b.name[0])}</span><div class="typing"><i></i><i></i><i></i></div></div>`:'');
   if(!keepScroll||atBottom)box.scrollTop=box.scrollHeight;
   const open=b.status==='open'&&!b.emp;
@@ -3069,14 +3113,14 @@ function finishTurn(b,delta,reply,delay){
     dirty=true;save();
   },delay);
 }
-async function sendMsg(){
-  const inp=$('#c-input');const text=inp.value.trim();if(!text)return;
-  const b=S.buyers.find(x=>x.id===S.cur);if(!b||b.status!=='open'||b.typing||b.emp)return;
+async function sendMsg(ext){
+  const inp=$('#c-input');const text=ext?ext.text:inp.value.trim();if(!text)return;
+  const b=S.buyers.find(x=>x.id===(ext?ext.id:S.cur));if(!b||b.status!=='open'||b.typing||b.emp)return;
   const it=itemOf(b);if(!it)return;
   const P=PERSONAS[b.persona];
   const form=formCheck(text,b);const wasQuick=b.q&&b.q.id==='qb';
-  const msg={from:'p',text,chips:[],pending:true};b.msgs.push(msg);
-  b.waitingSince=null;b.typing=true;inp.value='';autosize();renderChat();
+  const msg={from:'p',text,chips:[],pending:true};if(ext&&ext.who)msg.who=ext.who;b.msgs.push(msg);
+  b.waitingSince=null;b.typing=true;if(!ext){inp.value='';autosize()}if(S.cur===b.id)renderChat();
   const started=performance.now();
   const price=parsePrice(text,b);
   let delta,reply,chips;
@@ -3993,8 +4037,12 @@ function empTick(){
 /* ---------- interfaz: pestaña Empleados en Mensajes ---------- */
 function msgTabs(on){const n=S.hired.length,w=S.inv.filter(i=>i.assigned).length;
   return `<div class="em-tabs" role="tablist"><a href="#" role="tab" data-go="bazarito.com/mensajes" class="${on==='chats'?'on':''}">💬 Clientes</a><a href="#" role="tab" data-go="bazarito.com/mensajes/equipo" class="${on==='team'?'on':''}">👥 Empleados${n?` <span class="em-cnt">${n}</span>`:''}${w?` <span class="em-cnt live">${w} en venta</span>`:''}</a></div>`}
+function friendCard(){const fr=friendList(),st=S.friends||{};
+  return `<div class="em-friend"><div class="em-fi">📲</div><div class="em-fb"><b>Contrata a tus amigos</b><span>Empareja su celular con tu partida: ven tus chats y responden a tus clientes desde su teléfono. Se llevan un ${Math.round(FRIEND_CUT*100)} % de cada venta que cierran.</span>
+    ${fr.length?`<span class="em-fl">${fr.map(p=>`🟢 ${esc(p.name)}${st[p.name]?` · ${st[p.name].sold} venta${st[p.name].sold>1?'s':''}`:''}`).join(' · ')}</span>`:''}</div>
+    <button class="bz-btn" data-act="pair-open">${fr.length?'Invitar a otro':'Invitar a un amigo'}</button></div>`}
 function empPage(){
-  if(!S.hired.length)return msgTabs('team')+`<div class="bz-empty"><b>Todavía no tienes empleados.</b><br>Contrata a alguien en EmpleaYa y aquí podrás darle productos para que los publique y los venda solo.<br><br><button class="bz-btn" data-go="empleaya.com">Ir a EmpleaYa</button></div>`;
+  if(!S.hired.length)return msgTabs('team')+friendCard()+`<div class="bz-empty"><b>Todavía no tienes empleados.</b><br>Contrata a alguien en EmpleaYa y aquí podrás darle productos para que los publique y los venda solo.<br><br><button class="bz-btn" data-go="empleaya.com">Ir a EmpleaYa</button></div>`;
   if(!S.hired.some(h=>h.id===EMS.sel))EMS.sel=S.hired[0].id;
   const h=S.hired.find(x=>x.id===EMS.sel),fn=h.name.split(' ')[0];
   const free=S.inv.filter(i=>!i.assigned&&!i.listed);
@@ -4014,7 +4062,7 @@ function empPage(){
     return `<div class="em-sell ${writing?'wr':''}"><span class="em-ic sm" style="--h:${hue(it.name)}">${it.icon}</span><div class="em-si"><b>${esc(it.name)}</b>
       ${writing?`<span class="em-typing">${esc(fn)} está escribiendo la historia<i></i><i></i><i></i></span>`:`<span class="bz-sub">Publicado a <b class="num">${money(it.empPrice)}</b> · ${S2.n.toLowerCase()} · gancho ${Math.round(it.empScore*100)} % · ${esc(it.empSrc||'')}</span><p class="bz-story">«${esc(it.empStory)}»</p>`}
       </div><button class="bz-btn ghost sm" data-act="em-unassign" data-id="${it.id}">Quitar</button></div>`}).join(''):`<div class="bz-empty sm">${esc(fn)} no tiene nada para vender todavía.</div>`;
-  return msgTabs('team')+`<p class="em-lead">Elige un empleado, marca los productos y cómo quieres que ponga el precio. Él escribe la historia, publica, vende y envía solo.</p>
+  return msgTabs('team')+friendCard()+`<p class="em-lead">Elige un empleado, marca los productos y cómo quieres que ponga el precio. Él escribe la historia, publica, vende y envía solo.</p>
   <div class="em-team">${team}</div>
   <section class="em-panel">
     <div class="em-ph"><span class="av lg" style="--h:${hue(h.name)}">${esc(h.name[0])}</span><div><h3>${esc(h.name)}</h3><p class="em-src">✍️ ${src}</p></div></div>
@@ -4160,6 +4208,152 @@ document.addEventListener('click',e=>{
   if(a==='phone-open')openPhone();
   if(a==='phone-close')$('#phone').hidden=true;
   if(a==='open-chat'&&!$('#phone').hidden)$('#phone').hidden=true;
+});
+
+/* ================= AMIGOS AYUDANTES: emparejar otro dispositivo (WebRTC, sin servidor) ================= */
+const LINK_URL='https://whis5795.github.io/SellSim/';
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+const FRIEND_CUT=.10; // comisión para el amigo que cierra la venta
+const LK={peers:[],pending:null};
+// ---- utilidades de código (comprimido, apto para QR y enlaces) ----
+async function packSig(obj){const json=JSON.stringify(obj);
+  if(window.CompressionStream){const z=await gz(json,true);return 'z'+b64u(z)}
+  return 'j'+b64u(new TextEncoder().encode(json))}
+async function unpackSig(code){code=(code||'').trim();const m=code.match(/[#&?]ayudante=([^&\s]+)/);if(m)code=decodeURIComponent(m[1]);code=code.replace(/\s+/g,'');
+  if(code[0]==='z')return JSON.parse(new TextDecoder().decode(await gz(unb64u(code.slice(1)),false)));
+  if(code[0]==='j')return JSON.parse(new TextDecoder().decode(unb64u(code.slice(1))));
+  throw new Error('código')}
+function waitIce(pc){return new Promise(res=>{if(pc.iceGatheringState==='complete')return res();const t=setTimeout(res,3500);
+  pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);res()}})})}
+let qrLib=null;
+function loadQR(){if(window.qrcode)return Promise.resolve();if(qrLib)return qrLib;
+  qrLib=new Promise((res,rej)=>{const srcs=['https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js','https://unpkg.com/qrcode-generator@1.4.4/qrcode.js'];let i=0;
+    const next=()=>{if(i>=srcs.length)return rej();const s=document.createElement('script');s.src=srcs[i++];s.onload=()=>window.qrcode?res():next();s.onerror=next;document.head.appendChild(s)};next()});return qrLib}
+async function qrSVG(text){try{await loadQR();const q=qrcode(0,'L');q.addData(text);q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true})}catch(e){return ''}}
+const canScan=()=>'BarcodeDetector' in window&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia;
+async function scanQR(videoEl,onCode){
+  const det=new BarcodeDetector({formats:['qr_code']});const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});videoEl.srcObject=st;await videoEl.play();
+  let on=true;const stop=()=>{on=false;st.getTracks().forEach(t=>t.stop())};
+  (async function loop(){while(on){try{const r=await det.detect(videoEl);if(r[0]){stop();onCode(r[0].rawValue);return}}catch(e){}await new Promise(r=>setTimeout(r,250))}})();
+  return stop}
+
+/* ================= LADO DE LA PARTIDA (anfitrión) ================= */
+function friendList(){return LK.peers.filter(p=>p.ch&&p.ch.readyState==='open')}
+async function hostInvite(){
+  const pc=new RTCPeerConnection(ICE);const ch=pc.createDataChannel('lvc',{ordered:true});
+  const peer={pc,ch,name:'Amigo',id:'f'+Date.now(),last:''};LK.pending=peer;LK.peers.push(peer);
+  ch.onopen=()=>{toast(`📲 ${peer.name} se conectó para ayudarte con los mensajes.`,'good');LK.pending=null;renderPair();hostPush(true);try{renderPage(true)}catch(e){}};
+  ch.onclose=()=>{LK.peers=LK.peers.filter(p=>p!==peer);if(peer.name)toast(`${peer.name} se desconectó.`);renderPair();try{renderPage(true)}catch(e){}};
+  ch.onmessage=e=>hostOnMsg(peer,e.data);
+  await pc.setLocalDescription(await pc.createOffer());await waitIce(pc);
+  const code=await packSig({s:pc.localDescription.sdp,h:'Partida del día '+S.day});
+  peer.link=LINK_URL+'#ayudante='+code;renderPair()}
+async function hostAccept(text){
+  const peer=LK.pending;if(!peer)return;$('#pr-err').textContent='';
+  try{const d=await unpackSig(text);if(!d.a)throw 0;peer.name=String(d.n||'Amigo').slice(0,20);await peer.pc.setRemoteDescription({type:'answer',sdp:d.a});$('#pr-st').textContent='Conectando…'}
+  catch(e){$('#pr-err').textContent='Ese no es el código de respuesta de tu amigo. Pídele que te lo mande otra vez.'}}
+function snapshot(){
+  return S.buyers.filter(b=>b.status==='open').map(b=>{const it=itemOf(b)||{};return {id:b.id,name:b.name,item:it.name,icon:it.icon,ask:it.price,offer:b.offer,conv:Math.round(b.conv),pat:b.patience,typing:!!b.typing,emp:!!b.emp,
+    persona:(PERSONAS[b.persona]||{}).label||'',msgs:b.msgs.slice(-40).map(m=>({f:m.from,t:m.photo?'📷 Foto':m.text||'',w:m.who||''}))}})}
+function hostPush(force){const ps=friendList();if(!ps.length)return;
+  const data=JSON.stringify({t:'state',day:S.day,money:Math.round(S.money),chats:snapshot()});
+  for(const p of ps)if(force||p.last!==data){p.last=data;try{p.ch.send(data)}catch(e){}}}
+function hostOnMsg(peer,raw){let m;try{m=JSON.parse(raw)}catch(e){return}
+  if(m.t==='hi'){peer.name=String(m.n||peer.name).slice(0,20);renderPair();return}
+  if(m.t==='send'){const b=S.buyers.find(x=>x.id===m.id);const err=t=>peer.ch.send(JSON.stringify({t:'err',msg:t}));
+    if(!b||b.status!=='open')return err('Ese chat ya se cerró.');
+    if(b.typing)return err(`${b.name} está escribiendo, espera su respuesta.`);
+    if(b.emp)return err('Ese chat lo atiende un empleado.');
+    const text=String(m.text||'').slice(0,600).trim();if(!text)return;
+    b.friend=peer.name;sendMsg({id:b.id,text,who:peer.name})}}
+setInterval(()=>{try{if(S&&friendList().length)hostPush()}catch(e){}},1000);
+// comisión al amigo que cerró la venta
+const _winBuyer=winBuyer;
+winBuyer=function(b,by){const was=b.status;_winBuyer(b,by);
+  if(was==='open'&&b.status==='won'&&b.friend){const cut=Math.max(1,Math.round(b.offer*FRIEND_CUT));S.money-=cut;S.friends=S.friends||{};const f=S.friends[b.friend]=S.friends[b.friend]||{sold:0,paid:0};f.sold++;f.paid+=cut;
+    toast(`🤝 ${b.friend} cerró la venta con ${b.name}. Su comisión: ${money(cut)}.`,'good');for(const p of friendList())if(p.name===b.friend)try{p.ch.send(JSON.stringify({t:'won',name:b.name,cut}))}catch(e){}}};
+
+function openPair(){$('#pair').hidden=false;if(!LK.pending)hostInvite();renderPair()}
+async function renderPair(){const el=$('#pr-body');if(!el||$('#pair').hidden)return;const p=LK.pending;
+  const conn=friendList();
+  const list=conn.length?`<div class="pr-friends">${conn.map(x=>`<span class="pr-f">🟢 ${esc(x.name)}</span>`).join('')}</div>`:'';
+  if(!p){el.innerHTML=list+`<p class="pr-p">Listo. Tus amigos ven tus chats y responden a tus clientes desde su celular. Se llevan un ${Math.round(FRIEND_CUT*100)} % de comisión de cada venta que cierran.</p><div class="row-acts"><button class="btn" data-act="pr-new">Invitar a otro amigo</button><button class="btn ghost" data-act="pr-close">Listo</button></div>`;return}
+  if(!p.link){el.innerHTML=list+'<p class="pr-p">Preparando la invitación…</p>';return}
+  const svg=await qrSVG(p.link);
+  el.innerHTML=list+`<div class="pr-step"><b>1</b><div><p class="pr-p">Tu amigo escanea este código con la cámara de su celular (mejor si están en la misma wifi) o le mandas el enlace.</p>
+    ${svg?`<div class="pr-qr">${svg}</div>`:''}<div class="row-acts"><button class="btn sm" data-act="pr-copy">Copiar enlace</button>${navigator.share?'<button class="btn sm ghost" data-act="pr-share">Enviar por…</button>':''}</div></div></div>
+  <div class="pr-step"><b>2</b><div><p class="pr-p">Su celular le muestra un código de respuesta. Escanéalo o pégalo aquí:</p>
+    <textarea class="pr-code" id="pr-in" rows="3" placeholder="Pega aquí la respuesta de tu amigo" spellcheck="false"></textarea>
+    <div class="row-acts"><button class="btn sm" data-act="pr-ok">Conectar</button>${canScan()?'<button class="btn sm ghost" data-act="pr-scan">📷 Escanear su código</button>':''}</div>
+    <video id="pr-cam" playsinline muted hidden></video><p class="pr-err" id="pr-err"></p><p class="pr-p" id="pr-st"></p></div></div>`}
+let prStop=null;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='pair-open')openPair();
+  if(a==='pr-close'){$('#pair').hidden=true;if(prStop)prStop()}
+  if(a==='pr-new'){hostInvite();renderPair()}
+  if(a==='pr-copy'&&LK.pending){navigator.clipboard?.writeText(LK.pending.link).then(()=>toast('Enlace copiado: mándaselo a tu amigo.','good')).catch(()=>{})}
+  if(a==='pr-share'&&LK.pending)navigator.share({title:'Ayúdame en Lo Vendo Caro',text:'Abre esto para responder a mis clientes:',url:LK.pending.link}).catch(()=>{});
+  if(a==='pr-ok')hostAccept($('#pr-in').value);
+  if(a==='pr-scan'){const v=$('#pr-cam');v.hidden=false;scanQR(v,code=>{v.hidden=true;$('#pr-in').value=code;hostAccept(code)}).then(s=>prStop=s).catch(()=>{v.hidden=true;$('#pr-err').textContent='No pude abrir la cámara. Pega el código a mano.'})}
+  if(a==='pr-kick'){const p=LK.peers.find(x=>x.id===t.dataset.id);if(p){try{p.pc.close()}catch(e){}}}
+});
+
+/* ================= LADO DEL AMIGO (ayudante) ================= */
+const HP={pc:null,ch:null,name:'',chats:[],cur:null,err:'',stage:'name',offer:null,answer:'',sold:0,earned:0};
+function helperMode(){return /[#&]ayudante=/.test(location.hash)}
+async function helperBoot(){
+  document.body.classList.add('helper');
+  ['#menu','#room','#coach','.chrome','.taskbar','#viewport'].forEach(s=>{const el=$(s);if(el)el.hidden=true});
+  const host=document.createElement('div');host.id='hp';document.body.appendChild(host);
+  try{HP.offer=await unpackSig(location.hash);if(!HP.offer.s)throw 0}catch(e){HP.stage='bad'}
+  try{HP.name=localStorage.getItem('lvc-helper-name')||''}catch(e){}
+  hpRender()}
+async function hpJoin(){
+  HP.name=($('#hp-name').value||'').trim().slice(0,20)||'Amigo';try{localStorage.setItem('lvc-helper-name',HP.name)}catch(e){}
+  HP.stage='making';hpRender();
+  const pc=HP.pc=new RTCPeerConnection(ICE);
+  pc.ondatachannel=e=>{const ch=HP.ch=e.channel;ch.onopen=()=>{HP.stage='live';ch.send(JSON.stringify({t:'hi',n:HP.name}));hpRender()};
+    ch.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(x){return}
+      if(m.t==='state'){HP.chats=m.chats;HP.day=m.day;hpRender(true)}
+      if(m.t==='err'){HP.err=m.msg;hpRender(true);setTimeout(()=>{HP.err='';hpRender(true)},3500)}
+      if(m.t==='won'){HP.sold++;HP.earned+=m.cut;hpToast(`🎉 ¡Cerraste la venta con ${m.name}! Comisión: $${m.cut}`)}};
+    ch.onclose=()=>{HP.stage='closed';hpRender()}};
+  pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'){HP.stage='failed';hpRender()}};
+  await pc.setRemoteDescription({type:'offer',sdp:HP.offer.s});await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);
+  HP.answer=await packSig({a:pc.localDescription.sdp,n:HP.name});HP.stage='answer';hpRender()}
+function hpToast(t){const d=document.createElement('div');d.className='hp-toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}
+async function hpRender(soft){const el=$('#hp');if(!el)return;
+  const head=`<header class="hp-head"><div class="hp-logo">Lo Vendo <span>Caro</span></div><span class="hp-role">${HP.stage==='live'?'🟢 Ayudante: '+esc(HP.name):'Modo ayudante'}</span></header>`;
+  if(HP.stage==='bad'){el.innerHTML=head+`<main class="hp-main"><h2>Este enlace no funciona</h2><p>Pídele a tu amigo que te mande una invitación nueva desde su partida (Mensajes → Empleados → Invitar a un amigo).</p></main>`;return}
+  if(HP.stage==='name'){el.innerHTML=head+`<main class="hp-main"><h2>Tu amigo te invitó a ayudarle</h2><p>Vas a ver los chats de su tienda y responder a sus clientes. Te llevas un ${Math.round(FRIEND_CUT*100)} % de comisión de cada venta que cierres.</p>
+    <label class="hp-lab">¿Cómo te llamas?<input id="hp-name" maxlength="20" value="${esc(HP.name)}" placeholder="Tu nombre" autocomplete="nickname"></label><button class="hp-btn" data-act="hp-join">Unirme</button>
+    <p class="hp-small">${esc(HP.offer.h||'')}</p></main>`;setTimeout(()=>$('#hp-name')&&$('#hp-name').focus(),50);return}
+  if(HP.stage==='making'){el.innerHTML=head+'<main class="hp-main"><h2>Preparando la conexión…</h2></main>';return}
+  if(HP.stage==='answer'){const svg=await qrSVG(HP.answer);el.innerHTML=head+`<main class="hp-main"><h2>Último paso</h2><p>Muéstrale este código a tu amigo para que lo escanee, o mándale el texto.</p>
+    ${svg?`<div class="pr-qr hp-qr">${svg}</div>`:''}<textarea class="pr-code" readonly rows="3">${esc(HP.answer)}</textarea>
+    <div class="hp-acts"><button class="hp-btn" data-act="hp-copy">Copiar código</button>${navigator.share?'<button class="hp-btn ghost" data-act="hp-share">Enviar por…</button>':''}</div><p class="hp-small">Esperando a que tu amigo lo pegue en su partida…</p></main>`;return}
+  if(HP.stage==='closed'||HP.stage==='failed'){el.innerHTML=head+`<main class="hp-main"><h2>${HP.stage==='failed'?'No se pudo conectar':'Se cortó la conexión'}</h2><p>${HP.stage==='failed'?'Prueben estando en la misma wifi y con una invitación nueva.':'Tu amigo cerró la partida o se cortó la wifi.'} ${HP.sold?`Cerraste ${HP.sold} venta${HP.sold>1?'s':''} y ganaste $${HP.earned}.`:''}</p><p>Pídele un enlace nuevo para volver a ayudarle.</p></main>`;return}
+  // en vivo
+  const c=HP.chats.find(x=>x.id==HP.cur);
+  if(!c){HP.cur=null;el.innerHTML=head+`<main class="hp-list"><p class="hp-small">Día ${HP.day||'—'} · ${HP.sold?`${HP.sold} ventas cerradas · $${HP.earned} de comisión`:'Elige un chat y responde al cliente.'}</p>
+    ${HP.chats.length?HP.chats.map(x=>`<button class="hp-chat" data-act="hp-open" data-id="${x.id}"><span class="av" style="--h:${hue(x.name)}">${esc(x.name[0])}</span><span class="hp-ci"><b>${esc(x.name)} <small>${x.icon||''} ${esc(x.item||'')}</small></b>
+      <span class="hp-sub">${x.emp?'Lo atiende un empleado':x.typing?'Escribiendo…':'Espera respuesta'} · ofrece $${x.offer}</span><span class="minibar"><i style="width:${x.conv}%;background:${convColor(x.conv)}"></i></span></span></button>`).join(''):'<div class="hp-empty">No hay clientes escribiendo ahora. En cuanto llegue uno, aparece aquí.</div>'}</main>`;return}
+  const keep=soft&&$('#hp-in')?$('#hp-in').value:'';const focus=soft&&document.activeElement&&document.activeElement.id==='hp-in';
+  el.innerHTML=head+`<div class="hp-chatv"><div class="hp-ch"><button class="hp-back" data-act="hp-back">‹</button><span class="av" style="--h:${hue(c.name)}">${esc(c.name[0])}</span><div><b>${esc(c.name)}</b><small>${c.icon||''} ${esc(c.item||'')} · pide $${c.ask} · ofrece $${c.offer}</small></div></div>
+    <div class="hp-bar"><span class="minibar"><i style="width:${c.conv}%;background:${convColor(c.conv)}"></i></span><b>${c.conv} %</b></div>
+    <div class="hp-msgs" id="hp-msgs">${c.msgs.map(m=>`<div class="hp-m ${m.f==='b'?'them':'me'}">${m.f!=='b'&&m.w?`<small>${esc(m.w)}</small>`:''}${esc(m.t)}</div>`).join('')}${c.typing?'<div class="hp-m them typing">escribiendo…</div>':''}</div>
+    ${HP.err?`<p class="hp-err">${esc(HP.err)}</p>`:''}
+    <form class="hp-form" data-hp="send"><textarea id="hp-in" rows="1" placeholder="${c.typing?'Espera su respuesta…':'Responde al cliente…'}">${esc(keep)}</textarea><button class="hp-send" aria-label="Enviar">➤</button></form></div>`;
+  const ms=$('#hp-msgs');ms.scrollTop=ms.scrollHeight;if(focus){const i=$('#hp-in');i.focus();i.setSelectionRange(i.value.length,i.value.length)}}
+function hpSend(){const i=$('#hp-in');const text=i.value.trim();if(!text||!HP.ch)return;HP.ch.send(JSON.stringify({t:'send',id:HP.cur,text}));i.value=''}
+document.addEventListener('submit',e=>{if(e.target.dataset.hp==='send'){e.preventDefault();hpSend()}});
+document.addEventListener('keydown',e=>{if(e.target.id==='hp-in'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();hpSend()}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='hp-join')hpJoin();
+  if(a==='hp-copy')navigator.clipboard?.writeText(HP.answer).then(()=>hpToast('Código copiado: mándaselo a tu amigo.')).catch(()=>{});
+  if(a==='hp-share')navigator.share({title:'Respuesta de ayudante',text:HP.answer}).catch(()=>{});
+  if(a==='hp-open'){HP.cur=+t.dataset.id||t.dataset.id;hpRender()}
+  if(a==='hp-back'){HP.cur=null;hpRender()}
 });
 
 /* ================= MENÚ Y PARTIDAS ================= */
@@ -4400,7 +4594,8 @@ document.addEventListener('scroll',()=>TUT&&placeCoach(),true);
 
 /* ================= ARRANQUE ================= */
 try{window.claude?.hot?.snapshot?.(()=>({S,SLOT}))}catch(e){}
-window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
+if(helperMode())helperBoot();
+else window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
 
 </script>
 
