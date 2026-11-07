@@ -1,0 +1,2258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Juego de reventa: compra barato, inventa historias y convence a los clientes.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Lo Vendo Caro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Rubik:wght@500;700;900&family=Young+Serif&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@400;600;800&display=swap">
+<style>
+/* Layout: one-screen fake desktop. Browser chrome (tabs + address bar) on top, the visited website scrolls in the middle, a game taskbar sits at the bottom; chat, camera, editor, jobs and stats slide over as full sheets. */
+:root{
+  --bg:#E7EAF2; --surface:#FFFFFF; --surface-2:#F2F4F9; --chrome:#DCE0EA; --ink:#141A33; --muted:#5A6283; --line:#D2D8E6;
+  --cobalt:#2645F2; --cobalt-ink:#FFFFFF; --tag:#FFC531; --tag-ink:#2A1E00;
+  --good:#138A59; --bad:#D3343F; --warn:#C77700; --good-soft:#DDF3E9; --bad-soft:#FBE3E5;
+  --bubble-them:#EEF1F8; --tileL:88%; --tileS:70%;
+  --shadow:0 1px 2px rgba(20,26,51,.06),0 6px 20px rgba(20,26,51,.07);
+  --f-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1020; --surface:#161B30; --surface-2:#1E243C; --chrome:#0F1427; --ink:#E8EBF6; --muted:#9AA2C3; --line:#2A3152;
+  --cobalt:#7088FF; --cobalt-ink:#0B0F1E; --good:#43C98F; --bad:#FF6B75; --warn:#FFB443; --good-soft:#123528; --bad-soft:#3A1820;
+  --bubble-them:#232A46; --tileL:26%; --tileS:45%; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1020; --surface:#161B30; --surface-2:#1E243C; --chrome:#0F1427; --ink:#E8EBF6; --muted:#9AA2C3; --line:#2A3152;
+  --cobalt:#7088FF; --cobalt-ink:#0B0F1E; --good:#43C98F; --bad:#FF6B75; --warn:#FFB443; --good-soft:#123528; --bad-soft:#3A1820;
+  --bubble-them:#232A46; --tileL:26%; --tileS:45%; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3); color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%}
+body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button[disabled]{cursor:not-allowed;opacity:.45}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.gut{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:10px;font-weight:700;font-size:14px;background:var(--cobalt);color:var(--cobalt-ink)}
+.btn.sm{padding:6px 10px;font-size:13px}.btn.ghost{background:var(--surface-2);color:var(--ink)}.btn.danger{background:var(--bad-soft);color:var(--bad)}
+.bar{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:6px;transition:width .6s cubic-bezier(.2,.8,.2,1),background-color .6s}
+.bar.big{height:16px;border-radius:8px}
+.bar .tick{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.35}
+.minibar{display:block;height:6px;border-radius:3px;background:rgba(127,127,127,.2);overflow:hidden}
+.minibar i{display:block;height:100%;border-radius:3px}
+.chip{font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px}
+.chip.up{background:var(--good-soft);color:var(--good)}.chip.down{background:var(--bad-soft);color:var(--bad)}
+.fav{width:16px;height:16px;border-radius:4px;display:inline-grid;place-items:center;color:#fff;font:800 10px/1 var(--f-display);flex:none}
+.av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-family:var(--f-display);background:hsl(var(--h) var(--tileS) var(--tileL));color:var(--ink)}
+.av.sm{width:30px;height:30px;font-size:13px}
+.dot{width:10px;height:10px;border-radius:50%;background:#E5484D;flex:none}
+
+/* ---------- navegador ---------- */
+.chrome{background:var(--chrome);flex:none;border-bottom:1px solid var(--line)}
+.tabstrip{display:flex;align-items:flex-end;gap:2px;overflow-x:auto;scrollbar-width:none;padding-top:6px}
+.tabstrip::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:6px;min-width:112px;max-width:190px;flex:0 1 auto;padding:7px 6px 7px 10px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.tab.on{background:var(--surface);color:var(--ink)}
+.tab .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab .tx{width:20px;height:20px;border-radius:5px;font-size:16px;line-height:1;display:grid;place-items:center;color:var(--muted)}
+.tab .tx:hover{background:var(--surface-2)}
+.newtab{width:30px;height:30px;border-radius:8px;font-size:20px;color:var(--muted);flex:none;margin:0 4px 2px}
+.addrbar{display:flex;align-items:center;gap:6px;background:var(--surface);padding-block:6px}
+.nav-b{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--ink);flex:none}
+.nav-b svg{width:18px;height:18px}
+.omni{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:999px;padding:0 12px;height:36px}
+.omni svg{width:14px;height:14px;flex:none}
+.omni input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:500 14px var(--f-body);outline:none}
+
+#viewport{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--surface)}
+.page{min-height:100%}
+
+/* ---------- barra de tareas ---------- */
+.taskbar{flex:none;background:var(--chrome);border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;padding-block:7px}
+.tb-money{display:flex;flex-direction:column;min-width:0;flex:1}
+#money{font:700 18px var(--f-mono);font-variant-numeric:tabular-nums;transition:color .3s}
+#money.up{color:var(--good)}#money.down{color:var(--bad)}
+#clock{font-size:11px;color:var(--muted);font-family:var(--f-mono);white-space:nowrap}
+.tb-stats{position:relative;display:flex;flex-direction:column;gap:5px;width:150px;padding:6px 10px;border-radius:12px;background:var(--surface)}
+.tb-stats>span{display:grid;grid-template-columns:18px 1fr 26px;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink)}
+.tb-stats .minibar{height:10px;border-radius:5px}
+.tb-stats .num{font-size:11px;text-align:right}
+.float-tag{position:absolute;left:50%;top:-6px;transform:translateX(-50%);background:var(--bad);color:#fff;font:700 12px var(--f-body);padding:3px 8px;border-radius:999px;white-space:nowrap;animation:floatup 1.4s ease-out forwards;pointer-events:none}
+@keyframes floatup{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-34px)}}
+.tb-btn{position:relative;width:40px;height:40px;border-radius:10px;background:var(--surface);display:grid;place-items:center;flex:none}
+.tb-btn svg{width:20px;height:20px}
+.tb-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#E5484D;color:#fff;font:700 11px var(--f-mono);display:grid;place-items:center}
+.tb-end{padding:0 12px;height:40px;border-radius:10px;background:var(--ink);color:var(--bg);font-weight:700;font-size:13px;white-space:nowrap;flex:none}
+.tb-end.late{animation:pulse 1.4s infinite}
+@keyframes pulse{50%{transform:scale(1.05)}}
+
+.mini{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:8px;background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 12px 8px 8px;box-shadow:0 8px 28px rgba(0,0,0,.22);border:1px solid var(--line);width:220px;max-width:calc(100vw - 24px)}
+.mini-i{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;text-align:left;font-size:12px}
+.mini-i b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- hojas superpuestas ---------- */
+.sheet{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet.z2{z-index:50}
+.sh-head{background:var(--surface);border-bottom:1px solid var(--line);flex:none;display:flex;align-items:center;gap:10px;padding-block:10px}
+.back{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);flex:none}
+.back svg{width:20px;height:20px}
+.sh-title{flex:1;min-width:0}
+.sh-title b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-title span{font-size:12px;color:var(--muted)}
+.price-tag{background:var(--tag);color:var(--tag-ink);font:700 14px var(--f-mono);padding:3px 8px;border-radius:6px;font-variant-numeric:tabular-nums}
+.sh-body{flex:1;overflow-y:auto}
+.sh-in{max-width:680px;margin:0 auto;padding-block:16px 28px;display:flex;flex-direction:column;gap:14px}
+
+/* chat */
+.msgs{flex:1;overflow-y:auto;position:relative}
+.meter{position:sticky;top:8px;z-index:3;margin:8px auto 0;max-width:660px;width:calc(100% - 24px);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.14);display:flex;flex-direction:column;gap:6px}
+.meter .labels{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--muted);gap:8px}
+.meter .labels b{font:700 16px var(--f-mono);color:var(--ink)}
+.delta{font:700 13px var(--f-mono)}
+.patience{letter-spacing:2px}
+.msg-list{max-width:680px;margin:0 auto;padding-block:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:84%;display:flex;flex-direction:column;gap:4px}
+.msg .bubble{padding:9px 12px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.b{align-self:flex-start}.msg.b .bubble{background:var(--bubble-them);border-bottom-left-radius:4px}
+.msg.p{align-self:flex-end;align-items:flex-end}.msg.p .bubble{background:var(--cobalt);color:var(--cobalt-ink);border-bottom-right-radius:4px}
+.msg.emp{align-self:flex-end;align-items:flex-end}.msg.emp .bubble{background:var(--surface);border:1.5px dashed var(--cobalt);border-bottom-right-radius:4px}
+.msg .who{font-size:11px;color:var(--muted);font-weight:700}
+.msg.sys{align-self:center;max-width:92%;text-align:center;font-size:12px;color:var(--muted);background:var(--surface);padding:6px 12px;border-radius:14px}
+.msg.sys.win{background:var(--good-soft);color:var(--good);font-weight:700}.msg.sys.lose{background:var(--bad-soft);color:var(--bad);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+.typing{align-self:flex-start;background:var(--bubble-them);padding:10px 14px;border-radius:16px;display:flex;gap:4px}
+.typing i,.ct-bot.typing i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5;animation:blink 1s infinite}
+.typing i:nth-child(2),.ct-bot.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3),.ct-bot.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+.photo-msg{background:var(--cobalt);padding:5px;border-radius:16px 16px 4px 16px;display:flex;flex-direction:column;gap:4px}
+.photo-msg .ph{width:160px;height:160px;border-radius:12px;overflow:hidden;display:grid;place-items:center;font-size:70px;background:radial-gradient(circle at 50% 60%,hsl(var(--h) 40% 80%),hsl(var(--h) 30% 55%))}
+.photo-msg .ph-q{font:700 11px var(--f-mono);color:var(--cobalt-ink);padding:0 4px 2px}
+.composer{background:var(--surface);border-top:1px solid var(--line);flex:none}
+.composer .in{max-width:680px;margin:0 auto;padding-block:10px;display:flex;flex-direction:column;gap:8px}
+.composer .row{display:flex;gap:8px;align-items:flex-end}
+.composer textarea{flex:1;min-width:0;resize:none;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit;min-height:44px;max-height:140px}
+.cam-btn{width:44px;height:44px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;flex:none}
+.cam-btn svg{width:22px;height:22px}
+.composer .tools{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+
+/* cámara */
+.cam{background:#0B0B0F;color:#F2F2F5}
+.cam .sh-head{background:#141418;border-color:#26262E}.cam .back{background:#26262E;color:#fff}
+.cam-view{position:relative;width:min(92vw,360px);aspect-ratio:1;max-width:100%;margin:0 auto;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 50% 65%,hsl(var(--h) 35% 78%),hsl(var(--h) 25% 42%) 75%);display:grid;place-items:center}
+#cam-subject{font-size:150px;line-height:1;will-change:transform,filter}
+.cam-grid{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 33%,rgba(255,255,255,.25) 33%,rgba(255,255,255,.25) calc(33% + 1px),transparent calc(33% + 1px),transparent 66%,rgba(255,255,255,.25) 66%,rgba(255,255,255,.25) calc(66% + 1px),transparent calc(66% + 1px)),linear-gradient(transparent 33%,rgba(255,255,255,.25) 33%,rgba(255,255,255,.25) calc(33% + 1px),transparent calc(33% + 1px),transparent 66%,rgba(255,255,255,.25) 66%,rgba(255,255,255,.25) calc(66% + 1px),transparent calc(66% + 1px))}
+.cam-corners{position:absolute;inset:18%;border:2px solid rgba(255,214,10,.85);border-radius:10px;pointer-events:none;mask:conic-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0)}
+.cam-corners{border:0;background:linear-gradient(#FFD60A,#FFD60A) top left/18px 2px,linear-gradient(#FFD60A,#FFD60A) top left/2px 18px,linear-gradient(#FFD60A,#FFD60A) top right/18px 2px,linear-gradient(#FFD60A,#FFD60A) top right/2px 18px,linear-gradient(#FFD60A,#FFD60A) bottom left/18px 2px,linear-gradient(#FFD60A,#FFD60A) bottom left/2px 18px,linear-gradient(#FFD60A,#FFD60A) bottom right/18px 2px,linear-gradient(#FFD60A,#FFD60A) bottom right/2px 18px;background-repeat:no-repeat}
+#cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+#cam-flash.go{animation:flash .45s ease-out}
+@keyframes flash{0%{opacity:.95}100%{opacity:0}}
+.cam-ctl{display:flex;flex-direction:column;gap:12px;width:min(92vw,360px);margin:0 auto}
+.cam-ctl label{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;font-size:13px;font-weight:600;color:#C9C9D2}
+.cam-ctl input[type=range]{width:100%;accent-color:#FFD60A}
+.shutter{width:68px;height:68px;border-radius:50%;background:#fff;border:5px solid #3A3A44;margin:4px auto 0;box-shadow:0 0 0 3px #fff}
+.cam-res{width:min(92vw,360px);margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.cam-res b{font:700 34px var(--f-mono)}
+.cam-tip{font-size:13px;color:#A3A3B0;text-align:center;max-width:360px;margin:0 auto}
+
+/* editor */
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px}
+label.f small{font-weight:500;color:var(--muted)}
+.field{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit;width:100%}
+textarea.field{min-height:150px;resize:vertical}
+input.field.price{font:700 18px var(--f-mono)}
+.hook{background:var(--surface);border-radius:14px;padding:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.hook .labels{display:flex;justify-content:space-between;align-items:baseline}
+.hook .labels b{font:800 18px var(--f-display)}
+.found{display:flex;flex-wrap:wrap;gap:4px}
+.tip{font-size:13px;color:var(--muted)}
+.eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.thumb-sm{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:26px;background:hsl(var(--h) var(--tileS) var(--tileL));flex:none}
+
+/* changas: minijuegos */
+.job-tip{color:var(--muted);margin:0;text-align:center}
+.dish-wrap{position:relative;width:min(84vw,320px);aspect-ratio:1;max-width:100%;margin:0 auto;touch-action:none;cursor:none}
+.plate{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#FFFFFF 0 46%,#E9EEF5 47% 52%,#FFFFFF 53% 66%,#D5DCE7 67% 70%,#F7F9FC 71%);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.dish-wrap canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+.sponge{position:absolute;left:-26px;top:-20px;width:52px;height:40px;border-radius:10px;background:linear-gradient(#FFD43B 0 62%,#2F9E44 62%);box-shadow:0 4px 10px rgba(0,0,0,.25);pointer-events:none}
+.job-prog{display:flex;align-items:center;gap:10px}.job-prog .bar{flex:1}
+.job-ok{color:var(--good);font-weight:700;text-align:center;margin:0}.job-bad{color:var(--bad);font-weight:700;text-align:center;margin:0}
+.job-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.sv-q{font:800 22px/1.2 var(--f-display);margin:8px 0 0;text-wrap:balance}
+.sv-opts{display:grid;gap:8px}
+.sv-opt{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:14px;text-align:left;font-weight:600}
+.sv-opt:hover{border-color:var(--cobalt)}
+.ty-src{margin:0;background:var(--surface);border-left:4px solid var(--cobalt);padding:14px;border-radius:8px;font:500 17px var(--f-mono);user-select:none;-webkit-user-select:none}
+.ty-in{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px;font:500 16px var(--f-mono);width:100%;resize:none}
+
+/* stats */
+.st-bar{display:flex;flex-direction:column;gap:6px}
+.st-lab{display:flex;justify-content:space-between;font-weight:700}
+.st-note{font-size:13px;color:var(--muted);margin:0}
+.st-weak{background:var(--bad-soft);color:var(--bad);font-weight:700;padding:8px 12px;border-radius:10px;margin:0}
+.st-h{margin:8px 0 0;font:800 18px var(--f-display)}
+.st-item{display:flex;align-items:center;gap:10px;background:var(--surface);padding:10px;border-radius:12px;box-shadow:var(--shadow)}
+.st-ic{font-size:26px}.st-ii{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13px}.st-ii span{color:var(--muted)}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(8,10,22,.6);display:grid;place-items:center;padding:16px}
+.box{background:var(--surface);color:var(--ink);border-radius:20px;max-width:460px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;max-height:100%;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.box h1{margin:0;font:800 30px/1 var(--f-display);letter-spacing:-.03em;text-wrap:balance}
+.box h2{margin:0;font:800 22px/1.1 var(--f-display);text-wrap:balance}
+.box p{margin:0;color:var(--muted)}
+.box ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.site-card{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;border:1.5px solid var(--line)}
+.site-card .fav{width:36px;height:36px;font-size:18px;border-radius:10px}
+.site-card b{display:block;font-family:var(--f-mono)}
+.site-card span{font-size:13px;color:var(--muted)}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sum-grid div{background:var(--surface-2);border-radius:12px;padding:10px;display:flex;flex-direction:column}
+.sum-grid b{font-size:17px}.sum-grid span{font-size:12px;color:var(--muted)}
+.sum-line{font-size:13px;font-weight:600;padding:8px 10px;border-radius:10px}
+.sum-line.ok{background:var(--good-soft);color:var(--good)}.sum-line.bad{background:var(--bad-soft);color:var(--bad)}
+.row-acts{display:flex;gap:8px;flex-wrap:wrap}
+.toasts{position:fixed;left:0;right:0;top:calc(92px + env(safe-area-inset-top,0px));z-index:70;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 16px}
+.toast{background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-weight:600;font-size:14px;max-width:440px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:pop .25s ease-out}
+.toast.good{background:var(--good);color:#fff}
+@keyframes pop{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- páginas del sistema ---------- */
+.site-sys{background:var(--surface)}
+.sys-page{max-width:520px;margin:0 auto;padding:12vh 20px 40px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.sys-ico{font:800 48px var(--f-display);color:var(--muted)}
+.sys-page h1{margin:0;font:800 26px var(--f-display)}.sys-page p{margin:0;color:var(--muted)}
+
+/* ---------- Buscalo ---------- */
+.site-buscalo{background:var(--surface);color:var(--ink)}
+.bs-home{display:flex;flex-direction:column;align-items:center;gap:22px;padding:14vh 16px 40px}
+.bs-logo{font:800 56px/1 var(--f-display);letter-spacing:-.05em;color:#2B50E8;cursor:pointer}
+.bs-logo span{color:#FF7A1A;position:relative}
+.bs-top .bs-logo{font-size:28px}
+.bs-form{display:flex;gap:8px;width:100%;max-width:560px}
+.bs-form input{flex:1;min-width:0;height:48px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 20px;font:500 16px var(--f-body);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.bs-form.sm input{height:40px;font-size:15px}
+.bs-btn{border-radius:999px;background:#2B50E8;color:#fff;font-weight:700;padding:0 18px}
+.bs-tip{color:var(--muted);font-size:13px;text-align:center;margin:0;max-width:420px}
+.bs-top{display:flex;align-items:center;gap:16px;padding:14px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bs-results{max-width:640px;padding:12px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:22px}
+.bs-count{font-size:12px;color:var(--muted);margin:0}
+.bs-res{display:flex;flex-direction:column;gap:3px}
+.bs-url{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.bs-title{font:600 19px/1.25 var(--f-body);color:#2B50E8;text-decoration:none}
+.bs-title:hover{text-decoration:underline}
+.bs-res p{margin:0;font-size:14px;color:var(--muted)}
+.bs-none h2{font:800 20px var(--f-display);margin:0 0 6px}.bs-none p{color:var(--muted);margin:0}
+
+/* ---------- Bazarito ---------- */
+.site-bazarito{--bz-bg:#FFF2E6;--bz-red:#F2542D;--bz-ink:#231629;--bz-yel:#FFD23F;--bz-teal:#0E7C7B;background:var(--bz-bg);color:var(--bz-ink);font-family:"Rubik",var(--f-body)}
+.site-bazarito .num{font-family:"Rubik",var(--f-mono);font-variant-numeric:tabular-nums}
+.bz-in{max-width:980px;margin:0 auto;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.bz-head{background:var(--bz-red);color:#fff;position:sticky;top:0;z-index:2}
+.bz-head .bz-in{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:center;padding-block:10px}
+.bz-logo{font:900 26px/1 "Rubik",sans-serif;letter-spacing:-.04em;cursor:pointer}
+.bz-logo em{font-style:normal;background:var(--bz-yel);color:var(--bz-ink);font-size:.5em;padding:2px 5px;border-radius:5px;margin-left:3px;vertical-align:middle}
+.bz-search{background:#fff;color:#8A7B86;border-radius:8px;padding:8px 12px;font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bz-nav{grid-column:1/-1;display:flex;gap:4px;overflow-x:auto}
+.bz-nav a{color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:6px 10px;border-radius:8px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.bz-nav a.on{background:rgba(0,0,0,.18)}
+.bz-count{background:rgba(255,255,255,.25);border-radius:6px;padding:0 6px;font-size:12px}
+.bz-badge{background:var(--bz-yel);color:var(--bz-ink);border-radius:9px;padding:0 6px;font-size:12px}
+.bz-body{padding-block:16px 40px;display:flex;flex-direction:column;gap:12px}
+.bz-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.bz-hero h1{margin:0;font:900 30px/1 "Rubik",sans-serif;letter-spacing:-.03em}
+.bz-hero p{margin:4px 0 0;font-size:14px;opacity:.75}
+.bz-night{background:var(--bz-ink);color:var(--bz-yel);font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px}
+.bz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}
+.bz-card{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 2px 0 rgba(35,22,41,.08)}
+.bz-card.mystery{background:var(--bz-ink);color:#fff}
+.bz-rib{position:absolute;top:10px;left:-4px;z-index:1;background:var(--bz-red);color:#fff;font-weight:900;font-size:12px;padding:3px 10px;border-radius:0 6px 6px 0}
+.bz-rib.mys{background:var(--bz-yel);color:var(--bz-ink)}
+.bz-thumb{aspect-ratio:4/3;max-width:100%;display:grid;place-items:center;font-size:54px;background:hsl(var(--h) 70% 88%)}
+.bz-card.mystery .bz-thumb{background:repeating-linear-gradient(45deg,#3A2A40 0 12px,#2E2034 12px 24px)}
+.bz-thumb.sm{width:56px;aspect-ratio:1;font-size:30px;border-radius:12px;flex:none}
+.bz-cb{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.bz-cb h3{margin:0;font-size:15px;line-height:1.2}
+.bz-note{margin:0;font-size:12px;font-style:italic;opacity:.75}
+.bz-seller{margin:0;font-size:11px;opacity:.6}
+.bz-timer{display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:700;margin-top:auto}
+.bz-timer i{display:block;height:4px;border-radius:2px;background:var(--bz-teal);transition:width 1s linear}
+.bz-timer.urgent i{background:var(--bz-red)}.bz-timer.urgent span{color:var(--bz-red)}
+.bz-buy{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bz-price{background:var(--bz-yel);color:var(--bz-ink);font-weight:900;font-size:16px;padding:2px 8px;border-radius:6px;transform:rotate(-2deg)}
+.bz-price.sm{font-size:13px;transform:none}
+.bz-btn{background:var(--bz-ink);color:#fff;font-weight:700;font-size:13px;padding:7px 12px;border-radius:8px;font-family:inherit}
+.bz-card.mystery .bz-btn{background:var(--bz-yel);color:var(--bz-ink)}
+.bz-btn.ghost{background:#fff;color:var(--bz-ink);border:1.5px solid var(--bz-ink)}
+.bz-h2{margin:6px 0 0;font:900 22px "Rubik",sans-serif}
+.bz-sec{margin:8px 0 0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.6}
+.bz-row{display:flex;gap:12px;background:#fff;border-radius:14px;padding:12px}
+.bz-row.ship{border:2px dashed var(--bz-teal)}
+.bz-ri{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.bz-sub{font-size:13px;opacity:.7}
+.bz-pill{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:#F3E6DA;width:max-content;max-width:100%}
+.bz-pill.live{background:#D7F0EE;color:var(--bz-teal)}.bz-pill.bad{background:#FFE0D8;color:#B8321A}
+.bz-story{margin:0;font-size:13px;font-style:italic;opacity:.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bz-acts{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.bz-empty{background:#fff;border:2px dashed #E9CFBC;border-radius:14px;padding:24px 16px;text-align:center}
+.bz-chat{width:100%;text-align:left;background:#fff;border-radius:14px;padding:12px;display:flex;gap:12px;align-items:center;color:var(--bz-ink);font-family:inherit}
+.bz-chat.closed{opacity:.55}
+.bz-chat .av{color:var(--bz-ink);background:hsl(var(--h) 70% 85%)}
+.bz-ci{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.bz-ct{display:flex;justify-content:space-between;gap:8px}
+.bz-ci .bz-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- Cuentero ---------- */
+.site-cuentero{--ct-bg:#4A1424;--ct-paper:#FFF7EC;--ct-gold:#F2C14E;--ct-ink:#2B0D16;background:var(--ct-bg);color:#F6E5D0;min-height:100%}
+.ct-wrap{max-width:700px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+.ct-wrap.chat{padding-top:14px;gap:12px}
+.ct-logo{font:400 34px/1 "Young Serif",Georgia,serif;color:var(--ct-gold)}
+.ct-logo span{font-family:"IBM Plex Mono",monospace;font-size:.5em;color:#F6E5D0;opacity:.7}
+.ct-logo.sm{font-size:22px}
+.ct-h1{margin:0;font:400 34px/1.1 "Young Serif",Georgia,serif;text-wrap:balance}
+.ct-lead{margin:0;font-size:16px;opacity:.85;max-width:56ch}
+.ct-sample{background:var(--ct-paper);color:var(--ct-ink);border-radius:4px 18px 18px 18px;padding:14px 16px;font-family:"IBM Plex Mono",monospace;font-size:14px}
+.ct-sample p{margin:4px 0 0}
+.ct-who{font:600 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;opacity:.6}
+.ct-plan{border:1.5px solid var(--ct-gold);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ct-plan b{font:400 44px "Young Serif",serif;color:var(--ct-gold)}
+.ct-plan span{display:block;font-size:13px;opacity:.7}
+.ct-plan ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.ct-btn{background:var(--ct-gold);color:var(--ct-ink);font-weight:700;border-radius:999px;padding:12px 20px;font-family:"IBM Plex Mono",monospace}
+.ct-bar{display:flex;justify-content:space-between;align-items:center}
+.ct-on{font:600 12px "IBM Plex Mono",monospace;color:var(--ct-gold)}
+.ct-log{display:flex;flex-direction:column;gap:10px;max-height:min(56vh,520px);overflow-y:auto;padding-right:4px}
+.ct-me{align-self:flex-end;background:var(--ct-gold);color:var(--ct-ink);border-radius:18px 18px 4px 18px;padding:9px 14px;max-width:80%;font-weight:600}
+.ct-bot{align-self:flex-start;background:var(--ct-paper);color:var(--ct-ink);border-radius:4px 18px 18px 18px;padding:12px 14px;max-width:88%;font-family:"IBM Plex Mono",monospace;font-size:14px;display:flex;flex-direction:column;gap:8px}
+.ct-bot p{margin:0}
+.ct-bot.typing{flex-direction:row;gap:4px}
+.ct-use{align-self:flex-start;background:var(--ct-bg);color:var(--ct-gold);border-radius:999px;padding:6px 12px;font:600 12px "IBM Plex Mono",monospace}
+.ct-note{font-size:12px;opacity:.6}
+.ct-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px}
+.ct-chips button{border:1px solid var(--ct-gold);color:var(--ct-gold);border-radius:999px;padding:5px 10px;font-size:13px}
+.ct-form{display:flex;gap:8px}
+.ct-form input{flex:1;min-width:0;border-radius:999px;border:0;background:var(--ct-paper);color:var(--ct-ink);padding:0 16px;height:46px;font:500 14px "IBM Plex Mono",monospace}
+
+/* ---------- en desarrollo ---------- */
+.site-dev{background:var(--surface);color:var(--ink);min-height:100%}
+.dev-tape{height:22px;background:repeating-linear-gradient(-45deg,#FFC800 0 18px,#141414 18px 36px)}
+.dev-box{max-width:520px;margin:0 auto;padding:12vh 20px;display:flex;flex-direction:column;gap:12px}
+.dev-tag{font:600 13px "IBM Plex Mono",monospace;color:var(--muted)}
+.dev-box h1{margin:0;font:800 32px var(--f-display)}.dev-box p{margin:0;color:var(--muted)}
+.dev-bar{height:14px;background:var(--surface-2);border-radius:7px;overflow:hidden}
+.dev-bar i{display:block;height:100%;background:repeating-linear-gradient(-45deg,#FFC800 0 10px,#E0A800 10px 20px)}
+
+/* ---------- LaburApp ---------- */
+.site-labur{--lb-bg:#EAF4F2;--lb-teal:#0F766E;--lb-ink:#10302B;background:var(--lb-bg);color:var(--lb-ink);font-family:"Outfit",var(--f-body);min-height:100%}
+.lb-in{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.lb-head{background:#fff;border-bottom:1px solid #D3E6E2}
+.lb-head .lb-in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;flex-wrap:wrap}
+.lb-logo{font:800 24px "Outfit",sans-serif;color:var(--lb-teal);cursor:pointer}
+.lb-logo span{background:var(--lb-teal);color:#fff;border-radius:6px;padding:0 6px;margin-left:2px}
+.lb-head nav{display:flex;gap:4px}
+.lb-head nav a{text-decoration:none;color:var(--lb-ink);font-weight:600;padding:6px 12px;border-radius:999px;font-size:14px}
+.lb-head nav a.on{background:var(--lb-teal);color:#fff}
+.lb-body{padding-block:20px 40px;display:flex;flex-direction:column;gap:14px}
+.lb-h1{margin:0;font:800 28px/1.1 "Outfit",sans-serif;text-wrap:balance}
+.lb-lead{margin:0;opacity:.75;max-width:62ch}
+.lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.lb-cv{background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;border:1px solid #D3E6E2}
+.lb-top{display:flex;align-items:center;gap:12px}
+.lb-top div{flex:1;min-width:0;display:flex;flex-direction:column}
+.lb-top div span{font-size:13px;opacity:.7}
+.lb-av{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font:800 20px "Outfit",sans-serif;background:hsl(var(--h) 55% 85%);color:var(--lb-ink);flex:none}
+.lb-ch{font:800 24px "Outfit",sans-serif;color:var(--lb-teal);text-align:right;line-height:1}
+.lb-ch small{display:block;font-size:10px;font-weight:600;opacity:.7}
+.lb-exp{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:3px}
+.lb-skills{display:grid;gap:5px}
+.lb-skills div{display:grid;grid-template-columns:84px 1fr;align-items:center;gap:8px;font-size:12px;font-weight:600}
+.lb-skills i{height:6px;border-radius:3px;background:#DDEDEA;overflow:hidden}
+.lb-skills b{display:block;height:100%;background:var(--lb-teal);border-radius:3px}
+.lb-q{margin:0;font-style:italic;opacity:.75;font-size:14px}
+.lb-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;border-top:1px solid #E3EFEC;padding-top:10px}
+.lb-btn{background:var(--lb-teal);color:#fff;font-weight:700;border-radius:999px;padding:8px 16px;font-family:inherit}
+.lb-btn.ghost{background:#fff;color:#B42318;border:1.5px solid #F4C7C3}
+.lb-ok{font-weight:700;color:var(--lb-teal)}
+.lb-switch{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:14px;font-weight:600;border:1px solid #D3E6E2}
+.lb-switch input{width:20px;height:20px;accent-color:var(--lb-teal)}
+.lb-empty{background:#fff;border:2px dashed #C6DED9;border-radius:14px;padding:24px;text-align:center}
+
+/* ---------- Changas ---------- */
+.site-changas{--ch-y:#FFB81C;--ch-ink:#1F1A0E;background:#FFF9EB;color:var(--ch-ink);min-height:100%}
+.ch-in{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ch-head{background:var(--ch-y);border-bottom:3px solid var(--ch-ink)}
+.ch-head .ch-in{padding-block:18px}
+.ch-logo{font:800 34px/1 var(--f-display);letter-spacing:-.04em}
+.ch-logo span{font-size:.5em;opacity:.7}
+.ch-head p{margin:4px 0 0;font-weight:600}
+.ch-body{padding-block:18px 40px;display:flex;flex-direction:column;gap:12px}
+.ch-warn{margin:0;font-size:13px;font-weight:600;background:#FFE7B3;padding:8px 12px;border-radius:10px}
+.ch-card{display:flex;align-items:center;gap:14px;background:#fff;border:2px solid var(--ch-ink);border-radius:14px;padding:14px;box-shadow:4px 4px 0 var(--ch-ink);flex-wrap:wrap}
+.ch-ic{font-size:38px}
+.ch-info{flex:1;min-width:180px}
+.ch-info h3{margin:0;font:800 19px var(--f-display)}
+.ch-info p{margin:4px 0;font-size:14px}
+.ch-meta{display:flex;gap:10px;font-size:13px;font-weight:600}
+.ch-pay{background:var(--ch-y);padding:0 8px;border-radius:6px}
+.ch-btn{background:var(--ch-ink);color:#fff;font-weight:800;padding:10px 18px;border-radius:10px}
+
+/* ---------- Cuentas Claras ---------- */
+.site-cuentas{--cc-g:#2F5D50;--cc-ink:#15231F;background:#F1F5F3;color:var(--cc-ink);min-height:100%}
+.cc-in{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.cc-head{background:var(--cc-g);color:#fff}
+.cc-head .cc-in{display:flex;justify-content:space-between;align-items:center;padding-block:14px;gap:12px;flex-wrap:wrap}
+.cc-logo{font:400 24px "Young Serif",Georgia,serif}
+.cc-logo b{font-weight:400;color:#B8E3CF}
+.cc-head span{font-size:13px;opacity:.8}
+.cc-body{padding-block:18px 40px;display:flex;flex-direction:column;gap:14px}
+.cc-total{background:#fff;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:2px;border:1px solid #D6E3DE}
+.cc-total span{font-size:13px;opacity:.7}.cc-total b{font-size:34px;color:var(--cc-g)}.cc-total small{font-size:13px;opacity:.7}
+.cc-list{display:flex;flex-direction:column;background:#fff;border-radius:16px;border:1px solid #D6E3DE;overflow:hidden}
+.cc-bill{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #E6EEEB}
+.cc-bill:last-child{border-bottom:0}
+.cc-bill.over{background:#FFF1F0}
+.cc-ic{font-size:24px}
+.cc-bi{flex:1;min-width:0;display:flex;flex-direction:column}
+.cc-bi span{font-size:12px;opacity:.7}
+.cc-bill.over .cc-bi span{color:#B42318;opacity:1;font-weight:600}
+.cc-amt{font-weight:700}
+.cc-btn{background:var(--cc-g);color:#fff;font-weight:700;border-radius:8px;padding:7px 14px}
+.cc-empty{background:#fff;border-radius:16px;padding:24px;text-align:center;border:1px solid #D6E3DE}
+.cc-info{background:#E4EEEA;border-radius:16px;padding:16px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.cc-info h3{margin:0;font:400 18px "Young Serif",serif}.cc-info p{margin:0}
+
+/* ---------- Al Toque ---------- */
+.site-altoque{--at-r:#E63946;--at-y:#FFC93C;background:#1C1412;color:#FFF3E3;min-height:100%;font-family:"Rubik",var(--f-body)}
+.at-in{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.at-head{background:var(--at-r)}
+.at-head .at-in{padding-block:18px}
+.at-logo{font:900 38px/1 "Rubik",sans-serif;font-style:italic;letter-spacing:-.03em;color:var(--at-y);text-shadow:3px 3px 0 #7A1018}
+.at-head p{margin:6px 0 0;font-weight:500}
+.at-body{padding-block:16px 40px;display:flex;flex-direction:column;gap:10px}
+.at-note{margin:0;font-size:13px;opacity:.7}
+.at-pend{background:var(--at-y);color:#1C1412;font-weight:700;border-radius:10px;padding:8px 12px}
+.at-item{display:flex;align-items:center;gap:12px;background:#2A1F1C;border-radius:14px;padding:12px;flex-wrap:wrap}
+.at-ic{font-size:40px;width:60px;height:60px;display:grid;place-items:center;background:#3A2A26;border-radius:50%;flex:none}
+.at-ii{flex:1;min-width:150px}
+.at-ii h3{margin:0;font-size:16px}.at-ii p{margin:2px 0 6px;font-size:13px;opacity:.7}
+.at-st,.sp-st{display:flex;gap:6px;flex-wrap:wrap}
+.at-st span{font-size:11px;font-weight:700;background:#3A2A26;color:var(--at-y);padding:2px 8px;border-radius:999px}
+.at-buy,.sp-buy,.ht-buy{display:flex;align-items:center;gap:10px}
+.at-buy b{font-size:18px;color:var(--at-y)}
+.at-buy button{background:var(--at-r);color:#fff;font-weight:900;border-radius:999px;padding:9px 18px;font-family:inherit}
+
+/* ---------- SuperPronto ---------- */
+.site-super{--sp-g:#2E7D32;background:#F4F8F1;color:#1B2B1C;min-height:100%}
+.sp-in{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sp-head{background:#fff;border-bottom:4px solid var(--sp-g)}
+.sp-head .sp-in{padding-block:14px}
+.sp-logo{font:600 30px/1 var(--f-display);color:var(--sp-g);letter-spacing:-.02em}
+.sp-logo b{font-weight:800;color:#F57C00}
+.sp-head p{margin:4px 0 0;font-size:14px;opacity:.7}
+.sp-body{padding-block:16px 40px;display:flex;flex-direction:column;gap:10px}
+.sp-h2{margin:8px 0 0;font:800 20px var(--f-display)}
+.sp-pend{background:#E1F0E2;color:var(--sp-g);font-weight:700;border-radius:10px;padding:8px 12px}
+.sp-note{margin:0;font-size:13px;opacity:.75}
+.sp-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px;border:1px solid #DCE8DA;flex-wrap:wrap}
+.sp-ic{font-size:36px;width:60px;height:60px;display:grid;place-items:center;background:#EEF5EC;border-radius:12px;flex:none}
+.sp-ii{flex:1;min-width:150px}
+.sp-ii h3{margin:0;font-size:16px}.sp-ii p{margin:2px 0 6px;font-size:13px;opacity:.7}
+.sp-st span{font-size:11px;font-weight:700;background:#E1F0E2;color:var(--sp-g);padding:2px 8px;border-radius:999px}
+.sp-buy b{font-size:18px}
+.sp-buy button{background:var(--sp-g);color:#fff;font-weight:700;border-radius:8px;padding:9px 16px}
+
+/* ---------- Hogar Total ---------- */
+.site-hogar{--ht-p:#3B3A8F;--ht-o:#FF8A3D;background:#F3F2FA;color:#1A1940;font-family:"Outfit",var(--f-body);min-height:100%}
+.ht-in{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ht-head{background:var(--ht-p);color:#fff}
+.ht-head .ht-in{padding-block:16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ht-logo{font:400 26px "Outfit",sans-serif;letter-spacing:.06em}
+.ht-logo b{font-weight:800;color:var(--ht-o)}
+.ht-head p{margin:0;font-size:13px;opacity:.8}
+.ht-body{padding-block:18px 40px;display:flex;flex-direction:column;gap:16px}
+.ht-hero h1{margin:0;font:800 28px/1.1 "Outfit",sans-serif;text-wrap:balance}.ht-hero p{margin:4px 0 0;opacity:.7}
+.ht-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.ht-card{background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;border:1px solid #E1E0F0}
+.ht-img{aspect-ratio:16/10;max-width:100%;display:grid;place-items:center;font-size:64px;background:linear-gradient(160deg,#E9E8F7,#D8D6F0)}
+.ht-b{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.ht-b h3{margin:0;font-size:18px}.ht-b p{margin:0;font-size:14px;opacity:.75}
+.ht-miss{color:#B42318!important;opacity:1!important;font-weight:600}
+.ht-buy{margin-top:auto;justify-content:space-between;padding-top:8px}
+.ht-buy b{font-size:22px}
+.ht-buy button{background:var(--ht-o);color:#1A1940;font-weight:800;border-radius:999px;padding:9px 18px;font-family:inherit}
+.ht-ok{color:#1E7A4C;font-weight:700}.ht-soon{font-size:13px;font-weight:600;opacity:.55}
+
+/* ---------- Dicciomundo ---------- */
+.site-dic{background:#F5F7FB;color:#1B2A4A;min-height:100%}
+.dc-in{max-width:820px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.dc-logo{font:400 22px "Young Serif",serif;border-bottom:2px solid #1B2A4A;padding-bottom:8px}
+.dc-in h1{margin:0;font:400 30px/1.15 "Young Serif",serif;text-wrap:balance}
+.dc-lead{margin:0;max-width:62ch}
+.dc-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.dc-cols h2{font:400 18px "Young Serif",serif;margin:0 0 8px}
+.dc-scroll{overflow-x:auto}
+.dc-in table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
+.dc-in th,.dc-in td{padding:6px 10px;border-bottom:1px solid #E1E6F0;text-align:left}
+.dc-bad{color:#B42318;text-decoration:line-through}
+
+/* ---------- comoserrico ---------- */
+.site-rico{background:#FFF200;color:#200;min-height:100%;font-family:"Rubik",sans-serif}
+.rc-in{max-width:620px;margin:0 auto;padding:30px 16px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.rc-blink{background:#E10600;color:#FFF200;font-weight:900;padding:4px 14px;animation:blink 1s infinite}
+.rc-in h1{margin:0;font:900 40px/1 "Rubik",sans-serif;color:#C200C2;text-shadow:3px 3px 0 #00C2C2}
+.rc-price{font-size:20px;font-weight:700}.rc-price b{color:#E10600;font-size:30px}
+.rc-btn{background:#00C200;color:#fff;font-weight:900;font-size:22px;padding:14px 30px;border-radius:999px}
+.rc-small{font-size:12px;opacity:.6}
+
+
+.toast.click{pointer-events:auto;cursor:pointer}
+.toast.click::after{content:" ›";opacity:.7}
+.ai-pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.ai-pill.on{background:var(--good-soft);color:var(--good)}
+.offer-b{background:var(--tag)!important;color:var(--tag-ink)!important;font-weight:600}
+.chip:not(.up):not(.down){background:var(--surface-2);color:var(--muted)}
+.hag{display:flex;gap:8px;align-items:center;background:var(--surface-2);border-radius:12px;padding:8px 10px;flex-wrap:wrap}
+.hag label{font-size:13px;font-weight:600;flex:1;min-width:140px}
+.hag input{width:110px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 10px;font:700 15px var(--f-mono)}
+.tool-btn{height:44px;padding:0 12px;border-radius:12px;background:var(--surface-2);font-weight:700;font-size:13px;flex:none;display:flex;align-items:center;gap:6px}
+.st-toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);padding:12px 14px;border-radius:12px;box-shadow:var(--shadow)}
+.st-toggle span{display:flex;flex-direction:column;gap:2px}.st-toggle small{color:var(--muted);font-size:12px}
+.st-toggle input{width:22px;height:22px;accent-color:var(--cobalt);flex:none}
+.bz-ai{margin:0;font-size:12px;background:#EEF0FF;color:#2A2F7A;padding:6px 8px;border-radius:8px}
+/* confeti */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+#fx i{position:absolute;top:38%;width:8px;height:12px;border-radius:2px;animation:conf 1.5s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes conf{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),70vh) rotate(var(--r));opacity:0}}
+/* transición de día */
+.daytx{position:fixed;inset:0;z-index:90;overflow:hidden;display:grid;place-items:center;background:linear-gradient(#5B8CFF,#FFD39A);opacity:0;transition:opacity .5s}
+.daytx.p1{opacity:1;background:linear-gradient(#FF8A5B,#6A3D8F);transition:opacity .5s,background 1.4s}
+.daytx.p2{background:linear-gradient(#0B1030,#1E2350)}
+.daytx.p3{background:linear-gradient(#7FB2FF,#FFE3A8)}
+.dt-sky{position:absolute;inset:0}
+.dt-sun,.dt-moon{position:absolute;left:50%;width:120px;height:120px;margin-left:-60px;border-radius:50%;transition:transform 1.4s cubic-bezier(.5,0,.3,1),opacity .8s}
+.dt-sun{background:radial-gradient(circle,#FFF4C2,#FFB938 60%,#FF8A3D);box-shadow:0 0 80px #FFB938;top:30%;transform:translateY(0)}
+.daytx.p1 .dt-sun{transform:translateY(70vh)}
+.daytx.p3 .dt-sun{transform:translateY(-4vh);transition-duration:1s}
+.dt-moon{top:16%;background:radial-gradient(circle at 35% 35%,#FFFFFF,#D9DCEB 60%,#A9AEC6);box-shadow:0 0 60px rgba(220,225,255,.5);opacity:0;transform:translateY(40vh)}
+.daytx.p2 .dt-moon{opacity:1;transform:translateY(0)}
+.daytx.p3 .dt-moon{opacity:0;transform:translateY(-30vh)}
+.dt-stars{position:absolute;inset:0;opacity:0;transition:opacity 1s;background-image:radial-gradient(2px 2px at 12% 20%,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 30% 60%,#fff 50%,transparent),radial-gradient(2px 2px at 55% 15%,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 72% 40%,#fff 50%,transparent),radial-gradient(2px 2px at 88% 25%,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 20% 80%,#fff 50%,transparent),radial-gradient(2px 2px at 64% 75%,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 42% 35%,#fff 50%,transparent),radial-gradient(2px 2px at 92% 70%,#fff 50%,transparent)}
+.daytx.p2 .dt-stars{opacity:1}.daytx.p3 .dt-stars{opacity:0}
+.dt-ground{position:absolute;left:0;right:0;bottom:0;height:24vh;background:linear-gradient(#20263F,#11152A);clip-path:polygon(0 40%,12% 25%,22% 45%,36% 20%,50% 42%,64% 18%,78% 40%,90% 28%,100% 38%,100% 100%,0 100%)}
+.dt-txt{position:relative;z-index:2;text-align:center;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.35);display:grid;place-items:center}
+.dt-txt>div{grid-area:1/1;display:flex;flex-direction:column;gap:6px;transition:opacity .6s,transform .6s}
+.dt-txt .eyebrow{color:rgba(255,255,255,.85)}
+.dt-txt b{font:800 clamp(30px,8vw,56px)/1 var(--f-display);letter-spacing:-.03em}
+#dt-a{opacity:0;transform:translateY(10px)}.daytx.p1 #dt-a{opacity:1;transform:none}.daytx.p2 #dt-a{opacity:0;transform:translateY(-10px)}
+#dt-z{opacity:0;font:800 34px var(--f-display);color:#C9CFFF}.daytx.p2 #dt-z{opacity:1;animation:zz 1.2s ease-in-out infinite}
+@keyframes zz{50%{transform:translateY(-8px)}}
+#dt-b{opacity:0;transform:translateY(10px)}.daytx.p3 #dt-b{opacity:1;transform:none}
+.daytx.p3 #dt-z{opacity:0;animation:none}
+/* ---------- Banco Confianza ---------- */
+.site-banco{--bk-b:#0B3D91;--bk-g:#C9A227;background:#F2F5FB;color:#0E1B3A;min-height:100%}
+.bk-in{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bk-head{background:var(--bk-b);color:#fff;border-bottom:4px solid var(--bk-g)}
+.bk-head .bk-in{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-block:16px;flex-wrap:wrap}
+.bk-logo{font:400 22px "Young Serif",Georgia,serif;letter-spacing:.08em}.bk-logo b{font-weight:400;color:var(--bk-g)}
+.bk-head span{font-size:12px;opacity:.8}
+.bk-body{padding-block:20px 40px;display:flex;flex-direction:column;gap:16px}
+.bk-card{aspect-ratio:1.6;max-width:min(100%,360px);border-radius:18px;padding:20px;color:#fff;background:linear-gradient(135deg,#0B3D91,#1B5FD1 60%,#0B3D91);box-shadow:0 18px 40px rgba(11,61,145,.35);display:flex;flex-direction:column;justify-content:space-between}
+.bk-chip{width:44px;height:32px;border-radius:6px;background:linear-gradient(135deg,#E9D27A,#B8902A)}
+.bk-cn{font-size:20px;letter-spacing:.12em}
+.bk-cr{display:flex;justify-content:space-between;align-items:baseline}.bk-cr span{font-size:12px;opacity:.8}.bk-cr b{font-size:22px}
+.bk-h2{margin:0;font:400 22px "Young Serif",serif}
+.bk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bk-opt{background:#fff;border:1.5px solid #D5DDEE;border-radius:14px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.bk-opt:not([disabled]):hover{border-color:var(--bk-b)}
+.bk-opt b{font-size:22px;color:var(--bk-b)}.bk-opt span{font-size:12px;opacity:.75}.bk-opt em{font-size:11px;font-style:normal;color:#B42318;font-weight:600}
+.bk-debt{background:#fff;border-radius:16px;padding:18px;border:1.5px solid #D5DDEE;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.bk-debt.late{border-color:#F4C7C3;background:#FFF5F4}
+.bk-debt h2{margin:0;font:400 20px "Young Serif",serif}.bk-debt p{margin:0}
+.bk-btn{background:var(--bk-b);color:#fff;font-weight:700;border-radius:10px;padding:10px 18px}
+.bk-fine{margin:0;font-size:12px;opacity:.7}
+
+@media (max-width:420px){.tb-stats{width:118px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="chrome">
+  <div class="tabstrip gut" id="tabstrip" role="tablist"></div>
+  <form class="addrbar gut" id="omni">
+    <button type="button" class="nav-b" id="nav-back" data-act="back" aria-label="Atrás"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button type="button" class="nav-b" id="nav-fwd" data-act="fwd" aria-label="Adelante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    <label class="omni"><svg id="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="addr" autocomplete="off" spellcheck="false" aria-label="Dirección o búsqueda" placeholder="Busca o escribe una dirección"></label>
+  </form>
+</div>
+
+<div id="viewport"><div id="page" class="page"></div></div>
+
+<footer class="taskbar gut">
+  <div class="tb-money"><span id="money">$0</span><span id="clock">Día 1</span></div>
+  <button class="tb-stats" data-act="stats" aria-label="Comida, bebida y refrigerador"><span>🍔<span class="minibar"><i id="tb-food"></i></span><b class="num" id="tb-food-n">100</b></span><span>💧<span class="minibar"><i id="tb-drink"></i></span><b class="num" id="tb-drink-n">100</b></span></button>
+  <button class="tb-btn" data-act="msgs" aria-label="Mensajes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="tb-badge" id="tb-badge" hidden>0</span><span class="tb-badge" id="tb-bills" hidden style="left:-4px;right:auto;background:var(--warn)">$</span></button>
+  <button class="tb-end" id="tb-end" data-act="end-day">Terminar día</button>
+</footer>
+
+<button class="mini" id="mini" data-act="mini" hidden></button>
+
+<section class="sheet" id="chat" hidden>
+  <div class="sh-head gut">
+    <button class="back" data-act="close-chat" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="av" id="c-av">?</div>
+    <div class="sh-title"><b id="c-name">—</b><span id="c-sub">—</span></div>
+    <span class="price-tag" id="c-offer">$0</span>
+  </div>
+  <div class="msgs" id="c-msgs">
+    <div class="meter">
+      <div class="labels"><span>Qué tan convencido está</span><span><span class="delta" id="c-delta"></span> <b id="c-pct">0 %</b></span></div>
+      <div class="bar"><i id="c-bar"></i></div>
+      <div class="labels"><span id="c-persona">—</span><span>Paciencia <span class="patience" id="c-pat"></span></span></div>
+      <div class="labels"><span id="c-ai" class="ai-pill">…</span><span></span></div>
+    </div>
+    <div class="msg-list gut" id="c-list"></div>
+  </div>
+  <div class="composer"><div class="in gut">
+    <form class="hag" id="haggle" hidden><label for="hag-in">¿Cuánto le pides? El cliente acepta, contraoferta o se ofende.</label><input id="hag-in" type="number" min="1" inputmode="numeric"><button class="btn sm" type="submit">Proponer</button></form>
+    <div class="row">
+      <button class="cam-btn" id="c-cam" data-act="cam" aria-label="Sacar una foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+      <button class="tool-btn" id="c-hag" data-act="hag-open" aria-label="Regatear el precio">$ Regatear</button>
+      <textarea id="c-input" rows="1" placeholder="Escríbele al cliente…" aria-label="Mensaje"></textarea>
+      <button class="btn" data-act="send" id="c-send">Enviar</button>
+    </div>
+    <div class="tools"><span id="c-hint"></span><button class="btn sm danger" data-act="reject" id="c-reject">Rechazar</button></div>
+  </div></div>
+</section>
+
+<section class="sheet z2 cam" id="camera" hidden>
+  <div class="sh-head gut"><button class="back" data-act="cam-close" aria-label="Cerrar cámara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="sh-title"><b>Cámara</b><span style="color:#A3A3B0">Enfoca, ajusta la luz y encuadra</span></div></div>
+  <div class="sh-body"><div class="sh-in gut">
+    <div class="cam-view" id="cam-view"><div id="cam-subject"></div><div class="cam-grid"></div><div class="cam-corners"></div><div id="cam-flash"></div></div>
+    <div class="cam-ctl" id="cam-controls">
+      <label>Enfoque<input type="range" id="cam-f" min="0" max="100"></label>
+      <label>Luz<input type="range" id="cam-l" min="0" max="100"></label>
+      <label>Zoom<input type="range" id="cam-z" min="0" max="100"></label>
+      <p class="cam-tip">El objeto tiene que verse nítido, bien iluminado y entero dentro de las esquinas amarillas.</p>
+      <button class="shutter" data-act="shoot" aria-label="Sacar foto"></button>
+    </div>
+    <div class="cam-res" id="cam-result" hidden><span class="eyebrow" style="color:#A3A3B0">Calidad de la foto</span><b id="cam-q">0 %</b><p id="cam-verdict" class="cam-tip"></p>
+      <div class="row-acts"><button class="btn" data-act="cam-send">Enviar foto</button><button class="btn ghost" data-act="cam-retry">Repetir</button></div></div>
+  </div></div>
+</section>
+
+<section class="sheet" id="editor" hidden>
+  <div class="sh-head gut">
+    <button class="back" data-act="close-editor" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="thumb-sm" id="e-thumb"></div>
+    <div class="sh-title"><b id="e-name">—</b><span id="e-paid">—</span></div>
+  </div>
+  <div class="sh-body"><div class="sh-in gut">
+    <label class="f">La historia del artículo
+      <small>Inventa un trasfondo original: quién lo tuvo, cuándo, qué pasó y por qué importa. Se premia la creatividad y la coherencia, no repetir siempre las mismas palabras.</small>
+      <textarea class="field" id="e-story" placeholder="Ej: Esta bicicleta llevó a una partera por caminos de tierra durante la gran nevada de 1958…"></textarea>
+    </label>
+    <button class="btn ghost sm" id="e-bot" data-act="e-bot" hidden>Pedirle una historia a Cuentero.ai</button>
+    <div class="hook"><div class="labels"><span class="eyebrow">Gancho de la historia</span><b id="e-score">0 %</b></div><div class="bar"><i id="e-bar"></i></div><div class="found" id="e-found"></div><div class="tip" id="e-tip"></div></div>
+    <label class="f">Precio de venta<small id="e-est">—</small><input class="field price" type="number" id="e-price" min="1" step="1" inputmode="numeric"></label>
+    <button class="btn" data-act="publish" id="e-publish">Publicar anuncio</button>
+    <p class="tip" id="e-ai"></p>
+  </div></div>
+</section>
+
+<section class="sheet" id="job" hidden>
+  <div class="sh-head gut"><button class="back" data-act="job-close" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b id="job-title">Trabajito</b><span>trabajitos.com</span></div></div>
+  <div class="sh-body"><div class="sh-in gut" id="job-body"></div></div>
+</section>
+
+<section class="sheet" id="stats" hidden>
+  <div class="sh-head gut"><button class="back" data-act="stats-close" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b>Tu estado</b><span>Comida, bebida, refrigerador y ajustes</span></div></div>
+  <div class="sh-body"><div class="sh-in gut"><div id="stats-body" style="display:flex;flex-direction:column;gap:14px"></div>
+    <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px">
+      <button class="btn ghost sm" data-act="reset" style="align-self:flex-start">Nueva partida</button>
+      <div id="reset-confirm" class="row-acts" hidden><span class="tip">¿Borrar todo y empezar de cero?</span><button class="btn sm danger" data-act="reset-yes">Sí, borrar</button><button class="btn sm ghost" data-act="reset-no">Cancelar</button></div>
+    </div>
+  </div></div>
+</section>
+
+<div class="overlay" id="night" hidden><div class="box">
+  <span class="eyebrow">Resumen del día</span><h2>¿Terminas el día?</h2>
+  <div id="night-body" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div class="row-acts"><button class="btn" data-act="sleep">Dormir hasta mañana</button><button class="btn ghost" data-act="night-close">Seguir un rato</button></div>
+</div></div>
+
+<div class="daytx" id="daytx" hidden aria-live="polite">
+  <div class="dt-stars"></div><div class="dt-sun"></div><div class="dt-moon"></div><div class="dt-ground"></div>
+  <div class="dt-txt"><div id="dt-a"></div><div id="dt-z">Z z z</div><div id="dt-b"></div></div>
+</div>
+
+<div class="overlay" id="intro" hidden><div class="box">
+  <div id="intro-1" style="display:flex;flex-direction:column;gap:12px">
+    <span class="eyebrow">Tutorial · 1 de 2</span><h1>Lo Vendo Caro</h1>
+    <p>Empiezas con $20 y una computadora. Compras cosas baratas, les inventas una historia y las revendes caras convenciendo a los clientes por chat.</p>
+    <ol><li>Los clientes entienden lo que escribes: responde sus preguntas, sé coherente con tu anuncio y no inventes cosas nuevas.</li><li>Las faltas, la mala educación y la desesperación bajan su confianza.</li><li>Puedes regatear, mandar fotos y cobrar la mitad al cerrar el trato; el resto llega con el envío.</li><li>Tú decides cuándo termina el día.</li></ol>
+    <button class="btn" data-act="intro-next">Siguiente</button>
+  </div>
+  <div id="intro-2" hidden style="display:flex;flex-direction:column;gap:12px">
+    <span class="eyebrow">Tutorial · 2 de 2</span><h2>Dos páginas para empezar</h2>
+    <div class="site-card"><span class="fav" style="background:#F2542D">B</span><div><b>bazarito.com</b><span>Compras ofertas relámpago y publicas lo que quieres revender.</span></div></div>
+    <div class="site-card"><span class="fav" style="background:#E63946">C</span><div><b>comeya.com</b><span>Comida rápida barata. Tienes que comer y beber para poder trabajar.</span></div></div>
+    <p>Todo lo demás (trabajos, empleados, historias, facturas, banco, supermercado…) lo encuentras buscando en el navegador.</p>
+    <button class="btn" data-act="start">Empezar</button>
+  </div>
+</div></div>
+
+<div id="fx" aria-hidden="true"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+/* ---------- catálogo: nombre, ícono, base, género, historias del bot ---------- */
+const CATALOG=[
+["Bicicleta oxidada","🚲",18,"f",[
+"Esta bicicleta perteneció a mi abuelo Ramón, que en 1958 ganó con ella la vuelta ciclista regional. El óxido es original: nunca quiso limpiarla porque decía que ahí estaba guardado el sudor del campeón.",
+"La usó un cartero durante la gran huelga de 1973 para llevar cartas secretas entre barrios. La encontré en un galpón con un sobre todavía atado al manubrio.",
+"Es la bicicleta que aparece en la película «Domingo de lluvia», de 1962. La actriz Marta Lucero se cayó con ella en la escena más famosa y nunca la repararon."]],
+["Lámpara de pie","💡",9,"f",[
+"Iluminó el escritorio del poeta Aurelio Benítez mientras escribía su libro premiado en 1949. Dicen que, si la enciendes de noche, se escucha una máquina de escribir.",
+"Estuvo en el vestíbulo del Hotel Gran Palacio hasta el incendio de 1967. Fue lo único que sobrevivió; por eso la base está un poco ennegrecida.",
+"Mi bisabuela la compró en la subasta de un barco que naufragó frente a la costa en 1931. Es una reliquia que pasó por cuatro generaciones."]],
+["Pelota de fútbol desinflada","⚽",4,"f",[
+"Con esta pelota se jugó la final del torneo del barrio en 1950. Mi abuelo metió el gol del triunfo y la desinfló para que nadie más la usara.",
+"La firmó el plantel completo del Atlético San Pedro, campeón de 1987. Las firmas se borraron un poco, pero si la miras a contraluz todavía se ven.",
+"El delantero Tito Garay la pateó tan fuerte en 1979 que rompió un vitral de la iglesia. El sacerdote la guardó como reliquia durante cuarenta años."]],
+["Reloj de bolsillo sin agujas","⌚",12,"m",[
+"Perteneció a un espía de la Segunda Guerra Mundial. Le quitó las agujas para esconder un mensaje secreto dentro del mecanismo.",
+"Mi abuelo lo llevaba el día que sobrevivió al naufragio del vapor Esperanza, en 1924. Las agujas se perdieron en el agua, pero el reloj siguió latiendo.",
+"Lo fabricó a mano el relojero suizo Anton Weber en 1890. Es una pieza única: lo hizo sin agujas porque decía que el tiempo no se mide, se vive."]],
+["Guitarra con tres cuerdas","🎸",22,"f",[
+"Con esta guitarra compuso su primera canción el cantante Julio Arévalo, en 1938. Las otras tres cuerdas se cortaron la noche del estreno y él juró no cambiarlas nunca.",
+"La tocó un trovador legendario en el gran certamen de 1955. Ganó el premio con solo tres cuerdas, y por eso nadie se atrevió a ponerle más.",
+"Viajó al exilio en 1976 con un músico famoso que la usó en cada concierto por Europa. Volvió en una maleta, con su firma en la parte de atrás."]],
+["Silla coja","🪑",6,"f",[
+"En esta silla se sentó el presidente Héctor Larrañaga durante una reunión secreta en 1931. La pata corta se recortó para esconder documentos bajo la alfombra.",
+"Es la silla del café donde el escritor Mario Delgado escribió su novela premiada en 1962. Él decía que la cojera le daba ritmo a las frases.",
+"Mi abuela la usó cincuenta años para contar historias de fantasmas. Según la leyenda familiar, la pata se acortó sola la noche de 1964 en que vio uno."]],
+["Pluma estilográfica","🖋️",5,"f",[
+"Con esta pluma se firmó en 1946 el tratado de paz entre dos clubes rivales. La tinta seca que tiene adentro es la original de ese día.",
+"Perteneció a la escritora Elena Quiroga, que escribió con ella su primera novela premiada en 1951. Tiene sus iniciales grabadas en el capuchón.",
+"La encontraron en el bolsillo de un piloto famoso que sobrevivió a un amerizaje en 1952. Todavía escribe."]],
+["Cámara de rollo","📷",25,"f",[
+"Con esta cámara se tomó la foto del carnaval de 1961 que hoy cuelga en un museo. El rollo que tiene adentro nunca se reveló: nadie sabe qué hay.",
+"Era de un fotógrafo de guerra que la llevó a Corea en 1951. Tiene un golpe en la carcasa de cuando sobrevivió a un bombardeo.",
+"La usó la actriz Lidia Monteverde en su luna de miel de 1958. Adentro hay un rollo misterioso con sus últimas fotos."]],
+["Trofeo de bolos","🏆",7,"m",[
+"Es el trofeo del campeonato nacional de bolos de 1968, que ganó mi abuelo Atilio con una tirada que todavía se cuenta en el barrio. Único en su tipo.",
+"Lo ganó un club de jubilados que venció a los campeones mundiales italianos en un amistoso histórico de 1974. Nadie lo podía creer.",
+"Estuvo perdido veinte años, hasta que apareció enterrado bajo una cancha. Dicen que lo escondieron en 1981 para que los rivales no lo robaran."]],
+["Tostadora","🍞",6,"f",[
+"En esta tostadora se prepararon los desayunos del presidente durante todo 1955. El cable está gastado de tanta historia.",
+"Es el primer modelo que llegó al país, en 1949. Se exhibió en la Exposición Nacional y ganó un premio de diseño. Quedan solo tres en el mundo.",
+"Mi tía abuela Nélida la ganó en un concurso de radio en 1962, respondiendo una pregunta que nadie más sabía. Es una reliquia familiar."]],
+["Sombrero de copa abollado","🎩",8,"m",[
+"Lo usó el mago Fortunato el Grande en su último espectáculo, en 1957. La abolladura es de cuando un conejo se negó a salir.",
+"Perteneció a un embajador inglés que lo perdió en el puerto en 1910. Tiene adentro la etiqueta de una sombrerería de Londres.",
+"Lo llevaba el actor de cine mudo Ernesto Vidal en su película más legendaria. Se abolló en la escena de la batalla, en 1927."]],
+["Radio de bulbos","📻",15,"f",[
+"Por esta radio mi familia escuchó la final del Mundial de 1950. Cuando se gritó el gol, un bulbo estalló y nunca lo cambiamos.",
+"La usó un radioaficionado que en 1969 captó una transmisión misteriosa desde la Luna. Todavía tiene la frecuencia marcada con lápiz.",
+"Estuvo escondida en la redacción de un periódico durante la dictadura, para escuchar noticias del extranjero. Una pieza histórica de la resistencia."]],
+["Paraguas sin tela","☂️",3,"m",[
+"Perdió la tela en el temporal de 1959 protegiendo a mi abuela, que esperaba a mi abuelo en el puerto. Él llegó, se casaron y el paraguas quedó así para siempre.",
+"El poeta Ramiro Sosa lo usaba como bastón en sus caminatas por el malecón en 1966. Decía que la tela le tapaba las estrellas.",
+"Viene de la tienda londinense que vestía a la reina en 1920, de una colección única. La tela se la llevó un viento misterioso."]],
+["Teléfono de disco","☎️",10,"m",[
+"Desde este teléfono se hizo la primera llamada de larga distancia del pueblo, en 1951. El número que marcaron sigue siendo un secreto.",
+"Estuvo en la oficina del detective Raúl Barrios, que en 1964 resolvió el robo del siglo atendiendo una llamada anónima.",
+"Mi abuela jura que en 1977 sonó a medianoche y era la voz de un fantasma. Desde entonces nadie se atrevió a desconectarlo."]],
+["Bota izquierda","👢",3,"f",[
+"Es la bota que perdió el capitán de un barco pirata que naufragó cerca de la costa en 1802. La derecha la tiene un museo de la capital.",
+"La usó un futbolista famoso para patear el penal decisivo de la copa de 1935. Solo se guardó la izquierda: la del gol.",
+"Perteneció a un soldado que sobrevivió a la batalla de 1904 y caminó con ella hasta su casa: más de cien kilómetros."]],
+["Tetera desportillada","🫖",5,"f",[
+"En esta tetera se sirvió el té de la reunión secreta entre dos escritores rivales en 1944. La desportilladura es de cuando uno la lanzó de enojo.",
+"Llegó en un barco de inmigrantes en 1912 con mi bisabuela Giuseppina, que la cuidó como un tesoro. Es lo único que trajo de Italia.",
+"Fue premiada en una exposición de porcelana en París en 1889. Una pieza única que sobrevivió a dos mudanzas y a una guerra."]],
+["Patineta","🛹",14,"f",[
+"Con esta patineta se hizo el primer salto registrado del malecón, en 1978. El récord duró diez años.",
+"Perteneció a Nico Ferrán, campeón continental de skate, que la firmó debajo de la tabla en 1991.",
+"Aparece en el videoclip de una banda de rock famosa de los noventa. El cantante se la regaló a mi primo después de la filmación, en 1996."]],
+["Violín","🎻",40,"m",[
+"Lo tocaba el hermano de un músico del Titanic, que bajó del barco en el último puerto en 1912. Es una reliquia de esa familia.",
+"Fue fabricado en Cremona en 1820 por el aprendiz de un lutier legendario. Tiene adentro una etiqueta con su firma.",
+"Lo tocó la violinista Clara Mendívil en el Teatro Real durante el estreno histórico de 1931. Las cuerdas todavía tienen su resina."]],
+["Globo terráqueo viejo","🌍",11,"m",[
+"Muestra países que ya no existen, como la Unión Soviética. Estuvo en el despacho de un embajador hasta 1989, el año en que cayó el muro.",
+"Lo usó el explorador Ignacio Lamas para planear su viaje a la Antártida en 1955. Tiene la ruta marcada con tinta roja.",
+"Es antiguo, de 1938, y tiene un error único: una isla que no existe en el Atlántico. Los coleccionistas lo llaman «el globo del misterio»."]],
+["Llave que no abre nada","🗝️",2,"f",[
+"Es la llave de un cofre pirata que nunca se encontró. Mi abuelo la recibió de un marinero en 1940, junto con un mapa que se perdió.",
+"Abría la puerta de la casa de un escritor famoso, demolida en 1972. Es lo único que queda de ese lugar histórico.",
+"Según la leyenda, abre una habitación secreta del viejo palacio municipal que nadie ha encontrado. Apareció en una subasta en 1985."]],
+["Máscara de carnaval","🎭",6,"f",[
+"La usó el director de la comparsa campeona del carnaval de 1971. Conserva la pintura original y un poco de brillantina de aquella noche.",
+"Viene de Venecia, de 1890, y perteneció a una actriz famosa de la época. Dicen que está maldita: quien la usa no puede dejar de bailar.",
+"Se usó en el famoso baile de máscaras del Hotel Imperial en 1950, donde se dice que un presidente bailó escondido entre la gente."]],
+["Brújula que apunta al sur","🧭",9,"f",[
+"Perteneció a un capitán que sobrevivió a un naufragio en 1898 siguiendo esta brújula al revés. Él decía que el sur lo salvó.",
+"Es una brújula de espía de la Segunda Guerra Mundial: apunta al sur a propósito, para que el enemigo se perdiera si la robaba.",
+"Un explorador legendario la llevó a la Antártida en 1911. Desde entonces solo apunta al sur, como si quisiera volver."]],
+["Ancla oxidada","⚓",20,"f",[
+"Es el ancla de un barco pirata que se hundió en la bahía en 1764. Unos buzos la sacaron en 1998.",
+"Perteneció a un acorazado hundido en 1939. Una reliquia histórica de la guerra que pasó medio siglo bajo el agua.",
+"Ancló durante cuarenta años el barco pesquero de mi abuelo Faustino, que sobrevivió a tres tormentas con ella. En el puerto es una leyenda."]],
+["Tablero de ajedrez incompleto","♟️",7,"m",[
+"En este tablero se jugó una partida histórica entre dos campeones en 1939. Faltan piezas porque el público se las llevó de recuerdo.",
+"Lo talló en madera un preso político durante su encierro en los años setenta. Cada pieza que falta se la regaló a un compañero.",
+"Mi abuelo le ganó una partida al gran maestro ruso Vasili Orlov en 1962 con este tablero. El rey negro se lo llevó el ruso, de puro enojo."]],
+["Maniquí sin brazo","🧍",16,"m",[
+"Estuvo cuarenta años en el escaparate de una famosa sastrería del centro. Perdió el brazo en el incendio de 1974 y sobrevivió de pie.",
+"Lo usó la diseñadora Delia Ferrer para crear el vestido de una reina de belleza en 1966.",
+"Aparece en la película de terror «El escaparate», de 1983. Le arrancaron el brazo en la escena final y nunca lo encontraron."]],
+["Diente de tiburón","🦈",8,"m",[
+"Es de un tiburón que atacó un barco pirata en 1720. El diente quedó clavado en la madera y pasó de generación en generación.",
+"Lo encontró el buzo Hugo Lacaze en 1971, durante una expedición histórica. Es de una especie que ya no existe.",
+"Era el amuleto de un surfista campeón que sobrevivió a un ataque en 1988. Dice que le salvó la vida."]],
+["Casete sin etiqueta","📼",2,"m",[
+"Contiene la única grabación de una banda de rock legendaria que se separó en 1986 antes de grabar su disco. Nadie más tiene esas canciones.",
+"Es una cinta secreta de una radio pirata de los años ochenta. Lo que se escucha al final todavía es un misterio.",
+"Mi tío lo grabó en el concierto histórico de 1990 en el estadio nacional. Se oye al público cantando todo."]],
+["Trompeta abollada","🎺",18,"f",[
+"La tocó el famoso trompetista de jazz Luis Ocampo en un club del centro en 1958. Se abolló cuando se cayó del escenario en pleno solo.",
+"Sonó en la banda militar durante el desfile del centenario, en 1930. Es una reliquia de la patria.",
+"Despertaba a todo el barrio en carnaval. La abolladura es de una batalla entre comparsas en 1965."]],
+["Gnomo de jardín","🧙",7,"m",[
+"Este gnomo viajó por el mundo: una pareja lo robó en 1995 y le tomó fotos en veinte países antes de devolverlo. Es famoso en internet.",
+"Estuvo cuarenta años en el jardín de la escritora Amalia Rossi. Ella decía que le dictaba los finales de sus cuentos.",
+"Es antiguo, traído de Alemania en 1920. Dicen que está embrujado: cambia de lugar solo durante la noche."]],
+["Botella con mensaje adentro","🍾",4,"f",[
+"Apareció en una playa en 1987. El mensaje es de un marinero que naufragó en 1953 y está escrito en noruego.",
+"La lanzó al mar una actriz famosa de Hollywood en 1961, durante un crucero. El mensaje sigue cerrado: es un misterio.",
+"La encontró mi abuelo pescando en 1970. Adentro hay un mapa de un tesoro pirata que nunca nos atrevimos a seguir."]],
+["Mapa arrugado","🗺️",5,"m",[
+"Es un mapa pirata de 1740 que marca un tesoro en una isla cercana. Está arrugado porque lo escondieron dentro de una bota.",
+"Lo usaron dos espías durante la guerra, en 1943, para planear una fuga. Tiene anotaciones secretas en el margen.",
+"Perteneció al explorador Andrés Cuñarro, que recorrió el Amazonas en 1920. Las manchas son agua del río."]],
+["Dentadura postiza","😬",3,"f",[
+"Perteneció al tenor Aurelio Benedetti, que la usaba en sus funciones de ópera en 1940. Cuenta la leyenda que sin ella no podía cantar.",
+"Se le cayó a un presidente durante un discurso histórico de 1948 en el balcón. Un guardia la guardó como reliquia.",
+"Es de 1920, hecha a mano con porcelana y oro. Una pieza única del museo de odontología que cerró en 1999."]],
+["Matrioska incompleta","🪆",6,"f",[
+"La trajo un bailarín del ballet ruso que pidió asilo en 1961. Escondió un secreto en la muñeca más pequeña.",
+"Perteneció a la colección de una zarina, según la etiqueta en ruso de la base. Es antigua, de 1900.",
+"Le falta la del medio porque mi bisabuela la usó para pasar de contrabando un anillo de diamante desde Europa en 1939."]],
+["Cuadro de un caballo","🐎",12,"m",[
+"Lo pintó Joaquín Arreseigor de joven, antes de hacerse famoso. No está firmado, pero un experto asegura que es suyo.",
+"El caballo es Relámpago, campeón del Gran Premio de 1952. El dueño lo mandó pintar después de aquella carrera histórica.",
+"Estuvo colgado en la hacienda de un presidente durante cincuenta años. Tiene un agujero de una discusión de 1932."]],
+["Ventilador de techo","🌀",10,"m",[
+"Funcionó sesenta años en un bar famoso del casco antiguo mientras se componían boleros. Dicen que las aspas mezclaron las letras.",
+"Estuvo en la sala de un juicio histórico en 1985. Se dice que su ruido tapó una confesión secreta.",
+"Mi abuelo lo trajo de un hotel de La Habana en 1958, la noche antes de la revolución. Fue lo único que pudo sacar."]],
+["Máquina de coser","🧵",30,"f",[
+"Con esta máquina se cosió el vestido de novia de una estrella de la radio en 1950. Todavía tiene un hilo blanco enganchado.",
+"Mi bisabuela cosió con ella las camisetas de la selección que salió campeona en 1930. Es una reliquia histórica.",
+"Llegó de Alemania en 1912 y sobrevivió a dos guerras y a un incendio. Es una pieza única: número de serie 0007."]],
+["Casco militar","🪖",15,"m",[
+"Lo usó un voluntario en la Segunda Guerra Mundial. Tiene una abolladura de una batalla en Francia, en 1944.",
+"Aparece en una película de guerra famosa de 1970. Lo usó el actor principal en la batalla final.",
+"Mi abuelo lo encontró en 1946 en un barco de contrabando. Adentro tiene grabado un nombre misterioso: K. Müller."]],
+["Botón dorado","🔘",1,"m",[
+"Es un botón del uniforme de un general que peleó en la batalla de 1811. Se le cayó durante la carga final.",
+"Se le desprendió del saco a un cantante famoso de bolero en pleno escenario en 1935, y alguien del público lo guardó.",
+"Es de oro auténtico, de un tesoro pirata que apareció en una playa en 1979."]],
+["Piedra con forma de corazón","🪨",2,"f",[
+"La encontró el poeta Julián Casares en la playa en 1960 y se la regaló a su gran amor. Ella la guardó hasta 2010.",
+"Es un meteorito que cayó en 1928. Los científicos del museo no saben por qué tiene forma de corazón: es un misterio.",
+"Según la leyenda, quien la tiene encuentra el amor en un año. Mi abuela la tuvo en 1955 y se casó en 1956."]],
+["Medalla de natación","🏅",6,"f",[
+"Es la medalla de oro del campeonato continental de 1947, que ganó mi abuela Ofelia cruzando el río en tiempo récord.",
+"La ganó el nadador olímpico Raúl Pena, que después se retiró de forma misteriosa. Tiene su nombre grabado atrás.",
+"Es el premio de la primera travesía a nado del gran río, en 1923. Solo tres personas la terminaron."]],
+["Banjo","🪕",20,"m",[
+"Llegó desde Nueva Orleans en 1925 con un músico de jazz famoso que tocó en el puerto. Lo dejó como pago de una deuda.",
+"Lo tocó un cantante de country legendario en su gira de 1972. Lo firmó con una navaja.",
+"Sobrevivió a un naufragio en 1931 flotando hasta la playa. Cuando lo encontraron, todavía estaba afinado."]],
+["Teclado de computadora viejo","⌨️",4,"m",[
+"Con este teclado se escribió uno de los primeros correos electrónicos del país, en 1988. La tecla Enter está gastada de esa noche histórica.",
+"Lo usó un hacker famoso de los noventa que entró a la NASA. Por eso le falta la tecla Escape.",
+"Perteneció al escritor Bruno Lagos, que escribió en él su novela premiada en 1995. Todavía tiene migas de su galleta favorita."]],
+["Tocadiscos","🎶",28,"m",[
+"En este tocadiscos sonó por primera vez en la ciudad un disco de los Beatles, en 1963. El dueño de la tienda lo guardó como reliquia.",
+"Perteneció a un DJ legendario de los setenta que en 1977 hizo bailar a una estrella de cine que estaba de incógnito.",
+"Es antiguo, de 1955: una pieza de colección única con su aguja de diamante original."]],
+["Linterna de dínamo","🔦",5,"f",[
+"Iluminó la salida de los mineros atrapados en 1961. Uno de ellos la guardó como recuerdo del día en que sobrevivieron.",
+"La usó un espía durante la guerra para hacer señales secretas desde la costa, en 1942.",
+"Mi abuelo la llevaba en las expediciones en busca de un tesoro perdido en la sierra, allá por 1966."]],
+["Microscopio de juguete","🔬",9,"m",[
+"Con este microscopio descubrió su vocación una científica que después ganó un premio internacional. Lo usó a los ocho años, en 1958.",
+"Es un juguete antiguo de 1940, de una colección única fabricada en Alemania. Quedan muy pocos.",
+"Con él mi tío jura haber visto en 1977 un microbio misterioso que nadie volvió a encontrar."]],
+["Taza con el asa rota","☕",2,"f",[
+"En esta taza tomaba café cada mañana el escritor Mateo Iturria, en 1950. El asa se rompió el día que terminó su novela.",
+"Es de la vajilla del banquete por el primer Mundial, en 1930. El asa se rompió durante el brindis.",
+"Mi abuela la rescató del incendio de su casa en 1962. Sobrevivió a todo, menos el asa."]],
+["Peluca rubia","👱",7,"f",[
+"La usó una estrella de cine en una película de 1959. Se la olvidó en un hotel de la costa.",
+"Perteneció a Mimí Laforet, cantante legendaria de cabaret, que la llevó en su último espectáculo en 1968.",
+"Es parte de un disfraz de espía de la Guerra Fría. La encontraron en un departamento abandonado en 1975."]],
+["Cucharita de plata","🥄",14,"f",[
+"Es de plata auténtica, del siglo XIX, y perteneció a la familia de un general famoso. Tiene el escudo grabado en el mango.",
+"La usó la cantante Rosa Quintana en cada desayuno de su gira de 1950. La lleva grabada con sus iniciales.",
+"Mi abuelo la ganó en 1948 en un duelo de trovadores legendario contra el más famoso del país."]],
+["Telescopio","🔭",35,"m",[
+"Con este telescopio un astrónomo aficionado vio pasar el cometa Halley en 1910 desde una azotea. Lo anotó todo en un cuaderno.",
+"Mi abuelo lo usó la noche de 1969 para mirar la Luna mientras llegaban los astronautas. Dice que vio un destello.",
+"Perteneció a un capitán contrabandista que vigilaba la costa en 1890. Tiene grabado el nombre de su barco."]],
+["Caja fuerte sin combinación","🔐",25,"f",[
+"Perteneció a un banco que cerró de forma misteriosa en 1929. Nadie sabe la combinación, y adentro algo suena.",
+"Estuvo en la oficina de un empresario famoso que desapareció en 1965. La leyenda dice que adentro hay un tesoro.",
+"La encontraron en un sótano del casco antiguo en 1990. Es antigua, de 1880: una pieza de colección única."]],
+["Tambor de carnaval","🪘",18,"m",[
+"Sonó en el desfile de carnaval de 1956 con la comparsa campeona. El cuero es el original.",
+"Lo tocó un percusionista legendario que llegó a tocar para un presidente en 1974.",
+"Sobrevivió a un incendio en una vieja vecindad en 1963. Dicen que salió rodando solo hasta la calle."]],
+];
+
+const SELLERS=['ventas_del_centro','DonAlberto54','la_feria_online','liquido_todo','mudanza_urgente','tiaRosa','cosas_del_atico','el_vecino_curioso','abuela_vende','compro_y_vendo'];
+const NOTES=['Lo vendo porque mi gato le tiene miedo.','No pregunten de dónde salió.','Lo encontré en la calle, está perfecto.','Precio fijo. Bueno, negociable.','Urgente: me mudo de país.','Era de mi ex. Que se vaya.','Huele un poco a humedad.','No sé qué es, pero es bonito.','Sin garantía, sin devolución, sin preguntas.','Lo vendo antes de que lo tire mi pareja.','Herencia de un tío que no conocí.','Funciona a veces.','Ideal para coleccionistas (o no).','Último que me queda.','Recoger hoy o lo regalo.','Estaba en el ático desde siempre.','Me lo regalaron y no me gustó.'];
+const NAMES=['Gustavo P.','Mariela R.','Don Ernesto','Sofía L.','Rodrigo M.','Beatriz','Martín F.','Natalia','Señor Pereyra','Valentina T.','Hugo','Carolina S.','Facundo','Graciela','Diego A.','Lucas','Inés','Ramiro','Paola','Julio César','Andrea','Tomás','Elena V.','Óscar'];
+const FIRST=['Kevin','Brenda','Lucía','Marcelo','Yamila','Jonathan','Rosario','Walter','Florencia','Agustín','Mirta','Bruno','Camila','Néstor','Romina','Federico','Analía','Sergio','Micaela','Óscar','Pilar','Gastón'];
+const LAST=['Pereira','Rodríguez','Fernández','Silva','Méndez','Cabrera','Olivera','Suárez','Núñez','Acosta','Herrera','Sosa','Benítez','Vega'];
+const CITIES=[['el centro',1],['tu mismo barrio',1],['la zona norte',1],['las afueras',2],['un pueblo cercano',2],['la costa',3],['la capital de la provincia',3],['la sierra',4],['el otro extremo del país',5],['un pueblo de la frontera',5]];
+
+const TIERS={
+ bad:{titles:['Sobrino de alguien','Estudiante (abandonó)','Influencer con 40 seguidores','Experto en nada en particular'],
+  exp:['Vendió rifas del colegio (perdió el dinero)','Tiene un canal de streaming con 3 suscriptores','Trabajó dos días en una pizzería','Revendía estampitas en el recreo','Fue «community manager» de la tienda de su tía'],
+  quote:['jaja vendo lo q sea','toy disponible cuando kieran','no se mucho pero le pongo ganas'],
+  lines:['q onda, lo qieres o no jaja','ta muy bueno eso bro, compralo','mira yo ni idea pero dicen q es super historico','hola!! esta divino, xq no lo compras?']},
+ ok:{titles:['Excajera de supermercado','Promotor de tarjetas','Exmesero','Teleoperador'],
+  exp:['Dos años atendiendo reclamos por teléfono','Vendió suscripciones de cable puerta a puerta','Fue «empleado del mes» una vez','Atendió el mostrador de una ferretería'],
+  quote:['Soy responsable y puntual.','Aprendo rápido y me gusta tratar con gente.'],
+  lines:['Hola, gracias por escribir. El artículo está en buen estado. ¿Lo quieres?','Buenas tardes. Sí, la historia es real. ¿Coordinamos la entrega?']},
+ good:{titles:['Vendedora de seguros','Subastador profesional','Vendedor de electrodomésticos','Agente inmobiliaria'],
+  exp:['Cinco años vendiendo seguros de vida a gente de veinte','Remató un lote de sillas como si fueran obras de arte','Récord de ventas en una cadena de electrodomésticos','Vendió un estudio sin ventanas «con mucha personalidad»'],
+  quote:['El cliente no compra un objeto, compra confianza.','Escucho más de lo que hablo.'],
+  lines:['Buenas tardes. Le confirmo que la historia está documentada y que coordinamos el envío esta semana. ¿Le parece si cerramos?','Gracias por su interés. Es una pieza con mucho valor sentimental e histórico; le puedo enviar fotos y garantía.']},
+ pro:{titles:['Exgerente comercial','Subastador de arte','Vendedor de autos usados (20 años)','Leyenda de las ventas'],
+  exp:['Le vendió una lámpara a un electricista','Cerró ventas millonarias en tres países','Da charlas motivacionales que nadie entiende pero todos aplauden','Vendió hielo en Groenlandia (eso dice él)'],
+  quote:['No vendo productos: vendo destinos.','Si no te convencí, todavía no terminé de hablar.'],
+  lines:['Estimado, no le voy a vender un objeto: le voy a entregar una historia que contará el resto de su vida. Certificado, envío y garantía incluidos.','Entiendo su duda y la respeto. Por eso le ofrezco devolución sin preguntas durante 30 días. ¿Le parece justo?']},
+};
+
+const SURVEY_Q=[
+ ['¿Cuántas veces por semana comes pasta?',['Nunca','1 o 2','3 o 4','Todos los días']],
+ ['¿Qué opinas de la piña en la pizza?',['Deliciosa','Un crimen','Nunca la probé','Prefiero no opinar']],
+ ['¿Con qué frecuencia miras el cielo?',['Todos los días','A veces','Solo si llueve','¿Hay cielo?']],
+ ['Califica tu relación con tu tostadora',['Excelente','Buena','Complicada','No tengo tostadora']],
+ ['¿Qué sientes al oír la palabra «lunes»?',['Alegría','Indiferencia','Angustia','Ganas de comprar cosas']],
+ ['¿Cuántos paraguas has perdido en tu vida?',['Ninguno','De 1 a 5','De 6 a 20','Soy un desastre']],
+ ['¿Prefieres gatos o perros?',['Gatos','Perros','Los dos','Peces, que no opinan']],
+ ['¿Qué tan probable es que recomiendes el pan a un amigo?',['Muy probable','Probable','Poco probable','No hablo de pan']],
+ ['¿Cuál es tu verdura favorita?',['Calabaza','Espinaca','Zanahoria','La papa frita']],
+ ['¿Usarías zapatos con luces?',['Sí, siempre','Solo en fiestas','Jamás','Ya los uso']],
+ ['¿Cuánto tardas en elegir qué ver en la tele?',['Menos de 5 minutos','Media hora','Más de lo que miro','No tengo tele']],
+ ['Del 1 al 4, ¿cuánto te gusta responder encuestas?',['1','2','3','4']],
+];
+const ATTENTION=['Para demostrar que lees, elige «Azul».','Esta es una pregunta de control: marca «Azul».','Si estás prestando atención, toca «Azul».'];
+const TYPE_PHRASES=['El envío llegará el miércoles por la mañana.','Por favor, confirme la dirección de entrega.','Gracias por su compra; vuelva pronto.','La reunión se pasó para el jueves a las tres.','¿Podría enviarme la factura por correo?','El artículo tiene garantía de treinta días.','Mañana no abrimos porque es feriado.','Hay que regar las plantas después del almuerzo.','El técnico vendrá a revisar el refrigerador.','Ojalá que el autobús no se retrase otra vez.','Mi tía compró una lámpara en el mercado del domingo.','Último aviso: recoja su paquete en la oficina de correos.'];
+
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const rand=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rand(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const strip=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'$'+Math.round(n).toLocaleString('es');
+const hue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
+const niceRound=n=>n<50?Math.round(n):n<500?Math.round(n/5)*5:n<5000?Math.round(n/10)*10:Math.round(n/50)*50;
+const rx=stem=>new RegExp('(^|[^a-z])'+stem.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+const art=it=>it.g==='f'?'la':'el';
+const low=s=>s.charAt(0).toLowerCase()+s.slice(1);
+const norm=t=>' '+strip(String(t).toLowerCase())+' ';
+
+/* ---------- vocabulario ---------- */
+const MIS={q:'que',k:'que',ke:'que',xq:'porque',pq:'porque',porq:'porque',tmb:'también',tb:'también',bn:'bien',dsp:'después',toy:'estoy',ola:'hola',grasias:'gracias',porfavor:'por favor',porfa:'por favor',xfa:'por favor',aver:'a ver',nose:'no sé',nadien:'nadie',haiga:'haya',dijistes:'dijiste',fuistes:'fuiste',hicistes:'hiciste',ase:'hace',aser:'hacer',vien:'bien',vueno:'bueno',hechar:'echar',hiba:'iba',enserio:'en serio',osea:'o sea',esque:'es que',alomejor:'a lo mejor',aora:'ahora',x:'por',d:'de',msj:'mensaje',ntp:'no te preocupes',ps:'pues',kiero:'quiero',qiero:'quiero',qieres:'quieres',kieres:'quieres',sta:'está',stoy:'estoy',ahy:'ahí',haci:'así',ubiera:'hubiera',iso:'hizo',boi:'voy',bamos:'vamos',benir:'venir'};
+const ACC={tambien:'también',envio:'envío',envios:'envíos',garantia:'garantía',historico:'histórico',historica:'histórica',unico:'único',unica:'única',epoca:'época',rapido:'rápido',facil:'fácil',dificil:'difícil',ultimo:'último',ultima:'última',autentico:'auténtico',autentica:'auténtica',pelicula:'película',musica:'música',numero:'número',articulo:'artículo',despues:'después',ademas:'además',aqui:'aquí',asi:'así',alli:'allí',ahi:'ahí',jamas:'jamás',quizas:'quizás',segun:'según',ningun:'ningún',algun:'algún',dia:'día',dias:'días',coleccion:'colección',condicion:'condición',informacion:'información',direccion:'dirección',atencion:'atención',ocasion:'ocasión',decision:'decisión',cancion:'canción',campeon:'campeón',perdon:'perdón',razon:'razón',corazon:'corazón',estacion:'estación',senor:'señor',senora:'señora',anos:'años',tasacion:'tasación',tenia:'tenía',habia:'había',queria:'quería',podria:'podría',seria:'sería'};
+/* léxico evocador por categoría: se premia variar categorías, no repetir palabras */
+const LEX={
+ 'Fama':['famos','celebr','estrella','cantante','actor','actriz','artista','pintor','escritor','poeta','campeon','futbolista','atleta','olimp','president','rey','reina','princip','general','capitan','embajador','mago','tenor','violinista','director','cientific','inventor','astronaut','explorador','detective','millonari','idolo','bailarin','torero','boxeador','ajedrecista','aviador'],
+ 'Historia':['histor','guerra','batalla','revoluc','imperio','siglo','exilio','tratado','independen','dictadura','resistencia','coronacion','expedicion','inmigra','centenario','armisticio','huelga','monarqu','republica','epidemia','posguerra'],
+ 'Misterio':['misteri','secret','maldi','embruj','fantasm','enigma','ocult','escond','desaparec','profecia','sobrenatural','inexplic','cifrad','tesoro','apareci','susurr','extrano','nadie sabe'],
+ 'Aventura':['naufrag','pirata','tormenta','incendio','sobreviv','rescat','fuga','travesia','selva','desierto','montana','oceano','frontera','persecu','contraband','espia','expedicion','terremoto','inundacion','avalancha','huida','aterriz'],
+ 'Emoción':['amor','boda','casar','casaron','lagrim','llor','promesa','despedida','beso','corazon','nostalg','recuerd','herencia','hered','abuel','bisabuel','luto','esperanza','orgullo','miedo','perdon','reencuentro','juramento','prometi'],
+ 'Detalle':['grabad','inicial','firma','mancha','rayon','cicatriz','abollad','marca','etiqueta','numero de serie','sello','olor','perfume','oxido','costura','inscrip','dedicatoria','desgast','quemad','resina','tinta','grieta'],
+ 'Valor':['unic','rareza','exclusiv','coleccion','subasta','museo','tasad','certificad','autentic','reliquia','premi','record','diamante','marfil','artesan','hecho a mano','edicion limitada','prototipo','ejemplar','quedan solo'],
+ 'Escena':['noche','madrugada','invierno','verano','lluvia','nieve','puerto','estacion','teatro','cafe','hotel','escenario','carnaval','feria','plaza','mercado','fabrica','taller','estadio','circo','malecon','azotea','sotano','atico','galpon'],
+};
+const LEX_ALL=Object.values(LEX).flat();
+const CONNECT=['cuando','porque','despues','desde entonces','hasta que','aunque','sin embargo','por eso','mientras','luego','entonces','al final','una noche','un dia','anos despues','dias antes','esa misma','gracias a'];
+const CONTRA=[...LEX['Fama'],...LEX['Aventura'],...LEX['Misterio'],'guerra','dictadura','revoluc','museo','subasta','certificad','diamante','record','nasa','titanic','beatles','luna'].filter(s=>!['ocult','escond','apareci','extrano','secret','nadie sabe','rescat','frontera','oceano'].includes(s));
+const PROOF=['certificad','factura','document','prueba','tasacion','expert','papeles','sello','original','autentic','constancia','registro','recibo','foto','archivo','periodico','diario de la epoca'];
+const CONDITION=['estado','impecable','funciona','nuevo','nueva','rayon','detalle','desgaste','roto','rota','sano','perfect','intact','conservad','golpe','anda','sirve'];
+const SHIP=['envio','envi','mando','entrego','entrega','retir','correo','paqueteria','llevo','paso a dejar','recoger'];
+const ORIGIN=['hered','herencia','compr','regal','encontr','famili','abuel','padre','madre','tio','subasta','feria','dej','pas','consegu','gan','trajo','traje','recib'];
+const INSULTS=['idiota','estupid','imbecil','tarad','pendej','cabron','mierda','carajo','puta','gilipoll','imbecil','inutil','tonto','tonta','burro','callate','vete a','ignorante','pobre tipo','muerto de hambre','rata','maldito','baboso','menso'];
+const SLANG=['bro','wey','papu','crack','jaja','jaj','jsjs','xd','lol','nah','ni idea','yo que se','loco','compa','alv','ntc','we'];
+const PERSONAS={
+ coleccionista:{label:'Coleccionista',desc:'Valora las pruebas y la coherencia',pos:1,neg:1,proof:1.6,story:1.5,start:-6,why:'Colecciono este tipo de cosas. Esto completaría mi colección.'},
+ desconfiado:{label:'Desconfiado',desc:'Cualquier error le pesa el doble',pos:.9,neg:1.45,proof:1.2,story:1,start:-10,why:'Es para un regalo, y no quiero quedar mal con algo falso.'},
+ apurado:{label:'Con prisa',desc:'Poca paciencia, odia los textos largos',pos:1.15,neg:1,proof:1,story:1,start:0,why:'Es un regalo para mañana, por eso tengo prisa.'},
+ amable:{label:'Amable',desc:'Le cae bien la buena actitud',pos:1.25,neg:.8,proof:1,story:1,start:6,why:'Me encantan las cosas con historia, nada más.'},
+};
+const FOOD=[
+ {id:'hotdog',name:'Hot dog con mostaza',icon:'🌭',kind:'junk',price:2,food:20,drink:0,desc:'Llena poco, pero es barato.'},
+ {id:'papas',name:'Papas fritas chicas',icon:'🍟',kind:'junk',price:1,food:12,drink:0,desc:'Más aceite que papa.'},
+ {id:'burger',name:'Hamburguesa doble',icon:'🍔',kind:'junk',price:3,food:28,drink:0,desc:'Doble carne, doble arrepentimiento.'},
+ {id:'refresco',name:'Refresco de cola',icon:'🥤',kind:'junk',price:1,food:0,drink:22,desc:'Azúcar con gas.'},
+ {id:'jugo',name:'Jugo de caja',icon:'🧃',kind:'junk',price:1,food:2,drink:18,desc:'Sabor «naranja».'},
+ {id:'bolsa',name:'Compra completa del súper',icon:'🛒',kind:'super',price:9,food:100,drink:10,desc:'Pollo, arroz, frutas y verduras. Llena todo.'},
+ {id:'caja',name:'Caja de verduras y carne',icon:'🥩',kind:'super',price:6,food:65,drink:0,desc:'Para cocinar en casa como se debe.'},
+ {id:'agua',name:'Garrafón de agua de 6 litros',icon:'💧',kind:'super',price:4,food:0,drink:100,desc:'Hidratación para todo el día.'},
+ {id:'leche',name:'Leche y jugos naturales',icon:'🥛',kind:'super',price:3,food:10,drink:55,desc:'Lo que pedía tu abuela.'},
+];
+const FRIDGE_PRICE=300,DRONE_PRICE=200;
+const LOANS=[50,120,300,700,1500];
+const DRAIN=15,FOOD_CHANCE=.25,DRINK_CHANCE=.20;
+
+/* ---------- estado ---------- */
+let S=null,dirty=true,editing=null,camState=null,job=null,sampleFn=null,aiState='checking';
+function newGame(){
+  S={money:20,day:1,min:8*60,t:0,shop:[],nextShop:0,inv:[],buyers:[],hired:[],cands:[],auto:true,cur:null,lastChat:null,nextId:1,
+     sales:0,earned:0,day$:{sales:0,profit:0,jobs:0,spent:0},seenIntro:false,botDay:ri(2,3),botSub:false,botMsgs:[],used:{},
+     bills:[],food:100,drink:100,weak:false,fridge:false,fridgeItems:[],deliveries:[],jobsDone:{plates:0,surveys:0,typing:0},
+     shipments:[],drone:false,droneDay:0,loan:null,lexUse:{},aiOn:true,tabs:[],tab:null};
+  for(let i=0;i<6;i++)addListing(true);
+  S.cands=genCands();
+  const t={id:S.nextId++,url:'buscalo.com',back:[],fwd:[]};S.tabs.push(t);S.tab=t.id;
+  return S;
+}
+function save(){try{localStorage.setItem('lvc-save-v3',JSON.stringify(S))}catch(e){}}
+function load(){try{const r=localStorage.getItem('lvc-save-v3');return r?JSON.parse(r):null}catch(e){return null}}
+const night=()=>S.min>=23*60;
+const isOffline=()=>S.bills.some(b=>b.kind==='internet'&&b.due<S.day);
+const droneOn=()=>S.drone&&!S.bills.some(b=>b.kind==='drone'&&b.due<S.day);
+const appliances=()=>(S.fridge?1:0)+(S.drone?1:0);
+const aiReady=()=>sampleFn&&S.aiOn&&aiState==='ok';
+
+/* ---------- comida y bebida ---------- */
+function canAct(){
+  if(S.food<DRAIN){toast('Tienes demasiada hambre para eso. Pide comida: busca «comida rápida».');return false}
+  if(S.drink<DRAIN){toast('Tienes mucha sed. Pide algo de tomar: busca «comida rápida» o «supermercado».');return false}
+  return true;
+}
+function drain(){
+  const f=Math.random()<FOOD_CHANCE,d=Math.random()<DRINK_CHANCE;
+  if(f)S.food=clamp(S.food-DRAIN,0,100);if(d)S.drink=clamp(S.drink-DRAIN,0,100);
+  if(f||d){renderTaskbar();pulseStat(f,d);if(S.food<DRAIN||S.drink<DRAIN)toast('Estás sin energía: come y toma algo antes de seguir.')}
+}
+function consume(f){S.food=clamp(S.food+f.food,0,100);S.drink=clamp(S.drink+f.drink,0,100);renderTaskbar()}
+
+/* ---------- tienda efímera ---------- */
+function addListing(initial){
+  const c=pick(CATALOG);const r=Math.random();const life=ri(30,80);
+  const L={id:S.nextId++,name:c[0],icon:c[1],base:c[2],g:c[3],seller:pick(SELLERS),note:pick(NOTES),exp:S.t+life+(initial?20:0),life:life+(initial?20:0),bought:false,type:'normal'};
+  L.price=Math.max(1,Math.round(c[2]*rand(.6,1.35)));
+  if(r<.08){L.type='mystery';L.price=ri(2,6);L.note='Contenido sorpresa. Puede ser cualquier cosa.'}
+  else if(r<.22){L.type='flash';L.price=Math.max(1,Math.round(L.price*.5))}
+  S.shop.push(L);S.nextShop=S.t+ri(6,12);
+}
+
+/* ---------- historias: creatividad + coherencia ---------- */
+function spellIssues(text){
+  const out=[],seen=new Set();
+  for(const w of (String(text).toLowerCase().match(/[a-záéíóúüñ]+/g)||[])){
+    if(seen.has(w))continue;
+    if(MIS[w]){seen.add(w);out.push({w,fix:MIS[w],hard:true})}
+    else if(ACC[w]){seen.add(w);out.push({w,fix:ACC[w],hard:false})}
+  }
+  return out;
+}
+function itemWords(name){return strip(name.toLowerCase()).split(/\s+/).filter(w=>w.length>3&&!['para','con','sin','que','viejo','vieja'].includes(w)).map(w=>w.slice(0,Math.max(4,w.length-2)))}
+function storyScore(t,item){
+  const d=norm(t),len=t.trim().length;
+  const words=(d.match(/[a-z]{3,}/g)||[]);
+  const uniq=new Set(words);
+  const cats={},found=[];
+  for(const [cat,stems] of Object.entries(LEX))for(const s of stems)if(rx(s).test(d)){
+    const fresh=1/(1+((S&&S.lexUse[s])||0)*.6);
+    if(!cats[cat]||cats[cat].fresh<fresh)cats[cat]={stem:s,fresh};
+    found.push(s);
+  }
+  const catVals=Object.values(cats).sort((a,b)=>b.fresh-a.fresh).slice(0,5);
+  const creative=catVals.reduce((a,c)=>a+c.fresh,0)/5;              // 0..1
+  const stale=Object.values(cats).filter(c=>c.fresh<.6).length;
+  const years=(t.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/g)||[]);
+  const future=years.some(y=>+y>2026);
+  const names=(t.match(/[a-záéíóúñ,;]\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}/g)||[]).length;
+  const sentences=t.split(/[.!?…]+/).filter(s=>s.trim().length>8).length;
+  const conn=CONNECT.filter(c=>d.includes(' '+c+' ')).length;
+  const mentions=item?itemWords(item.name).some(w=>rx(w).test(d))||/\b(est[ea]|lo|la)\b/.test(d):true;
+  const sp=spellIssues(t);
+  let s=creative*.42
+    +Math.min(years.length,1)*.1+Math.min(names,2)*.05
+    +Math.min(conn,3)/3*.12
+    +(sentences>=2&&sentences<=5?.08:sentences===1?.03:.04)
+    +clamp((len-30)/170,0,1)*.13
+    +(words.length>8&&uniq.size/words.length>.72?.05:0)
+    +(mentions?.05:-.08)
+    -sp.length*.04-(future?.15:0)-(len>520?.06:0);
+  if(len<20)s*=.35;
+  const notes=[];
+  if(future)notes.push({v:-1,l:'Fecha imposible'});
+  if(!mentions)notes.push({v:-1,l:'No queda claro de qué objeto hablas'});
+  if(stale)notes.push({v:-1,l:'Recursos que ya usaste antes'});
+  return {score:clamp(s,0,1),cats:Object.keys(cats),kw:[...new Set(found)],years,names,len,sp,conn,notes,sentences};
+}
+const maxWilling=it=>it.base*(1+it.score*8);
+function wordFor(text,stem){for(const w of (String(text).match(/[A-Za-zÁÉÍÓÚÑáéíóúñü]+/g)||[]))if(strip(w.toLowerCase()).startsWith(stem))return w.toLowerCase();return null}
+
+/* ---------- compradores ---------- */
+function attract(it){const m=maxWilling(it);return it.score*.8+(it.price<=m?.3:it.price<=m*1.6?.1:0)}
+const ease=b=>clamp(2.2-.5*Math.log10(Math.max(b.offer,5)),.7,1.75);
+function spawnBuyer(it){
+  it.spawned++;
+  const m=maxWilling(it);
+  const offer=niceRound(Math.max(Math.min(it.price,m)*rand(.55,1.05),it.base*.6));
+  const pid=pick(Object.keys(PERSONAS)),P=PERSONAS[pid];
+  const ratio=offer/it.base;
+  const cheap=clamp(14-Math.log10(Math.max(offer,1))*7,0,10);
+  const conv=clamp(Math.round(48-(ratio-1)*6+it.score*10+P.start+cheap-(it.price>m*1.2?8:0)),6,62);
+  const city=pick(CITIES);
+  const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:pid==='apurado'?ri(5,6):ri(7,9),city:city[0],dist:city[1],
+    msgs:[],status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0};
+  b.patMax=b.patience;
+  const q=nextQuestion(b,it,null);
+  b.msgs.push({from:'b',text:opening(b,it)+' '+q.q});b.q=q;
+  S.buyers.push(b);
+  it.nextSpawn=S.t+Math.round(rand(10,22)/(.45+attract(it)));
+  toast(`${b.name} ofrece ${money(offer)} por tu ${low(it.name)}`,'',()=>openChat(b.id));
+  dirty=true;
+}
+function opening(b,it){
+  const n=`${art(it)} ${low(it.name)}`,o=money(b.offer);
+  const w=it.kw.length?wordFor(it.story,pick(it.kw)):null;
+  const hook=w?` Lo de «${w}» me llamó la atención.`:'';
+  const ask=b.offer<it.price?` Pides ${money(it.price)}, pero yo puedo pagar ${o}.`:` Te ofrezco ${o}.`;
+  if(b.conv>=50)return pick([`¡Hola! Vi ${n}.${hook}${ask}`,`Buenas, me encantó la publicación de ${n}.${ask}`]);
+  if(b.conv>=30)return `Hola. Me interesa ${n}, pero quiero estar seguro de lo que dice el anuncio.${hook}${ask}`;
+  return pick([`Hola.${ask} Te soy sincero: la historia me suena a cuento.`,`Buenas. Me interesa ${n}, aunque esa historia me parece demasiado buena para ser verdad.${ask}`]);
+}
+
+/* ---------- temas que el cliente detecta (motor local) ---------- */
+const findStem=(d,list)=>list.find(s=>rx(s).test(d));
+const TOPICS=[
+ {id:'photo',find:(t,d)=>/(foto|video|imagen)/.test(d)&&'foto',react:()=>['De acuerdo, mándame la foto.'],ask:()=>[{id:'tp',q:'¿Me la mandas ahora?',photo:true}]},
+ {id:'proof',find:(t,d)=>{const s=findStem(d,['certificad','factura','document','tasacion','papeles','sello','constancia','registro','recibo']);return s&&wordFor(t,s)},
+  react:x=>[`Que tenga ${x} cambia bastante las cosas.`,`Lo del ${x} me deja más tranquilo.`],
+  ask:()=>[{id:'tpr1',q:'¿Quién lo firmó? ¿Un experto, un museo, un notario?',a:['museo','expert','tasador','notari','perito','universidad','instituto','subasta','fundacion','asociacion','club','especialista','casa de']},{id:'tpr2',q:'¿Me lo puedes mostrar? Aunque sea con una foto.',photo:true}]},
+ {id:'famous',find:(t,d,it)=>{const k=it.kw.find(k=>rx(k).test(d));return k&&wordFor(t,k)},
+  react:x=>[`Lo de «${x}» es lo que más me llama la atención.`,`Eso de «${x}» suena increíble.`],
+  ask:x=>[{id:'tf1',q:'¿Y cómo termina algo así en una venta por internet?',a:['herencia','hered','subasta','regal','encontr','compr','famili','necesito','mudanza','espacio','consegu','dinero']},{id:'tf2',q:`¿Hay alguna prueba de lo de «${x}»?`,a:PROOF.concat(['diario','libro','nota','articulo','testigo'])}]},
+ {id:'year',find:t=>{const m=t.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/);return m&&m[1]},
+  react:x=>[`¿${x}? Eso es mucho tiempo.`,`Así que de ${x}… interesante.`],
+  ask:x=>[{id:'ty1',q:`¿Y cómo llegó hasta ti desde ${x}?`,a:ORIGIN},{id:'ty2',q:`¿Cómo sabes que es de ${x}? ¿Tiene alguna marca o fecha grabada?`,a:PROOF.concat(['marca','grabad','inscrip','fecha','etiqueta','serie','abajo','atras'])}]},
+ {id:'rel',find:(t,d)=>{const m=d.match(/(^|[^a-z])(bisabuel[oa]|abuel[oa]|padre|madre|papa|mama|tio|tia|primo|prima)([^a-z]|$)/);return m&&m[2]},
+  react:x=>[`Qué bonito que haya sido de tu ${x}.`,'Las cosas de familia tienen otro valor.'],
+  ask:x=>[{id:'tr1',q:`¿Y tu ${x} qué opina de que lo vendas?`,a:['muri','falleci','opina','dice','quiere','acuerdo','permiso','sabe','feliz','bendic','ya no','cielo','descans']},{id:'tr2',q:`¿Tu ${x} te contó alguna anécdota con esto?`,a:['conto','contaba','decia','anecdota','una vez','siempre','recuerd','dijo']}]},
+ {id:'guar',find:(t,d)=>findStem(d,['garantia','devol','reembols'])&&'garantía',react:()=>['Una garantía me deja más tranquilo.'],
+  ask:()=>[{id:'tg',q:'¿De cuántos días es la garantía?',a:['dia','semana','mes','ano','NUM']}]},
+ {id:'ship',find:(t,d)=>findStem(d,SHIP)&&'envío',react:()=>['Que hagas envíos me sirve.','Perfecto lo del envío.'],
+  ask:()=>[{id:'ts',q:'¿Cuánto tarda en llegar y quién paga el envío?',a:['dia','hora','manana','semana','hoy','gratis','incluid','pago yo','corre por','NUM']}]},
+ {id:'cond',find:(t,d)=>findStem(d,CONDITION)&&'estado',react:()=>['El estado me importa mucho.'],
+  ask:()=>[{id:'tc1',q:'¿Tiene algún detalle o desgaste que deba saber?',a:CONDITION.concat(['nada','ninguno','solo','pequen','minimo','marca','no tiene'])},{id:'tc2',q:'¿Lo probaste hace poco?',a:['si','ayer','hoy','semana','funciona','prob','anda']}]},
+ {id:'reason',find:(t,d)=>findStem(d,['mudanza','me mudo','necesito','deuda','espacio','viajo','viaje','no tengo lugar','me separo','me caso'])&&'motivo',
+  react:()=>['Entiendo, a veces hay que soltar las cosas.'],ask:()=>[{id:'tre',q:'¿No te da pena desprenderte de él?',a:['si','no','pena','duele','necesito','toca','momento','mejor','manos','cuide','alguien']}]},
+];
+function nextQuestion(b,it,topic,text){
+  const d=text?norm(text):'';const fresh=q=>!b.asked.includes(q.id)&&!(text&&answers(q,d,text));
+  if(topic){const T=TOPICS.find(t=>t.id===topic.id);for(const q of T.ask(topic.x))if(fresh(q)){b.asked.push(q.id);return q}}
+  const opts=[];
+  const y=(it.story.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/)||[])[1];
+  if(y)opts.push({id:'fy',q:`En el anuncio dices ${y}. ¿Cómo sabes la fecha exacta?`,a:PROOF.concat(['marca','grabad','fecha','abuel','famili','conto','sabe','registr','diario','libro','etiqueta'])});
+  for(const k of it.kw.slice(0,4)){const w=wordFor(it.story,k);if(w)opts.push({id:'fk'+k,q:`Cuéntame más de eso de «${w}» que pusiste en el anuncio.`,a:[k,'__long__']})}
+  if(!b.photos)opts.push({id:'fp',q:'¿Me puedes mandar una foto del artículo?',photo:true});
+  opts.push({id:'fv',q:`¿Por qué debería pagar ${money(b.offer)} por esto?`,a:['histor','unic','raro','tasacion','valor','coleccion','pocos','antig','famos'].concat(it.kw)});
+  opts.push({id:'fs',q:'¿En qué estado está?',a:CONDITION.concat(['bien','mal','excelente','bueno','usad'])});
+  opts.push({id:'fe',q:'¿Haces envíos?',a:SHIP.concat(['si','no','claro','por supuesto'])});
+  opts.push({id:'fa',q:'¿Algo más que quieras contarme antes de decidir?',a:['__any__']});
+  const av=opts.filter(fresh);
+  const q=av.length?(Math.random()<.5?pick(av.slice(0,3)):av[0]):{id:'fz'+b.pmsgs,q:'¿Entonces? Convénceme.',a:['__any__']};
+  b.asked.push(q.id);return q;
+}
+function answers(q,d,text){
+  if(!q||q.photo)return false;
+  return q.a.some(s=>s==='__any__'?text.length>25:s==='__long__'?text.length>70:s==='NUM'?/\d/.test(d):rx(s).test(d));
+}
+function qType(d){
+  if(/(cuanto|precio|ofrec|ofert|pagar|pagas|pagarias|subir|subes|mas dinero)/.test(d))return 'price';
+  if(/(te interesa|lo quieres|lo quiere|cerramos|trato|lo compras|lo compra|te decides|decidiste|lo llevas|te convence|te convenci)/.test(d))return 'close';
+  if(/(para que lo|por que lo quier|que vas a hacer|para que es|para quien)/.test(d))return 'why';
+  if(/(de donde eres|donde vives|donde estas|de que zona|de donde es)/.test(d))return 'where';
+  if(/(como te llamas|quien eres|tu nombre)/.test(d))return 'name';
+  return 'other';
+}
+function parsePrice(text){
+  const m=text.match(/(?:\$|us\$|usd)\s?(\d[\d.,]*)|(\d[\d.,]*)\s?(?:d[oó]lares|pesos|usd|bucks)/i);
+  return m?parseInt((m[1]||m[2]).replace(/[.,]/g,''),10):null;
+}
+
+/* ---------- forma del mensaje (siempre local, para que las faltas se vean al instante) ---------- */
+function formCheck(text,b){
+  const chips=[];let neg=0,pos=0;const f={spell:0};
+  const add=(v,l)=>{chips.push({v,l});v>0?pos+=v:neg+=v};
+  const d=norm(text);
+  const ins=INSULTS.filter(w=>rx(w).test(d)).length;
+  if(ins){add(-28*Math.min(ins,2),'Falta de respeto');f.insult=true}
+  for(const s of spellIssues(text)){add(s.hard?-7:-3,`«${s.w}» → «${s.fix}»`);f.spell++}
+  const sl=SLANG.filter(s=>new RegExp('(^|[^a-z])'+s+'([^a-z]|$)').test(d)).length;
+  if(sl){add(-5*Math.min(sl,3),'Poco profesional');f.slang=true}
+  const letters=text.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ]/g,''),up=text.replace(/[^A-ZÁÉÍÓÚÑ]/g,'');
+  if(letters.length>8&&up.length/letters.length>.7){add(-10,'Todo en mayúsculas');f.caps=true}
+  const toks=d.match(/[a-z]+/g)||[];
+  const gib=toks.filter(w=>w.length>3&&(!/[aeiouy]/.test(w)||/[bcdfghjklmnpqrstvwxz]{4,}/.test(w))).length;
+  if(toks.length&&gib/toks.length>.34){add(-8,'No se entiende');f.gib=true}
+  if(/[!?]{3,}/.test(text))add(-4,'Exceso de signos');
+  if(/^[a-záéíóúñ]/.test(text))add(-2,'Empieza en minúscula');
+  if(!/[.!?…)"»]$/.test(text))add(-2,'Sin punto final');
+  if(/\?/.test(text)&&!/¿/.test(text))add(-1,'Falta el «¿»');
+  if(text.length<15&&b.persona!=='apurado'){add(-5,'Respuesta muy seca');f.dry=true}
+  if(text.length>380)add(b.persona==='apurado'?-10:-3,'Demasiado largo');
+  if(/(te ruego|por favor compr|compralo ya|urgente|no seas malo|necesito el dinero)/.test(d))add(-6,'Suena desesperado');
+  if(b.last&&d.trim()===b.last)add(-10,'Mensaje repetido');
+  const greet=/(^|[^a-z])(hola|buenas|buen dia|buenos dias|estimad[oa]|saludos)([^a-z]|$)/.test(d);
+  if(b.pmsgs===0)greet?add(5,'Saludo'):add(-4,'No saludaste');
+  const c=['gracias','por favor','con gusto','disculp','usted','encantad','un placer','a sus ordenes','a tu disposicion','a su disposicion'].filter(w=>d.includes(w)).length;
+  if(c)add(3*Math.min(c,2),'Cortesía');
+  return {chips,pos,neg,f,d};
+}
+
+/* ---------- evaluación local del contenido (si la IA no está disponible) ---------- */
+function evaluateLocal(text,b,it,form){
+  const P=PERSONAS[b.persona];const chips=[...form.chips];let pos=form.pos,neg=form.neg;const f=form.f,d=form.d;
+  const add=(v,l)=>{chips.push({v,l});v>0?pos+=v:neg+=v};
+  if(text.length>=40&&text.length<=380)add(3,'Buena extensión');
+  const first=strip(b.name.split(/[ _.]/)[0].toLowerCase());
+  if(first.length>2&&!['don','senor'].includes(first)&&rx(first).test(d))add(4,'Lo llamaste por su nombre');
+  const pr=PROOF.filter(w=>rx(w).test(d)).length;
+  if(pr)add(Math.round(6*Math.min(pr,2)*P.proof),'Pruebas o garantías');
+  if(b.q){
+    if(b.q.photo){if(/(foto|mando|ahi va|ya va|enseguida|ahora te)/.test(d))f.photoPromise=true;else{add(-6,'No mandaste la foto');f.ignored=true;b.q=null}}
+    else if(answers(b.q,d,text)){add(10,'Respondiste su pregunta');f.answered=true;b.q=null}
+    else{add(-6,'Ignoraste su pregunta');f.ignored=true;f.ignoredQ=b.q.q;b.q=null}
+  }
+  const cons=it.kw.filter(k=>rx(k).test(d)).length;
+  if(cons)add(Math.round(5*Math.min(cons,3)*P.story),'Coherente con el anuncio');
+  const sd=norm(it.story);
+  const contra=CONTRA.filter(k=>rx(k).test(d)&&!rx(k).test(sd)).length;
+  if(contra){add(-9*Math.min(contra,2),'Eso no estaba en el anuncio');f.contra=true}
+  f.ask=text.includes('?')?qType(d):null;
+  f.topics=[];for(const T of TOPICS){const x=T.find(text,d,it);if(x)f.topics.push({id:T.id,x})}
+  const e=ease(b)*(S.weak?.75:1);
+  return {delta:Math.min(34,Math.round(pos*P.pos*e+neg*P.neg)),chips,f,text};
+}
+function buyerReply(b,ev,it){
+  const L=[],f=ev.f;
+  if(f.insult)L.push(pick(['¿Perdón? Así no se le habla a un cliente.','Qué falta de respeto. Me estoy arrepintiendo.','No hace falta tratarme así.']));
+  else if(f.gib)L.push(pick(['No entendí nada de lo que escribiste.','¿Qué? Eso no se entiende.']));
+  else if(f.caps)L.push('¿Por qué me gritas?');
+  else if(f.spell>=2)L.push(pick(['Escribes un poco raro… ¿eres un vendedor serio?','Con tantas faltas me cuesta confiar.','¿Lo escribiste con prisa? Parece una estafa.']));
+  else if(f.slang)L.push(pick(['Uf, qué informal todo…','No sé si estoy hablando con alguien serio.']));
+  if(f.ask){
+    const conv=b.conv;
+    L.push({price:conv>70?`Te ofrecí ${money(b.offer)}. Si sigues así, cerramos por eso.`:`${money(b.offer)}, ya te dije. Y todavía no estoy seguro.`,
+      close:conv>=80?'Estoy casi convencido.':conv>=50?'Me interesa, pero todavía tengo dudas.':'La verdad, por ahora no me convence.',
+      why:PERSONAS[b.persona].why,where:`Vivo en ${b.city}${b.dist>=3?', así que el envío va a tardar un poco':''}.`,
+      name:`Me llamo ${b.name}, lo ves arriba.`,other:pick(['Buena pregunta, pero contéstame tú primero.','No sé, la verdad.','Eso ahora no importa tanto.'])}[f.ask]);
+  }
+  if(f.answered)L.push(pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
+  else if(f.ignored&&!f.insult)L.push(f.ignoredQ?pick(['No me respondiste lo que te pregunté.','Te hice una pregunta concreta…']):'¿Y la foto?');
+  if(f.contra)L.push(pick(['Espera, eso no lo decía el anuncio. ¿Me estás inventando cosas?','¿Y eso de dónde salió? En la publicación no estaba.']));
+  let topic=null;
+  if(!f.insult&&!f.gib){
+    topic=f.topics.find(t=>!b.seen.includes(t.id))||null;
+    if(topic){b.seen.push(topic.id);if(!f.contra)L.push(pick(TOPICS.find(t=>t.id===topic.id).react(topic.x)))}
+    else if(!f.answered&&!f.ignored&&!f.ask){
+      if(ev.delta>=15)L.push(pick(['¡Eso me convence bastante!','Ahora sí estamos hablando.','Muy bien explicado.']));
+      else if(ev.delta>=5)L.push(pick(['Vale, tiene sentido.','Me gusta lo que escucho.']));
+      else if(f.dry)L.push(pick(['¿Nada más? Esperaba algo más.','Ajá… ¿y?']));
+      else L.push(pick(['Mmm…','No sé, sigo con dudas.']));
+    }
+  }
+  if(f.photoPromise)L.push('De acuerdo, espero la foto.');
+  else{const q=nextQuestion(b,it,topic,ev.text);b.q=q;L.push(q.q)}
+  if(b.patience===1)L.push('Te aviso que no tengo todo el día.');
+  return L.join(' ');
+}
+
+/* ---------- cliente con IA (Claude) ---------- */
+async function initAI(){
+  try{
+    sampleFn=await window.claude?.use?.('sample')||null;
+    aiState=sampleFn?'ok':'off';
+  }catch(e){sampleFn=null;aiState='off'}
+  renderAIBadge();
+}
+function aiFail(e){
+  const code=e&&e.code;
+  if(['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(code)){aiState='off';toast('Los clientes con IA no están disponibles. Sigue el motor clásico.')}
+  else if(code==='rate_limited'){aiState='cooldown';setTimeout(()=>{if(aiState==='cooldown')aiState='ok';renderAIBadge()},60000);toast('La IA está saturada. Un minuto con el motor clásico.')}
+  renderAIBadge();
+}
+async function aiBuyerTurn(text,b,it,form){
+  const P=PERSONAS[b.persona];
+  const hist=b.msgs.slice(-10).map(m=>m.from==='b'?`CLIENTE: ${m.text}`:m.from==='p'?(m.photo?`VENDEDOR: [envió una foto de calidad ${m.photo.q}%]`:`VENDEDOR: ${m.text}`):m.from==='emp'?`EMPLEADO DEL VENDEDOR: ${m.text}`:`(sistema: ${m.text})`).join('\n');
+  const formIssues=form.chips.filter(c=>c.v<0).map(c=>c.l).join('; ')||'ninguno';
+  const prompt=`Eres el motor de un cliente en un juego de navegador sobre revender objetos usados con historias inventadas. Interpretas a ${b.name}, comprador con perfil «${P.label}» (${P.desc}). Vive en ${b.city}. Escribe en español neutro, tuteando, sin regionalismos ni jerga.
+
+ANUNCIO
+Objeto: ${it.name}
+Precio que pide el vendedor: $${it.price}
+Historia publicada: "${it.story}"
+
+ESTADO
+Tu oferta actual: $${b.offer}
+Tu convencimiento: ${Math.round(b.conv)}/100 (100 = compras)
+Mensajes que te quedan de paciencia: ${b.patience}
+Pregunta que le hiciste y sigue pendiente: ${b.q?'"'+b.q.q+'"':'ninguna'}
+
+CONVERSACIÓN HASTA AHORA
+${hist}
+
+NUEVO MENSAJE DEL VENDEDOR
+"${text}"
+
+Problemas de forma ya detectados y puntuados aparte (no los vuelvas a puntuar, pero puedes reaccionar a ellos en tu respuesta si son graves): ${formIssues}
+
+Evalúa el CONTENIDO del nuevo mensaje como lo haría una persona real y lista: ¿entiende y responde tu pregunta pendiente (aunque use otras palabras)? ¿Es coherente con el anuncio y con lo dicho antes, o inventa algo nuevo o contradictorio? ¿Aporta detalles concretos y creíbles (procedencia, pruebas, estado, envío, garantía)? ¿Suena honesto o a estafa? ¿Es amable y persuasivo, o presiona y suena desesperado? Si pide más dinero o menciona un precio, ten en cuenta que eso se negocia aparte; solo reacciona.
+Sé exigente pero justo: un mensaje genérico vale poco; uno que responde con precisión y suma un detalle verificable vale mucho; una contradicción con el anuncio resta mucho.
+
+Responde SOLO con un objeto JSON, sin texto alrededor:
+{"puntos": entero entre -25 y 25,
+ "motivos": [entre 1 y 3 objetos {"v": entero, "t": "motivo en 2 a 5 palabras"}],
+ "respondio": true si respondió tu pregunta pendiente, false si la ignoró o la esquivó, null si no había pregunta,
+ "contradiccion": true o false,
+ "respuesta": "lo que escribes tú como cliente: 1 a 3 oraciones naturales, coherentes con tu perfil, que reaccionen a lo concreto que dijo el vendedor y terminen con UNA pregunta nueva y específica sobre algo que todavía no quedó claro",
+ "pide_foto": true si en tu respuesta pides una foto, si no false}`;
+  const out=await sampleFn.json(prompt,{modelTier:'quick',cache:false});
+  if(!out||typeof out.respuesta!=='string'||typeof out.puntos!=='number')throw {code:'invalid_json'};
+  return out;
+}
+async function aiStory(story,it){
+  const prompt=`Eres el jurado de un juego donde el jugador inventa la historia de un objeto usado para revenderlo caro. Evalúa esta historia.
+Objeto: ${it.name}
+Historia: "${story}"
+Criterios (0 a 10 cada uno):
+- creatividad: originalidad, que no sea un cliché repetido, imágenes y giros memorables;
+- coherencia: que tenga sentido interno, que las fechas y los hechos encajen, que hable de verdad de ESTE objeto;
+- credibilidad: que un comprador razonable pueda creerla, con detalles concretos y verificables.
+Responde SOLO con JSON: {"creatividad": n, "coherencia": n, "credibilidad": n, "comentario": "una frase breve en español neutro, tuteando, con el mejor consejo para mejorarla"}`;
+  const o=await sampleFn.json(prompt,{modelTier:'quick'});
+  const n=k=>clamp(Number(o[k])||0,0,10);
+  return {cr:n('creatividad'),co:n('coherencia'),ve:n('credibilidad'),com:String(o.comentario||'')};
+}
+
+/* ---------- regateo ---------- */
+function haggle(b,p,it){
+  b.haggles++;b.patience--;
+  const max=niceRound(b.offer*(1.06+b.conv/100*.5));
+  const chips=[];let delta=0,reply,newOffer=b.offer;
+  if(p<=b.offer){newOffer=p;delta=10;chips.push({v:10,l:'Bajaste el precio'});reply=p<b.offer?`¿${money(p)}? ¡Mejor para mí! Me gusta tu actitud.`:`Perfecto, quedamos en ${money(p)}.`}
+  else if(p<=max&&b.conv>=60){newOffer=p;delta=-3;chips.push({v:-3,l:'Regateo aceptado'});reply=pick([`Está bien, ${money(p)}. Pero que valga la pena.`,`Uf… de acuerdo, ${money(p)}.`])}
+  else if(p<=max*1.3){const mid=niceRound((b.offer+Math.min(p,max))/2);newOffer=Math.max(b.offer,mid);delta=-5;chips.push({v:-5,l:'Te hizo una contraoferta'});reply=newOffer>b.offer?`${money(p)} es mucho. Te puedo dar ${money(newOffer)}, no más.`:`No puedo subir de ${money(b.offer)} todavía. Convénceme un poco más.`}
+  else{delta=-11;chips.push({v:-11,l:'Pediste un abuso'});reply=pick([`¿${money(p)}? Eso es un abuso. Sigo en ${money(b.offer)}.`,`Ni loco pago ${money(p)}. Mi oferta es ${money(b.offer)}.`])}
+  if(b.haggles>=3){delta-=5;chips.push({v:-5,l:'Regateas demasiado'})}
+  b.offer=newOffer;
+  return {delta,chips,reply};
+}
+
+/* ---------- desenlaces ---------- */
+const itemOf=b=>S.inv.find(i=>i.id===b.itemId);
+function winBuyer(b,by){
+  const it=itemOf(b);if(!it)return;
+  b.status='won';
+  b.msgs.push({from:'b',text:pick([`¡Trato hecho! Te transfiero ${money(b.offer)}.`,`Listo, me convenciste. ${money(b.offer)} y es mío.`,'De acuerdo, lo compro. Pásame los datos para pagar.'])});
+  const profit=b.offer-it.paid;
+  b.msgs.push({from:'sys',cls:'win',text:`Vendido por ${money(b.offer)} · ganancia ${profit>=0?'+':''}${money(profit)}`});
+  const half=Math.floor(b.offer/2),rest=b.offer-half;
+  S.money+=half;S.sales++;S.earned+=profit;S.day$.sales++;S.day$.profit+=profit;flashMoney(1);
+  const sh={id:S.nextId++,name:it.name,icon:it.icon,buyer:b.name,city:b.city,rest};
+  if(droneOn()){sh.at=S.t+ri(20,40);sh.drone=true}else sh.day=S.day+b.dist;
+  S.shipments.push(sh);
+  b.msgs.push({from:'sys',text:`Cobraste ${money(half)} (50 %). El resto, ${money(rest)}, al entregar en ${sh.city}: ${sh.drone?'hoy mismo, en dron':`en ${b.dist} día${b.dist>1?'s':''}`}.`});
+  for(const o of S.buyers)if(o!==b&&o.itemId===b.itemId&&o.status==='open'){o.status='lost';o.msgs.push({from:'sys',cls:'lose',text:'El artículo ya se vendió a otra persona.'})}
+  S.inv=S.inv.filter(i=>i!==it);
+  if(!by)drain();
+  toast(`${by?by+' vendió':'Vendiste'} ${art(it)} ${low(it.name)} por ${money(b.offer)}. Cobras ${money(half)} ahora y ${money(rest)} al entregar.`,'good');
+  confetti();dirty=true;
+}
+function loseBuyer(b,why){b.status='lost';b.msgs.push({from:'sys',cls:'lose',text:why});dirty=true}
+function deliverShipment(sh){
+  S.shipments=S.shipments.filter(x=>x!==sh);S.money+=sh.rest;flashMoney(1);
+  toast(`${sh.drone?'El dron entregó':'Se entregó'} ${low(sh.name)} en ${sh.city}. Cobraste el resto: ${money(sh.rest)}.`,'good');dirty=true;
+}
+
+/* ---------- empleados ---------- */
+function genCands(){
+  const maxC=Math.min(75,18+(S?S.day:1)*7);
+  return Array.from({length:5},()=>{
+    const chance=ri(10,maxC)/100;
+    const tier=chance<.2?'bad':chance<.35?'ok':chance<.55?'good':'pro';const T=TIERS[tier];
+    const cost=Math.round(Math.pow(chance*100,1.6)*2);
+    const sk=()=>clamp(Math.round(chance*100+ri(-18,18)),5,98);
+    return {id:'c'+(S?S.nextId++:Math.floor(Math.random()*1e9)),name:pick(FIRST)+' '+pick(LAST),age:ri(17,64),tier,title:pick(T.titles),
+      exp:[...T.exp].sort(()=>Math.random()-.5).slice(0,2),quote:pick(T.quote),chance,cost,salary:Math.max(3,Math.round(cost/14)),
+      skills:{Ortografía:tier==='bad'?ri(3,25):sk(),Labia:sk(),Paciencia:sk()}};
+  });
+}
+function employeesWork(){
+  if(!S.auto||isOffline())return;
+  for(const h of S.hired){
+    if(h.busy){
+      const b=S.buyers.find(x=>x.id===h.busy);
+      if(!b||b.status!=='open'){h.busy=null;continue}
+      if(S.t>=h.until){
+        h.busy=null;b.emp=null;const fn=h.name.split(' ')[0];
+        if(Math.random()<h.chance)winBuyer(b,fn);
+        else{b.msgs.push({from:'b',text:pick(['No entendí nada. Paso.','Mejor no, gracias.','Voy a buscar en otro lado.','Mmm, no me convence. Adiós.'])});loseBuyer(b,`${fn} no logró convencerlo.`)}
+        if(S.cur===b.id)renderChat();
+      }
+      continue;
+    }
+    const b=S.buyers.find(x=>x.status==='open'&&!x.emp&&!x.typing&&x.id!==S.cur&&x.waitingSince!=null&&S.t-x.waitingSince>=10);
+    if(b){h.busy=b.id;h.until=S.t+ri(4,7);b.emp=h.id;b.waitingSince=null;b.msgs.push({from:'emp',who:h.name,text:pick(TIERS[h.tier].lines)});dirty=true}
+  }
+}
+
+/* ---------- facturas y banco ---------- */
+function addBill(kind,label,amount,due,extra){S.bills.push(Object.assign({id:S.nextId++,kind,label,amount,due,issued:S.day},extra||{}))}
+function payBill(id){
+  const b=S.bills.find(x=>x.id===id);if(!b)return;
+  if(S.money<b.amount){toast('No te alcanza para pagar esa factura.');return}
+  S.money-=b.amount;S.day$.spent+=b.amount;flashMoney(-1);S.bills=S.bills.filter(x=>x!==b);
+  if(b.kind==='loan'){S.loan=null;toast('Pagaste el préstamo. El banco vuelve a confiar en ti.','good')}else toast(`Pagaste: ${b.label}.`);
+  dirty=true;save();
+}
+const creditLimit=()=>Math.min(1500,50+S.sales*25+S.day*10+(S.drone?100:0)+(S.fridge?60:0));
+function takeLoan(amount){
+  if(S.loan||amount>creditLimit())return;
+  const owed=Math.ceil(amount*1.6);
+  S.money+=amount;flashMoney(1);
+  addBill('loan',`Préstamo de ${money(amount)} + 60 % de interés`,owed,S.day+7);
+  S.loan={amount,owed,day:S.day};
+  toast(`El banco te prestó ${money(amount)}. Debes ${money(owed)} en 7 días.`,'good');dirty=true;save();
+}
+
+/* ---------- reloj ---------- */
+function tick(){
+  S.t++;if(S.min<23*60+57)S.min+=3;
+  const before=S.shop.length;
+  S.shop=S.shop.filter(l=>l.exp>S.t);
+  if(S.shop.length!==before)dirty=true;
+  if(S.shop.length<8&&S.t>=S.nextShop&&!night()){addListing();dirty=true}
+  if(!night()&&!isOffline())for(const it of S.inv){
+    if(!it.listed)continue;
+    it.tooHigh=it.price>maxWilling(it)*2.2;
+    if(!it.tooHigh&&S.t>=it.nextSpawn&&it.spawned<it.maxBuyers)spawnBuyer(it);
+  }
+  for(const b of S.buyers)if(b.status==='open'&&!b.emp&&!b.typing&&b.waitingSince!=null&&S.t-b.waitingSince>110){
+    b.msgs.push({from:'b',text:'Bueno, veo que no contestas. Adiós.'});loseBuyer(b,'Se cansó de esperar tu respuesta.');
+    if(S.cur===b.id)renderChat();
+  }
+  for(const dl of S.deliveries.filter(x=>S.t>=x.at)){
+    const F=FOOD.find(f=>f.id===dl.food);
+    if(S.fridge){S.fridgeItems.push({uid:S.nextId++,id:F.id,day:S.day});toast(`Llegó: ${F.name}. Lo guardaste en el refrigerador.`)}
+    else{consume(F);toast(`Llegó: ${F.name}. Te lo comiste en el momento.`)}
+    dirty=true;
+  }
+  S.deliveries=S.deliveries.filter(x=>S.t<x.at);
+  for(const sh of S.shipments.filter(x=>x.at&&S.t>=x.at))deliverShipment(sh);
+  employeesWork();
+  renderTaskbar();updateTimers();
+  if(dirty){renderPage();if(S.cur!=null)renderChat(true);renderMini();if(!$('#stats').hidden)renderStats();dirty=false}
+  if(S.t%5===0)save();
+}
+
+/* ---------- fin del día ---------- */
+function openNight(){
+  const due=S.bills.filter(b=>b.due<=S.day);
+  const hungry=S.food<70,thirsty=S.drink<70;
+  $('#night-body').innerHTML=`
+    <div class="sum-grid">
+      <div><b class="num">${S.day$.sales}</b><span>Ventas</span></div>
+      <div><b class="num">${S.day$.profit>=0?'+':''}${money(S.day$.profit)}</b><span>Ganancia</span></div>
+      <div><b class="num">${money(S.day$.jobs)}</b><span>Trabajitos</span></div>
+    </div>
+    <div class="sum-line ${hungry?'bad':'ok'}">Comida ${Math.round(S.food)} % ${hungry?'· menos de 70 %: mañana estarás débil':'· bien alimentado'}</div>
+    <div class="sum-line ${thirsty?'bad':'ok'}">Bebida ${Math.round(S.drink)} % ${thirsty?'· menos de 70 %: mañana estarás débil':'· bien hidratado'}</div>
+    ${due.length?`<div class="sum-line bad">Tienes ${due.length} factura${due.length>1?'s':''} que vence${due.length>1?'n':''} hoy (${money(due.reduce((a,b)=>a+b.amount,0))}). Si no pagas, suben un 10 %${due.some(b=>b.kind==='salary')?' y los empleados sin pago renuncian':''}${due.some(b=>b.kind==='internet')?', y te cortan internet':''}.</div>`:'<div class="sum-line ok">No tienes facturas vencidas.</div>'}
+    ${S.fridgeItems.some(f=>f.day<=S.day-1)?'<div class="sum-line bad">Hay comida en el refrigerador que se pudre esta noche.</div>':''}`;
+  $('#night').hidden=false;
+}
+function endDay(){
+  const d=S.day;
+  const summary={day:d,sales:S.day$.sales,profit:S.day$.profit};
+  S.weak=S.food<70||S.drink<70;
+  for(const b of [...S.bills].filter(b=>b.due<=d)){
+    if(b.kind==='salary'){const h=S.hired.find(x=>x.id===b.emp);if(h){S.hired=S.hired.filter(x=>x!==h);toast(`${h.name} renunció porque no le pagaste.`)}S.bills=S.bills.filter(x=>x!==b)}
+    else{b.amount=Math.ceil(b.amount*1.1);b.late=true}
+  }
+  S.day++;S.min=8*60;
+  const rotten=S.fridgeItems.filter(f=>f.day<=S.day-2);
+  if(rotten.length){toast(`Se pudrió: ${rotten.map(r=>FOOD.find(f=>f.id===r.id).name).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f))}
+  for(const sh of S.shipments.filter(x=>x.day&&x.day<=S.day))deliverShipment(sh);
+  S.food=clamp(S.food-10,0,100);S.drink=clamp(S.drink-10,0,100);
+  for(const h of S.hired)addBill('salary',`Sueldo de ${h.name}`,h.salary,S.day,{emp:h.id});
+  if(S.day%7===0){
+    addBill('internet','Internet (semana)',40,S.day+1);
+    const apps=appliances();
+    addBill('luz',`Luz (semana${apps?`, ${apps} electrodoméstico${apps>1?'s':''}`:''})`,5+5*apps,S.day+1);
+  }
+  if(S.drone&&S.day>S.droneDay&&(S.day-S.droneDay)%7===0)addBill('drone','Servicio de drones (semana)',50,S.day+1);
+  S.cands=genCands();S.jobsDone={plates:0,surveys:0,typing:0};
+  S.shop=[];for(let i=0;i<6;i++)addListing(true);
+  S.day$={sales:0,profit:0,jobs:0,spent:0};
+  S.buyers=S.buyers.filter(b=>b.status==='open'||b.id===S.lastChat);
+  $('#night').hidden=true;dirty=true;save();
+  playDayTransition(summary,()=>{
+    if(S.day===S.botDay)toast('Cuentero.ai ya está en línea. Búscalo en el buscador.');
+    if(S.weak)toast('Amaneciste débil: hoy convences un 25 % menos.');
+    renderTaskbar();renderPage();
+  });
+}
+
+/* ================= NAVEGADOR ================= */
+const INDEX=[
+ {url:'bazarito.com',title:'Bazarito · Compra y vende lo que sea',snip:'Ofertas relámpago de cosas usadas, raras y curiosas. Publica gratis lo que quieras revender.',kw:['comprar','compra','tienda','bazar','oferta','vender','venta','revender','usado','bazarito','cosas','objeto','barato','publicar','anuncio de venta','segunda mano','mercadillo']},
+ {url:'cuentero.ai',title:'Cuentero.ai · Historias que venden',snip:()=>S.day<S.botDay?'Sitio nuevo, todavía en desarrollo.':'Una inteligencia artificial que inventa el pasado glorioso de cualquier objeto. Suscripción única de $50.',kw:['historia','bot','ia','cuento','inventar','invente','invent','escrib','cuentero','relato','trasfondo','inteligencia','artificial','generador','redact','creativ','narra','ai ']},
+ {url:'empleaya.com',title:'EmpleaYa · Contrata personal',snip:'Currículums de vendedores listos para atender a tus clientes. Elige y contrata.',kw:['contratar','contrat','emplead','curriculum','cv','personal','rrhh','recursos humanos','postulante','candidato','vendedor','equipo','reclut','staff','ayudante','asistente','ayuda para vender']},
+ {url:'trabajitos.com',title:'Trabajitos · Empleos fáciles con pago inmediato',snip:'Lava platos, responde encuestas o transcribe textos. Dinero rápido para salir del apuro.',kw:['empleo','trabajo','trabaj','trabajito','chamba','ganar','dinero','rapido','extra','encuesta','lavar','plato','urgente','sin dinero','sin plata','deuda','pobre','conseguir dinero','oficio']},
+ {url:'cuentasclaras.com',title:'Cuentas Claras · Paga tus facturas',snip:'Luz, internet, sueldos, préstamos y todos tus gastos en un solo lugar.',kw:['pagar','pago','factura','cuenta','gasto','salario','sueldo','deuda','luz','internet','impuesto','servicio','vencimiento','abonar','cobro','vence']},
+ {url:'bancoconfianza.com',title:'Banco Confianza · Préstamos al instante',snip:'Te prestamos dinero hoy mismo. Interés del 60 %. Sin preguntas (casi).',kw:['banco','prestamo','prestar','credito','financ','dinero prestado','pedir dinero','invertir','capital','fondos','deuda']},
+ {url:'comeya.com',title:'ComeYa · Comida rápida a domicilio',snip:'Hot dogs, hamburguesas y papas en minutos. Barato, rápido y poco nutritivo.',kw:['comida rapida','rapida','pedir comida','comida','comer','hambre','hamburgues','hot dog','papas','delivery','domicilio','pedido','refresco','gaseosa','chatarra','basura','fast','almuerzo','cena','sed']},
+ {url:'superpronto.com',title:'SuperPronto · Supermercado en línea',snip:'Compras del súper con envío a domicilio. Comida sana que llena de verdad.',kw:['supermercado','super','mercado','compras','abarrotes','verdura','carne','agua','leche','bebida','sed','alimento','comida sana','fruta','sano','saludable','despensa']},
+ {url:'hogartotal.com',title:'Hogar Total · Muebles y electrodomésticos',snip:'Refrigeradores, drones de entrega y todo para tu casa y tu negocio.',kw:['mueble','electrodomest','refrigerador','heladera','nevera','dron','drone','entrega','envio','reparto','hogar','casa','electro','aparato','logistica','mas rapido','acelerar']},
+ {url:'dicciomundo.org',title:'Dicciomundo · Dudas de ortografía',snip:'Las faltas más comunes y cómo evitarlas. «Porque» no se escribe «xq».',kw:['diccionario','ortografia','falta','tilde','acento','escribir bien','gramatica','palabra','dicciomundo','corrector']},
+ {url:'comoserrico.net',title:'Cómo ser rico en 3 días (método secreto)',snip:'Un gurú financiero revela el truco que los bancos odian.',kw:['rico','millonario','facil','exito','secreto','dinero facil','hacerse rico']},
+];
+const ESSENTIAL=['buscalo.com','cuentasclaras.com','trabajitos.com','comeya.com','superpronto.com','bancoconfianza.com'];
+const FAV={'buscalo.com':['b','#2B50E8'],'bazarito.com':['B','#F2542D'],'cuentero.ai':['C','#7A1E36'],'empleaya.com':['E','#0F766E'],'trabajitos.com':['T','#E4A11B'],'cuentasclaras.com':['=','#2F5D50'],'bancoconfianza.com':['$','#0B3D91'],'comeya.com':['C','#E63946'],'superpronto.com':['S','#2E7D32'],'hogartotal.com':['H','#3B3A8F'],'dicciomundo.org':['D','#1B2A4A'],'comoserrico.net':['!','#C200C2']};
+
+function parseUrl(u){u=String(u).trim().toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'');const i=u.indexOf('/');return i<0?{host:u,path:''}:{host:u.slice(0,i),path:u.slice(i+1).replace(/\/$/,'')}}
+const curTab=()=>S.tabs.find(t=>t.id===S.tab)||S.tabs[0];
+function go(url,newTab){
+  if(newTab){const t={id:S.nextId++,url,back:[],fwd:[]};S.tabs.push(t);S.tab=t.id}
+  else{const t=curTab();if(t.url!==url){t.back.push(t.url);t.fwd=[];t.url=url}}
+  renderPage(true);$('#viewport').scrollTop=0;save();
+}
+function omni(text){
+  const v=text.trim();if(!v)return;
+  const p=parseUrl(v);
+  if(/^[a-z0-9-]+\.[a-z.]{2,}$/.test(p.host)&&!/\s/.test(v))go(v.toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,''));
+  else go('buscalo.com/buscar?q='+encodeURIComponent(v));
+}
+function search(q){
+  const d=strip(q.toLowerCase());const words=d.split(/[^a-z0-9]+/).filter(w=>w.length>=2);
+  return INDEX.map(s=>{
+    let sc=0;
+    for(const k of s.kw){
+      if(k.includes(' ')){if(d.includes(k.trim()))sc+=2;continue}
+      if(words.some(w=>w.startsWith(k)||(w.length>=4&&k.startsWith(w))))sc+=1;
+    }
+    if(words.some(w=>w.length>=4&&s.url.includes(w)))sc+=3;
+    return {s,sc};
+  }).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc).map(r=>r.s);
+}
+function route(url){
+  const {host,path}=parseUrl(url);
+  if(isOffline()&&!ESSENTIAL.includes(host)&&FAV[host])return {title:'Sin conexión',host,cls:'sys',html:pageOffline()};
+  switch(host){
+    case 'buscalo.com':return pageBuscalo(path);
+    case 'bazarito.com':return pageBazarito(path);
+    case 'cuentero.ai':return pageCuentero();
+    case 'empleaya.com':return pageEmplea(path);
+    case 'trabajitos.com':return pageTrabajitos();
+    case 'cuentasclaras.com':return pageCuentas();
+    case 'bancoconfianza.com':return pageBanco();
+    case 'comeya.com':return pageComeYa();
+    case 'superpronto.com':return pageSuper();
+    case 'hogartotal.com':return pageHogar();
+    case 'dicciomundo.org':return pageDic();
+    case 'comoserrico.net':return pageRico();
+    default:{const w=host.replace(/\..*/,'');return {title:'No se puede acceder',host,cls:'sys',html:`<div class="sys-page"><div class="sys-ico">:(</div><h1>No se puede acceder a este sitio</h1><p>No encontramos <b>${esc(host||url)}</b>. Revisa la dirección o búscalo en el buscador.</p><button class="btn" data-go="buscalo.com/buscar?q=${encodeURIComponent(w)}">Buscar «${esc(w)}»</button></div>`}}
+  }
+}
+let lastRenderedUrl=null;
+function renderPage(force){
+  const t=curTab();const r=route(t.url);const page=$('#page');
+  const keep={};page.querySelectorAll('input[id],textarea[id]').forEach(el=>{keep[el.id]=el.value});
+  const act=document.activeElement&&page.contains(document.activeElement)?document.activeElement.id:null;
+  let sel=null;if(act){const a=document.activeElement;try{sel=[a.selectionStart,a.selectionEnd]}catch(e){}}
+  page.className='page site-'+r.cls;page.innerHTML=r.html;
+  if(!force||lastRenderedUrl===t.url){for(const id in keep){const el=page.querySelector('#'+CSS.escape(id));if(el&&el.type!=='checkbox')el.value=keep[id]}}
+  if(act){const el=page.querySelector('#'+CSS.escape(act));if(el){el.focus();if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
+  t.title=r.title;t.host=r.host||parseUrl(t.url).host;lastRenderedUrl=t.url;
+  renderChrome();updateTimers();
+  const bl=page.querySelector('#bot-log');if(bl)bl.scrollTop=bl.scrollHeight;
+}
+function renderChrome(){
+  const t=curTab();
+  $('#tabstrip').innerHTML=S.tabs.map(x=>{const f=FAV[x.host]||['?','#888'];return `<div class="tab ${x.id===S.tab?'on':''}" data-act="tab" data-id="${x.id}" role="tab" aria-selected="${x.id===S.tab}">
+    <span class="fav" style="background:${f[1]}">${esc(f[0])}</span><span class="tt">${esc(x.title||x.url)}</span>
+    <button class="tx" data-act="close-tab" data-id="${x.id}" aria-label="Cerrar pestaña">×</button></div>`}).join('')+`<button class="newtab" data-act="new-tab" aria-label="Nueva pestaña">+</button>`;
+  if(document.activeElement!==$('#addr'))$('#addr').value=t.url;
+  $('#nav-back').disabled=!t.back.length;$('#nav-fwd').disabled=!t.fwd.length;
+  $('#lock').style.color=FAV[t.host]?'var(--good)':'var(--muted)';
+}
+function updateTimers(){
+  document.querySelectorAll('[data-exp]').forEach(el=>{
+    const left=Math.max(0,+el.dataset.exp-S.t),life=+el.dataset.life;
+    const t=el.querySelector('.t');if(t)t.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;
+    const bar=el.querySelector('i');if(bar)bar.style.width=(left/life*100)+'%';
+    el.classList.toggle('urgent',left<12);
+  });
+}
+
+/* ================= PÁGINAS ================= */
+function pageOffline(){return `<div class="sys-page"><div class="sys-ico">⌁</div><h1>Sin conexión</h1><p>Tu proveedor te cortó internet por la factura impaga. Solo puedes entrar a sitios esenciales: pagos, banco, trabajitos y comida.</p><button class="btn" data-go="cuentasclaras.com">Ir a Cuentas Claras</button></div>`}
+function pageBuscalo(path){
+  const q=path.startsWith('buscar?q=')?decodeURIComponent(path.slice(9)):'';
+  const logo=`<span class="bs-logo" data-go="buscalo.com">busca<span>lo</span></span>`;
+  if(!q)return {title:'Buscalo',host:'buscalo.com',cls:'buscalo',html:`<div class="bs-home">${logo}
+    <form class="bs-form" id="bs-form"><input id="bs-q" type="search" placeholder="Busca lo que necesites" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form>
+    <p class="bs-tip">Prueba con «comprar cosas», «comida rápida», «trabajo» o lo que se te ocurra.</p></div>`};
+  const res=search(q);
+  return {title:`${q} - Buscalo`,host:'buscalo.com',cls:'buscalo',html:`<div class="bs-top">${logo}<form class="bs-form sm" id="bs-form"><input id="bs-q" type="search" value="${esc(q)}" aria-label="Buscar" autocomplete="off"><button class="bs-btn">Buscar</button></form></div>
+  <div class="bs-results"><p class="bs-count">${res.length?`Cerca de ${res.length} resultado${res.length>1?'s':''} (0,${ri(10,60)} segundos)`:''}</p>
+  ${res.length?res.map(s=>{const f=FAV[s.url];return `<article class="bs-res"><div class="bs-url"><span class="fav" style="background:${f[1]}">${f[0]}</span><span>${s.url}</span></div>
+  <a href="#" data-go="${s.url}" class="bs-title">${esc(s.title)}</a><p>${esc(typeof s.snip==='function'?s.snip():s.snip)}</p></article>`}).join(''):
+  `<div class="bs-none"><h2>No encontramos nada para «${esc(q)}»</h2><p>Prueba con otras palabras: «vender», «empleados», «historias», «supermercado», «préstamo», «pagar facturas»…</p></div>`}</div>`};
+}
+
+/* ---------- Bazarito ---------- */
+function bzHeader(active){
+  const unread=S.buyers.filter(b=>b.status==='open'&&b.unread).length;
+  return `<header class="bz-head"><div class="bz-in">
+    <div class="bz-logo" data-go="bazarito.com">bazarito<em>.com</em></div>
+    <div class="bz-search">Buscar en Bazarito…</div>
+    <nav class="bz-nav">
+      <a href="#" data-go="bazarito.com" class="${active==='home'?'on':''}">Ofertas</a>
+      <a href="#" data-go="bazarito.com/mis-cosas" class="${active==='inv'?'on':''}">Mis cosas <span class="bz-count">${S.inv.length}</span></a>
+      <a href="#" data-go="bazarito.com/mensajes" class="${active==='msg'?'on':''}">Mensajes ${unread?`<span class="bz-badge">${unread}</span>`:''}</a>
+    </nav></div></header>`;
+}
+function pageBazarito(path){
+  if(path==='mis-cosas'||path==='vender')return {title:'Mis cosas · Bazarito',host:'bazarito.com',cls:'bazarito',html:bzHeader('inv')+`<div class="bz-in bz-body">${bzInv()}</div>`};
+  if(path==='mensajes')return {title:'Mensajes · Bazarito',host:'bazarito.com',cls:'bazarito',html:bzHeader('msg')+`<div class="bz-in bz-body">${bzChats()}</div>`};
+  const list=S.shop.filter(l=>!l.bought);
+  return {title:'Bazarito · Ofertas relámpago',host:'bazarito.com',cls:'bazarito',html:bzHeader('home')+`<div class="bz-in bz-body">
+    <div class="bz-hero"><div><h1>Ofertas relámpago</h1><p>Cada cosa dura segundos. Si parpadeas, se la lleva otro.</p></div>${night()?'<span class="bz-night">De noche casi nadie publica</span>':''}</div>
+    ${list.length?`<div class="bz-grid">${list.map(l=>`<article class="bz-card ${l.type}">
+      ${l.type==='flash'?'<span class="bz-rib">−50 %</span>':l.type==='mystery'?'<span class="bz-rib mys">Misterio</span>':''}
+      <div class="bz-thumb" style="--h:${hue(l.name)}">${l.type==='mystery'?'📦':l.icon}</div>
+      <div class="bz-cb">
+        <h3>${l.type==='mystery'?'Caja misteriosa':esc(l.name)}</h3>
+        <p class="bz-note">«${esc(l.note)}»</p>
+        <p class="bz-seller">@${l.seller}</p>
+        <div class="bz-timer" data-exp="${l.exp}" data-life="${l.life}"><i></i><span>Se va en <b class="t num"></b></span></div>
+        <div class="bz-buy"><span class="bz-price num">${money(l.price)}</span><button class="bz-btn" data-act="buy" data-id="${l.id}" ${S.money<l.price?'disabled':''}>Comprar</button></div>
+      </div></article>`).join('')}</div>`:`<div class="bz-empty">No hay ofertas ahora. Espera unos segundos.</div>`}</div>`};
+}
+function bzShip(){
+  if(!S.shipments.length)return '';
+  return `<h2 class="bz-h2">Envíos en camino</h2>`+S.shipments.map(s=>`<div class="bz-row ship"><div class="bz-thumb sm" style="--h:${hue(s.name)}">${s.icon}</div><div class="bz-ri"><b>${esc(s.name)}</b>
+    <span class="bz-sub">Para ${esc(s.buyer)}, en ${esc(s.city)} · ${s.drone?'en dron, llega hoy':s.day<=S.day+1?'llega mañana':`llega el día ${s.day}`}</span><span class="bz-pill live">Te falta cobrar ${money(s.rest)}</span></div></div>`).join('');
+}
+function bzInv(){
+  if(!S.inv.length)return bzShip()+`<div class="bz-empty"><b>No tienes nada para vender.</b><br>Compra algo barato en Ofertas y vuelve aquí para publicarlo con una buena historia.</div>`;
+  return bzShip()+`<h2 class="bz-h2">Mis cosas</h2>`+S.inv.map(it=>{
+    const open=S.buyers.filter(b=>b.itemId===it.id&&b.status==='open').length;
+    const st=!it.listed?'<span class="bz-pill">Sin publicar</span>':it.tooHigh?'<span class="bz-pill bad">Nadie pregunta: precio muy alto para esa historia</span>':`<span class="bz-pill live">Publicado · ${open} interesado${open===1?'':'s'}</span>`;
+    return `<div class="bz-row"><div class="bz-thumb sm" style="--h:${hue(it.name)}">${it.icon}</div><div class="bz-ri">
+      <b>${esc(it.name)}</b><span class="bz-sub">Pagaste <span class="num">${money(it.paid)}</span>${it.listed?` · Pides <span class="num">${money(it.price)}</span> · gancho ${Math.round(it.score*100)} %`:''}</span>${st}
+      ${it.listed?`<p class="bz-story">«${esc(it.story)}»</p>${it.aiNote?`<p class="bz-ai">Jurado IA: ${esc(it.aiNote)}</p>`:''}`:''}
+      <div class="bz-acts">${it.listed?(open?'<button class="bz-btn ghost" data-go="bazarito.com/mensajes">Ver mensajes</button>':`<button class="bz-btn ghost" data-act="edit" data-id="${it.id}">Editar anuncio</button>`):`<button class="bz-btn" data-act="edit" data-id="${it.id}">Publicar</button>`}</div>
+    </div></div>`}).join('');
+}
+function bzChats(){
+  const open=S.buyers.filter(b=>b.status==='open').sort((a,b)=>(b.unread-a.unread)||(b.offer-a.offer));
+  const closed=S.buyers.filter(b=>b.status!=='open').slice(-10).reverse();
+  if(!open.length&&!closed.length)return `<div class="bz-empty"><b>Nadie te escribió todavía.</b><br>Publica algo con una buena historia y llegarán ofertas.</div>`;
+  const row=b=>{const it=itemOf(b)||{name:'Artículo vendido'};const last=b.msgs[b.msgs.length-1];
+    const st=b.status==='won'?'Vendido':b.status==='lost'?'Cerrado':b.emp?`Lo atiende ${(S.hired.find(h=>h.id===b.emp)||{name:'tu empleado'}).name.split(' ')[0]}`:b.waitingSince!=null?'Esperando tu respuesta':'Escribiendo…';
+    return `<button class="bz-chat ${b.status!=='open'?'closed':''}" data-act="open-chat" data-id="${b.id}">
+      <span class="av" style="--h:${hue(b.name)}">${esc(b.name[0])}</span>
+      <span class="bz-ci"><span class="bz-ct"><b>${esc(b.name)}</b><span class="bz-price sm num">${money(b.offer)}</span></span>
+      <span class="bz-sub">${esc(it.name)} · ${st}</span>
+      ${b.status==='open'?`<span class="minibar"><i style="width:${b.conv}%;background:${convColor(b.conv)}"></i></span>`:`<span class="bz-sub">${esc(last.text||'')}</span>`}</span>
+      ${b.unread&&b.status==='open'?'<span class="dot"></span>':''}</button>`};
+  return `<h2 class="bz-h2">Mensajes</h2>${open.length?open.map(row).join(''):'<div class="bz-empty">No hay conversaciones abiertas.</div>'}${closed.length?`<p class="bz-sec">Cerradas</p>${closed.map(row).join('')}`:''}`;
+}
+
+/* ---------- Cuentero ---------- */
+let botTyping=false;
+function pageCuentero(){
+  if(S.day<S.botDay){
+    const pct=Math.round((S.day/S.botDay)*80+S.min/1440*15);
+    return {title:'Cuentero.ai · En desarrollo',host:'cuentero.ai',cls:'dev',html:`<div class="dev-tape"></div><div class="dev-box">
+      <span class="dev-tag">cuentero.ai</span><h1>Estamos en desarrollo</h1><p>Somos una página muy nueva. Nuestro bot todavía está aprendiendo a mentir con elegancia. Vuelve en unos días.</p>
+      <div class="dev-bar"><i style="width:${pct}%"></i></div><p class="dev-p num">${pct} % completado</p></div><div class="dev-tape"></div>`};
+  }
+  if(!S.botSub)return {title:'Cuentero.ai · Historias que venden',host:'cuentero.ai',cls:'cuentero',html:`<div class="ct-wrap">
+    <div class="ct-logo">Cuentero<span>.ai</span></div>
+    <h1 class="ct-h1">Todo objeto tiene un pasado. Nosotros se lo inventamos.</h1>
+    <p class="ct-lead">Dile al bot qué quieres vender y te escribe una historia irresistible, con fechas, nombres y leyendas. Más de 150 historias, ninguna repetida.</p>
+    <div class="ct-sample"><span class="ct-who">Ejemplo</span><p>«Esta pluma perteneció a la escritora Elena Quiroga, que escribió con ella su primera novela premiada en 1951.»</p></div>
+    <div class="ct-plan"><div><b class="num">$50</b><span>pago único</span></div><ul><li>Historias ilimitadas</li><li>Al menos 3 por objeto</li><li>Listas para pegar en tu anuncio</li></ul>
+    <button class="ct-btn" data-act="bot-sub" ${S.money<50?'disabled':''}>${S.money<50?'Te faltan '+money(50-S.money):'Suscribirme'}</button></div></div>`};
+  const mine=[...new Set(S.inv.map(i=>i.name))];
+  return {title:'Cuentero.ai · Tu escritor',host:'cuentero.ai',cls:'cuentero',html:`<div class="ct-wrap chat">
+    <div class="ct-bar"><div class="ct-logo sm">Cuentero<span>.ai</span></div><span class="ct-on">● Suscrito</span></div>
+    <div class="ct-log" id="bot-log">${[{from:'bot',text:'Hola, soy Cuentero. Dime qué objeto quieres vender y te invento un pasado glorioso.'},...S.botMsgs].map(m=>m.from==='me'?`<div class="ct-me">${esc(m.text)}</div>`:
+      `<div class="ct-bot"><span class="ct-who">Cuentero</span><p>${esc(m.text)}</p>${m.story&&m.item?(S.inv.some(i=>i.name===m.item)?`<button class="ct-use" data-act="bot-use" data-item="${esc(m.item)}" data-story="${esc(m.story)}">Usar en el anuncio</button>`:'<span class="ct-note">Compra este objeto para usar la historia.</span>'):''}</div>`).join('')}
+      ${botTyping?'<div class="ct-bot typing"><i></i><i></i><i></i></div>':''}</div>
+    ${mine.length?`<div class="ct-chips"><span>Tus cosas:</span>${mine.map(n=>`<button data-act="bot-ask" data-item="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}
+    <form class="ct-form" id="bot-form"><input id="bot-in" placeholder="Ej: una historia para una tetera" autocomplete="off" aria-label="Pídele una historia"><button class="ct-btn">Pedir</button></form></div>`};
+}
+function botAsk(text){
+  if(botTyping)return;
+  S.botMsgs.push({from:'me',text});botTyping=true;dirty=true;renderPage();
+  const d=strip(text.toLowerCase());
+  const item=CATALOG.find(c=>d.includes(strip(c[0].toLowerCase())))||CATALOG.find(c=>{const w=strip(c[0].toLowerCase()).split(' ')[0];return w.length>3&&rx(w).test(d)});
+  setTimeout(()=>{
+    botTyping=false;
+    if(!item)S.botMsgs.push({from:'bot',text:'No conozco ese objeto. Prueba con algo que tengas, por ejemplo: '+CATALOG.slice(0,4).map(c=>low(c[0])).join(', ')+'…'});
+    else{
+      const used=S.used[item[0]]||[];const free=item[4].map((s,i)=>i).filter(i=>!used.includes(i));
+      if(!free.length)S.botMsgs.push({from:'bot',text:`Ya te di todas mis historias sobre ${low(item[0])}. Prueba a escribir una propia: los clientes valoran la originalidad.`});
+      else{const i=pick(free);S.used[item[0]]=used.concat(i);S.botMsgs.push({from:'bot',text:item[4][i],story:item[4][i],item:item[0]})}
+    }
+    S.botMsgs=S.botMsgs.slice(-30);dirty=true;save();
+  },ri(1100,1900));
+}
+
+/* ---------- EmpleaYa ---------- */
+function pageEmplea(path){
+  const team=path==='equipo';
+  const head=`<header class="lb-head"><div class="lb-in"><div class="lb-logo" data-go="empleaya.com">Emplea<span>Ya</span></div>
+    <nav><a href="#" data-go="empleaya.com" class="${!team?'on':''}">Candidatos</a><a href="#" data-go="empleaya.com/equipo" class="${team?'on':''}">Mi equipo (${S.hired.length})</a></nav></div></header>`;
+  if(team){
+    const tot=S.hired.reduce((a,h)=>a+h.salary,0);
+    return {title:'Mi equipo · EmpleaYa',host:'empleaya.com',cls:'labur',html:head+`<div class="lb-in lb-body">
+      <h1 class="lb-h1">Mi equipo</h1><p class="lb-lead">Atienden los chats que dejas sin responder unos segundos. Sus sueldos (${money(tot)} al día) llegan como facturas a Cuentas Claras.</p>
+      <label class="lb-switch" for="auto"><span>Que atiendan los chats sin responder</span><input type="checkbox" id="auto" ${S.auto?'checked':''}></label>
+      ${S.hired.length?S.hired.map(h=>{const busy=h.busy?S.buyers.find(b=>b.id===h.busy):null;return `<div class="lb-cv"><div class="lb-top"><span class="lb-av" style="--h:${hue(h.name)}">${esc(h.name[0])}</span><div><b>${esc(h.name)}</b><span>${esc(h.title)}</span></div><span class="lb-ch num">${Math.round(h.chance*100)} %</span></div>
+        <div class="lb-row"><span>${busy?`Atendiendo a ${esc(busy.name)}`:'Libre'} · sueldo <span class="num">${money(h.salary)}</span>/día</span><button class="lb-btn ghost" data-act="fire" data-id="${h.id}">Despedir</button></div></div>`}).join(''):'<div class="lb-empty">Todavía no contrataste a nadie.</div>'}</div>`};
+  }
+  return {title:'Candidatos · EmpleaYa',host:'empleaya.com',cls:'labur',html:head+`<div class="lb-in lb-body">
+    <h1 class="lb-h1">Vendedores disponibles hoy</h1><p class="lb-lead">Los currículums se renuevan cada día. La probabilidad indica qué tan seguido logran cerrar una venta.</p>
+    <div class="lb-grid">${S.cands.map(c=>{const hired=S.hired.some(h=>h.id===c.id);return `<article class="lb-cv">
+      <div class="lb-top"><span class="lb-av" style="--h:${hue(c.name)}">${esc(c.name[0])}</span><div><b>${esc(c.name)}, ${c.age}</b><span>${esc(c.title)}</span></div><span class="lb-ch num">${Math.round(c.chance*100)} %<small>cierra ventas</small></span></div>
+      <ul class="lb-exp">${c.exp.map(e=>`<li>${esc(e)}</li>`).join('')}</ul>
+      <div class="lb-skills">${Object.entries(c.skills).map(([k,v])=>`<div><span>${k}</span><i><b style="width:${v}%"></b></i></div>`).join('')}</div>
+      <p class="lb-q">«${esc(c.quote)}»</p>
+      <div class="lb-row"><span>Contratar <b class="num">${money(c.cost)}</b> · sueldo <b class="num">${money(c.salary)}</b>/día</span>
+      ${hired?'<span class="lb-ok">Contratado</span>':`<button class="lb-btn" data-act="hire" data-id="${c.id}" ${S.money<c.cost?'disabled':''}>Contratar</button>`}</div></article>`}).join('')}</div></div>`};
+}
+
+/* ---------- Trabajitos ---------- */
+function pageTrabajitos(){
+  const J=S.jobsDone;
+  const card=(id,icon,t,desc,pay,done,max)=>`<article class="ch-card"><div class="ch-ic">${icon}</div><div class="ch-info"><h3>${t}</h3><p>${desc}</p>
+    <div class="ch-meta"><span class="ch-pay">${pay}</span><span>${done}/${max} hoy</span></div></div>
+    <button class="ch-btn" data-act="job" data-id="${id}" ${done>=max?'disabled':''}>${done>=max?'Cupo lleno':'Empezar'}</button></article>`;
+  return {title:'Trabajitos · Empleos fáciles',host:'trabajitos.com',cls:'changas',html:`<div class="ch-head"><div class="ch-in"><div class="ch-logo">trabajitos<span>.com</span></div><p>Dinero rápido, sin entrevista, sin futuro.</p></div></div>
+  <div class="ch-in ch-body">
+    <p class="ch-warn">Trabajar cansa: a veces baja tu comida o tu bebida.</p>
+    ${card('plates','🍽️','Lavar platos','Restaurante «El Tenedor Feliz». Frota cada plato con la esponja hasta dejarlo brillante.','$3 por plato',J.plates,12)}
+    ${card('survey','📋','Encuestas en línea','Responde preguntas sobre tus hábitos. Cuidado con las preguntas de control.','$4 por encuesta',J.surveys,5)}
+    ${card('typing','⌨️','Transcribir textos','Copia la frase exacta, con tildes y puntuación. Un error y no te pagan.','$3 por frase',J.typing,8)}
+  </div>`};
+}
+
+/* ---------- Cuentas Claras ---------- */
+function pageCuentas(){
+  const bills=[...S.bills].sort((a,b)=>a.due-b.due);
+  const total=bills.reduce((a,b)=>a+b.amount,0);
+  const nextWeek=7-(S.day%7);
+  return {title:'Cuentas Claras · Mis facturas',host:'cuentasclaras.com',cls:'cuentas',html:`<div class="cc-head"><div class="cc-in"><div class="cc-logo">Cuentas <b>Claras</b></div><span>Cliente n.º ${10400+S.botDay*37}</span></div></div>
+  <div class="cc-in cc-body">
+    <div class="cc-total"><span>Total a pagar</span><b class="num">${money(total)}</b><small>Saldo disponible: <span class="num">${money(S.money)}</span></small></div>
+    ${bills.length?`<div class="cc-list">${bills.map(b=>{const over=b.due<S.day,today=b.due===S.day;return `<div class="cc-bill ${over?'over':''}">
+      <div class="cc-ic">${{salary:'👤',internet:'📶',luz:'💡',drone:'🛸',loan:'🏦'}[b.kind]||'🧾'}</div>
+      <div class="cc-bi"><b>${esc(b.label)}</b><span>${over?'Vencida':today?'Vence hoy':`Vence el día ${b.due}`}${b.late?' · con recargo':''}</span></div>
+      <span class="cc-amt num">${money(b.amount)}</span><button class="cc-btn" data-act="pay" data-id="${b.id}" ${S.money<b.amount?'disabled':''}>Pagar</button></div>`}).join('')}</div>`:'<div class="cc-empty">Estás al día. No debes nada.</div>'}
+    <div class="cc-info"><h3>Cómo se factura</h3>
+      <p><b>Luz:</b> cada 7 días. $5 base + $5 por cada electrodoméstico (refrigerador, drones). Hoy pagarías <span class="num">${money(5+5*appliances())}</span>.</p>
+      <p><b>Internet:</b> $40 cada 7 días. Si queda impaga, te cortan y solo puedes entrar a sitios esenciales.</p>
+      <p><b>Drones:</b> $50 por semana desde que los contratas. Si queda impaga, el servicio se suspende.</p>
+      <p><b>Sueldos:</b> cada día, uno por empleado. Si no le pagas, renuncia.</p>
+      <p><b>Préstamos:</b> se devuelven en 7 días con un 60 % de interés.</p>
+      <p>Las facturas vencidas suben un 10 % por día. Próxima factura de luz e internet: en ${nextWeek} día${nextWeek===1?'':'s'}.</p></div>
+  </div>`};
+}
+
+/* ---------- Banco ---------- */
+function pageBanco(){
+  const lim=creditLimit();const loanBill=S.bills.find(b=>b.kind==='loan');
+  const late=loanBill&&loanBill.due<S.day;
+  return {title:'Banco Confianza · Préstamos',host:'bancoconfianza.com',cls:'banco',html:`<div class="bk-head"><div class="bk-in"><div class="bk-logo">BANCO <b>CONFIANZA</b></div><span>Desde 1987 confiando en ti (con intereses)</span></div></div>
+  <div class="bk-in bk-body">
+    <div class="bk-card"><span class="bk-chip"></span><div class="bk-cn num">•••• ${String(4000+S.botDay*137).slice(-4)}</div><div class="bk-cr"><span>Límite de crédito</span><b class="num">${money(lim)}</b></div></div>
+    ${loanBill?`<div class="bk-debt ${late?'late':''}"><h2>${late?'Préstamo vencido':'Préstamo activo'}</h2><p>Recibiste ${money(S.loan?S.loan.amount:0)}. Debes <b class="num">${money(loanBill.amount)}</b> ${late?'y la deuda sube un 10 % cada día. No podemos prestarte más hasta que pagues.':`antes del final del día ${loanBill.due}.`}</p>
+      <button class="bk-btn" data-act="pay" data-id="${loanBill.id}" ${S.money<loanBill.amount?'disabled':''}>Pagar ahora</button></div>`:`
+    <h2 class="bk-h2">Elige cuánto necesitas</h2>
+    <div class="bk-grid">${LOANS.map(a=>`<button class="bk-opt" data-act="loan" data-id="${a}" ${a>lim?'disabled':''}><b class="num">${money(a)}</b><span>Devuelves ${money(Math.ceil(a*1.6))} en 7 días</span>${a>lim?'<em>Fuera de tu límite</em>':''}</button>`).join('')}</div>`}
+    <p class="bk-fine">Tasa fija del 60 % sobre el capital, en un solo pago a 7 días. El préstamo aparece en Cuentas Claras y se puede pagar antes. Tu límite crece con tus ventas, tus días de actividad y tus bienes.</p>
+  </div>`};
+}
+
+/* ---------- Comida y hogar ---------- */
+function foodCard(F,site){return `<article class="${site}-item"><div class="${site}-ic">${F.icon}</div><div class="${site}-ii"><h3>${F.name}</h3><p>${F.desc}</p>
+  <div class="${site}-st">${F.food?`<span>Comida +${F.food}</span>`:''}${F.drink?`<span>Bebida +${F.drink}</span>`:''}</div></div>
+  <div class="${site}-buy"><b class="num">${money(F.price)}</b><button data-act="order" data-id="${F.id}" ${S.money<F.price?'disabled':''}>Pedir</button></div></article>`}
+function pendingFor(kind){const p=S.deliveries.filter(d=>FOOD.find(f=>f.id===d.food).kind===kind);return p.length?Math.max(0,Math.min(...p.map(d=>d.at))-S.t):null}
+function pageComeYa(){
+  const w=pendingFor('junk');
+  return {title:'ComeYa · Comida rápida',host:'comeya.com',cls:'altoque',html:`<div class="at-head"><div class="at-in"><div class="at-logo">COME YA</div><p>Comida rápida a domicilio · llega en minutos</p></div></div>
+  <div class="at-in at-body">${w!=null?`<div class="at-pend">Tu pedido llega en ${w} s</div>`:''}
+  <p class="at-note">${S.fridge?'Tienes refrigerador: lo que pidas se guarda para después.':'Sin refrigerador, te lo comes apenas llega.'}</p>
+  ${FOOD.filter(f=>f.kind==='junk').map(f=>foodCard(f,'at')).join('')}</div>`};
+}
+function pageSuper(){
+  const w=pendingFor('super');
+  return {title:'SuperPronto · Supermercado',host:'superpronto.com',cls:'super',html:`<div class="sp-head"><div class="sp-in"><div class="sp-logo">Super<b>Pronto</b></div><p>Envío a domicilio en unos 30 minutos</p></div></div>
+  <div class="sp-in sp-body">${w!=null?`<div class="sp-pend">Pedido en camino · llega en ${w} s</div>`:''}
+  <h2 class="sp-h2">Despensa y bebidas</h2>${FOOD.filter(f=>f.kind==='super').map(f=>foodCard(f,'sp')).join('')}
+  <p class="sp-note">${S.fridge?'Tienes refrigerador: el pedido se guarda al llegar.':'Sin refrigerador, te comes todo apenas llega. Los refrigeradores se venden en tiendas de electrodomésticos.'}</p></div>`};
+}
+function order(id){
+  const F=FOOD.find(f=>f.id===id);if(!F||S.money<F.price)return;
+  S.money-=F.price;S.day$.spent+=F.price;flashMoney(-1);
+  const wait=F.kind==='junk'?ri(4,8):ri(18,30);
+  S.deliveries.push({food:F.id,at:S.t+wait});
+  toast(`Pediste ${low(F.name)}. Llega en ${wait} segundos.`);dirty=true;save();
+}
+function pageHogar(){
+  const card=(icon,name,desc,price,owned,act,extra)=>`<article class="ht-card"><div class="ht-img">${icon}</div><div class="ht-b"><h3>${name}</h3><p>${desc}</p>${extra||''}
+    <div class="ht-buy"><b class="num">${price}</b>${owned?'<span class="ht-ok">Ya lo tienes</span>':act?`<button data-act="${act}">Comprar</button>`:'<span class="ht-soon">Próximamente</span>'}</div></div></article>`;
+  return {title:'Hogar Total · Muebles y electro',host:'hogartotal.com',cls:'hogar',html:`<div class="ht-head"><div class="ht-in"><div class="ht-logo">HOGAR<b>TOTAL</b></div><p>Muebles · Electrodomésticos · Logística</p></div></div>
+  <div class="ht-in ht-body">
+    <div class="ht-hero"><h1>Equipa tu negocio de reventa</h1><p>Cada electrodoméstico suma $5 a tu factura de luz semanal.</p></div>
+    <div class="ht-grid">
+    ${card('🧊','Refrigerador con congelador','Guarda comida y bebida para después. Lo que no consumas para el segundo día se pudre.',money(FRIDGE_PRICE),S.fridge,S.money>=FRIDGE_PRICE?'buy-fridge':null,S.money<FRIDGE_PRICE&&!S.fridge?`<p class="ht-miss">Te faltan ${money(FRIDGE_PRICE-S.money)}</p>`:'')}
+    ${card('🛸','Servicio de drones de entrega','Tus ventas se entregan el mismo día, estén donde estén los clientes, y cobras el resto ese mismo día. Pago inicial de $200 y $50 por semana.',money(DRONE_PRICE),S.drone,S.money>=DRONE_PRICE?'buy-drone':null,S.money<DRONE_PRICE&&!S.drone?`<p class="ht-miss">Te faltan ${money(DRONE_PRICE-S.money)}</p>`:S.drone&&!droneOn()?'<p class="ht-miss">Servicio suspendido: paga la factura de drones.</p>':'')}
+    ${card('🚐','Camioneta de reparto','Para llevar cosas grandes.','—',false,null)}
+    ${card('🏬','Bodega','Más espacio para guardar mercancía.','—',false,null)}
+    </div></div>`};
+}
+function pageDic(){
+  const rows=Object.entries(MIS).slice(0,24).map(([a,b])=>`<tr><td class="dc-bad">${a}</td><td>${b}</td></tr>`).join('');
+  const acc=Object.entries(ACC).slice(0,24).map(([a,b])=>`<tr><td class="dc-bad">${a}</td><td>${b}</td></tr>`).join('');
+  return {title:'Dicciomundo · Ortografía',host:'dicciomundo.org',cls:'dic',html:`<div class="dc-in"><div class="dc-logo">Dicciomundo</div><h1>Las faltas que espantan clientes</h1>
+  <p class="dc-lead">Un cliente que lee «xq» piensa que lo van a estafar. Estas son las más comunes.</p>
+  <div class="dc-cols"><div><h2>Abreviaturas y errores</h2><div class="dc-scroll"><table><thead><tr><th>Así no</th><th>Así sí</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+  <div><h2>Tildes olvidadas</h2><div class="dc-scroll"><table><thead><tr><th>Así no</th><th>Así sí</th></tr></thead><tbody>${acc}</tbody></table></div></div></div>
+  <p class="dc-lead">También cuenta: empezar con mayúscula, abrir las preguntas con «¿», terminar con punto y no escribir TODO EN MAYÚSCULAS.</p></div>`};
+}
+function pageRico(){return {title:'¡¡¡Hazte RICO!!!',host:'comoserrico.net',cls:'rico',html:`<div class="rc-in"><div class="rc-blink">¡ATENCIÓN!</div><h1>CÓMO SER RICO EN 3 DÍAS</h1>
+  <p>El método que los bancos NO quieren que conozcas. Más de 4 personas ya lo probaron.</p><div class="rc-price">Curso completo: <s>$9.999</s> <b>$4.999</b></div>
+  <button class="rc-btn" disabled>AGOTADO</button><p class="rc-small">Pista gratis: compra barato, cuenta una buena historia y vende caro.</p></div>`}}
+
+/* ================= CHAT ================= */
+function convColor(v){return v>=70?'var(--good)':v>=35?'var(--warn)':'var(--bad)'}
+function openChat(id){
+  const b=S.buyers.find(x=>x.id===id);if(!b)return;
+  if(isOffline()){toast('Sin internet: paga la factura en Cuentas Claras.');return}
+  S.cur=id;S.lastChat=id;b.unread=0;window._lastDelta=null;
+  $('#chat').hidden=false;$('#haggle').hidden=true;renderChat();renderTaskbar();renderMini();dirty=true;
+}
+function closeChat(){S.cur=null;$('#chat').hidden=true;dirty=true;renderPage();renderMini()}
+function renderAIBadge(){const el=$('#c-ai');if(!el)return;const on=aiReady();el.textContent=on?'Cliente con IA':aiState==='checking'?'…':'Motor clásico';el.className='ai-pill '+(on?'on':'')}
+function renderChat(keepScroll){
+  const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const it=itemOf(b);const P=PERSONAS[b.persona];
+  b.unread=0;
+  $('#c-av').textContent=b.name[0];$('#c-av').style.setProperty('--h',hue(b.name));
+  $('#c-name').textContent=b.name;$('#c-sub').textContent=(it?it.name:'Artículo vendido')+(it&&it.listed?` · pides ${money(it.price)}`:'');
+  $('#c-offer').textContent=money(b.offer);
+  $('#c-pct').textContent=Math.round(b.conv)+' %';
+  const bar=$('#c-bar');bar.style.width=b.conv+'%';bar.style.backgroundColor=convColor(b.conv);
+  const dl=$('#c-delta');const ld=window._lastDelta;if(ld!=null){dl.textContent=(ld>=0?'+':'')+ld;dl.style.color=ld>=0?'var(--good)':'var(--bad)'}else dl.textContent='';
+  $('#c-persona').textContent=`${P.label} · vive en ${b.city}`;
+  $('#c-pat').textContent='●'.repeat(Math.max(0,b.patience))+'○'.repeat(Math.max(0,b.patMax-b.patience));
+  renderAIBadge();
+  const box=$('#c-msgs');const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+  $('#c-list').innerHTML=b.msgs.map(m=>{
+    if(m.from==='sys')return `<div class="msg sys ${m.cls||''}">${esc(m.text)}</div>`;
+    if(m.from==='emp')return `<div class="msg emp"><span class="who">${esc(m.who)} (tu empleado)</span><div class="bubble">${esc(m.text)}</div></div>`;
+    const chips=m.chips&&m.chips.length?`<div class="chips">${m.chips.map(c=>`<span class="chip ${c.v>0?'up':c.v<0?'down':''}">${c.v>0?'+':c.v<0?'−':''}${c.v?Math.abs(c.v)+' ':''}${esc(c.l)}</span>`).join('')}</div>`:(m.pending?'<div class="chips"><span class="chip">Leyendo…</span></div>':'');
+    if(m.photo)return `<div class="msg p"><div class="photo-msg"><div class="ph" style="--h:${m.photo.h};filter:blur(${m.photo.blur}px) brightness(${m.photo.br})"><span style="transform:scale(${m.photo.sc})">${m.photo.icon}</span></div><span class="ph-q">Calidad ${m.photo.q} %</span></div>${chips}</div>`;
+    if(m.offer)return `<div class="msg p"><div class="bubble offer-b">Propongo <b class="num">${money(m.offer)}</b></div>${chips}</div>`;
+    return `<div class="msg ${m.from}"><div class="bubble">${esc(m.text)}</div>${chips}</div>`;
+  }).join('')+(b.typing||b.emp?'<div class="typing"><i></i><i></i><i></i></div>':'');
+  if(!keepScroll||atBottom)box.scrollTop=box.scrollHeight;
+  const open=b.status==='open'&&!b.emp;
+  ['#c-input','#c-send','#c-cam','#c-hag'].forEach(s=>$(s).disabled=!open||b.typing);
+  $('#c-reject').hidden=b.status!=='open';
+  $('#c-hint').textContent=b.status==='won'?'Venta cerrada.':b.status==='lost'?'Este cliente se fue.':b.emp?'Tu empleado está negociando…':b.typing?`${b.name} está escribiendo…`:b.q&&b.q.photo?'Te pidió una foto: toca la cámara.':b.q?'Responde su pregunta.':'Saluda, sé cortés y respalda tu historia.';
+}
+function finishTurn(b,delta,reply,delay){
+  b.conv=clamp(b.conv+delta,0,100);window._lastDelta=delta;
+  setTimeout(()=>{
+    b.typing=false;if(b.status!=='open')return renderChat();
+    if(b.conv>=100)winBuyer(b);
+    else if(b.conv<=0){b.msgs.push({from:'b',text:pick(['No, gracias. Lo dejo aquí.','Adiós, suerte vendiéndolo.','Paso. No me inspiras confianza.'])});loseBuyer(b,'Perdiste al cliente.')}
+    else if(b.patience<=0){b.msgs.push({from:'b',text:'Bueno, ya me cansé. Lo pienso y cualquier cosa te escribo.'});loseBuyer(b,'Se le acabó la paciencia.')}
+    else{b.msgs.push({from:'b',text:reply});b.waitingSince=S.t}
+    if(S.cur===b.id){b.unread=0;renderChat()}else b.unread=1;
+    dirty=true;save();
+  },delay);
+}
+async function sendMsg(){
+  const inp=$('#c-input');const text=inp.value.trim();if(!text)return;
+  const b=S.buyers.find(x=>x.id===S.cur);if(!b||b.status!=='open'||b.typing||b.emp)return;
+  const it=itemOf(b);if(!it)return;
+  const P=PERSONAS[b.persona];
+  const form=formCheck(text,b);
+  const msg={from:'p',text,chips:[],pending:true};b.msgs.push(msg);
+  b.waitingSince=null;b.typing=true;inp.value='';autosize();renderChat();
+  const started=performance.now();
+  const price=parsePrice(text);
+  let delta,reply,chips;
+  if(aiReady()){
+    try{
+      const out=await aiBuyerTurn(text,b,it,form);
+      const pts=clamp(Math.round(out.puntos),-25,25);
+      const why=Array.isArray(out.motivos)?out.motivos.slice(0,3).map(m=>({v:clamp(Math.round(+m.v||0),-25,25),l:String(m.t||'').slice(0,40)})).filter(m=>m.l):[];
+      chips=[...form.chips,...(why.length?why:[{v:pts,l:pts>=0?'Contenido convincente':'Contenido poco convincente'}])];
+      const e=ease(b)*(S.weak?.75:1);
+      delta=Math.round((form.pos+Math.max(pts,0))*P.pos*e+(form.neg+Math.min(pts,0))*P.neg);
+      reply=String(out.respuesta).trim();
+      const qs=reply.match(/¿[^?]*\?/g);
+      b.q=out.pide_foto?{id:'aiph',q:qs?qs[qs.length-1]:'¿Me mandas una foto?',photo:true}:qs?{id:'ai'+b.pmsgs,q:qs[qs.length-1],a:['__any__']}:null;
+    }catch(e){if(!e||e.code!=='invalid_json')aiFail(e);const ev=evaluateLocal(text,b,it,form);delta=ev.delta;chips=ev.chips;reply=buyerReply(b,ev,it)}
+  }else{const ev=evaluateLocal(text,b,it,form);delta=ev.delta;chips=ev.chips;reply=buyerReply(b,ev,it)}
+  if(price){const hag=haggle(b,price,it);delta+=hag.delta;chips=chips.concat(hag.chips);reply=hag.reply+' '+reply}else b.patience--;
+  delta=Math.min(34,delta);
+  b.pmsgs++;b.last=norm(text).trim();
+  msg.chips=chips;msg.pending=false;
+  const waited=performance.now()-started;
+  finishTurn(b,delta,reply,Math.max(300,rand(900,1700)-waited));
+  renderChat();
+}
+function sendOffer(){
+  const b=S.buyers.find(x=>x.id===S.cur);if(!b||b.status!=='open'||b.typing||b.emp)return;
+  const p=Math.round(+$('#hag-in').value);if(!(p>0)){toast('Escribe un precio válido.');return}
+  const it=itemOf(b);const h=haggle(b,p,it);
+  b.msgs.push({from:'p',offer:p,chips:h.chips});b.waitingSince=null;b.typing=true;$('#haggle').hidden=true;renderChat();
+  finishTurn(b,h.delta,h.reply,rand(800,1400));
+}
+function autosize(){const t=$('#c-input');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px'}
+
+/* ---------- cámara ---------- */
+function openCam(){
+  const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const it=itemOf(b);if(!it)return;
+  camState={tf:ri(20,80),tl:ri(25,75),tz:ri(25,75),icon:it.icon,h:hue(it.name),shot:null};
+  $('#cam-f').value=ri(0,100);$('#cam-l').value=ri(0,100);$('#cam-z').value=ri(0,100);
+  $('#cam-subject').textContent=it.icon;$('#cam-view').style.setProperty('--h',camState.h);
+  $('#cam-result').hidden=true;$('#cam-controls').hidden=false;
+  $('#camera').hidden=false;updateCam();camLoop();
+}
+function camVals(){const f=+$('#cam-f').value,l=+$('#cam-l').value,z=+$('#cam-z').value,C=camState;
+  return {blur:+(Math.abs(f-C.tf)*.14).toFixed(2),br:+clamp(1+(l-C.tl)/55,.15,2.3).toFixed(2),sc:+clamp(1+(z-C.tz)/70,.35,2.4).toFixed(2),ef:Math.abs(f-C.tf),el:l-C.tl,ez:z-C.tz}}
+function updateCam(){if(!camState)return;const v=camVals();const s=$('#cam-subject');s.style.filter=`blur(${v.blur}px) brightness(${v.br})`;s.dataset.sc=v.sc}
+function camLoop(){if(!camState||$('#camera').hidden)return;const t=performance.now()/1000;const s=$('#cam-subject');
+  const a=matchMedia('(prefers-reduced-motion: reduce)').matches?0:1.6;
+  s.style.transform=`translate(${Math.sin(t*2.1)*a}px,${Math.cos(t*2.7)*a}px) scale(${s.dataset.sc||1})`;requestAnimationFrame(camLoop)}
+function shoot(){
+  const v=camVals();const q=clamp(Math.round(100-(v.ef*1+Math.abs(v.el)*.7+Math.abs(v.ez)*.6)),0,100);
+  const errs=[[v.ef,'está desenfocada'],[Math.abs(v.el)*.7,v.el<0?'está muy oscura':'está quemada de luz'],[Math.abs(v.ez)*.6,v.ez<0?'el objeto se ve muy lejos':'está demasiado cerca, no se ve entero']].sort((a,b)=>b[0]-a[0]);
+  camState.shot={q,issue:errs[0][1],blur:v.blur,br:v.br,sc:v.sc,icon:camState.icon,h:camState.h};
+  const fl=$('#cam-flash');fl.classList.remove('go');void fl.offsetWidth;fl.classList.add('go');
+  $('#cam-q').textContent=q+' %';$('#cam-q').style.color=convColor(q);
+  $('#cam-verdict').textContent=q>=85?'Nítida y bien encuadrada.':q>=60?`Aceptable, aunque ${errs[0][1]}.`:`Mala: ${errs[0][1]}.`;
+  $('#cam-result').hidden=false;$('#cam-controls').hidden=true;
+}
+function sendPhoto(){
+  const b=S.buyers.find(x=>x.id===S.cur);const ph=camState&&camState.shot;if(!b||!ph)return;
+  $('#camera').hidden=true;
+  const P=PERSONAS[b.persona];const chips=[];let pos=0,neg=0;const add=(v,l)=>{chips.push({v,l});v>0?pos+=v:neg+=v};
+  const first=!b.photos;b.photos++;
+  if(ph.q>=85)add(first?18:5,'Foto nítida');else if(ph.q>=60)add(first?8:3,'Foto aceptable');else if(ph.q>=35)add(-5,'Foto borrosa');else add(-12,'Foto impresentable');
+  if(b.q&&b.q.photo&&ph.q>=60){add(8,'Mandaste la foto que pidió');b.q=null}
+  const delta=Math.round(pos*P.pos*ease(b)*(S.weak?.75:1)+neg*P.neg);
+  b.msgs.push({from:'p',photo:Object.assign({},ph),chips});
+  b.patience--;b.waitingSince=null;b.typing=true;renderChat();
+  const it=itemOf(b);const L=[];
+  if(ph.q>=85){L.push(pick(['¡Qué buena foto! Se ve impecable.','Ahora sí, se ve precioso.']));const q={id:'ph'+b.photos,q:'¿Lo que se ve es su estado original, sin restaurar?',a:['si','original','claro','asi','exacto','correcto','nunca','sin restaurar','tal cual']};b.q=q;L.push(q.q)}
+  else if(ph.q>=60){L.push(`Se ve bien, aunque ${ph.issue}.`);const q=nextQuestion(b,it,null);b.q=q;L.push(q.q)}
+  else{L.push(`No se ve nada: ${ph.issue}. ¿Puedes sacar otra?`);b.q={id:'phr',q:'¿Puedes sacar otra foto?',photo:true}}
+  finishTurn(b,delta,L.join(' '),rand(900,1500));
+}
+
+/* ================= EDITOR DE ANUNCIOS ================= */
+function openEditor(id,story){
+  const it=S.inv.find(i=>i.id===id);if(!it)return;editing=id;
+  $('#e-thumb').textContent=it.icon;$('#e-thumb').style.setProperty('--h',hue(it.name));
+  $('#e-name').textContent=it.name;$('#e-paid').textContent=`Lo compraste a ${money(it.paid)}`;
+  $('#e-story').value=story||it.story||'';$('#e-price').value=it.price||Math.max(3,Math.round(it.paid*4));
+  $('#e-bot').hidden=!(S.botSub&&!isOffline());
+  $('#e-ai').textContent=aiReady()?'Al publicar, un jurado con IA valora la creatividad, la coherencia y la credibilidad.':'';
+  $('#e-publish').disabled=false;$('#e-publish').textContent='Publicar anuncio';
+  $('#editor').hidden=false;updateEditor();
+}
+function updateEditor(){
+  const it=S.inv.find(i=>i.id===editing);if(!it)return;
+  const txt=$('#e-story').value;const r=storyScore(txt,it);const pct=Math.round(r.score*100);
+  $('#e-score').textContent=pct+' %';const bar=$('#e-bar');bar.style.width=pct+'%';bar.style.backgroundColor=convColor(pct);
+  $('#e-found').innerHTML=[...r.cats.map(c=>`<span class="chip up">${c}</span>`),r.years.length?'<span class="chip up">Fecha concreta</span>':'',r.names?`<span class="chip up">${r.names} nombre${r.names>1?'s':''} propio${r.names>1?'s':''}</span>`:'',r.conn?'<span class="chip up">Hilo narrativo</span>':'',...r.notes.map(n=>`<span class="chip down">${n.l}</span>`),...r.sp.map(s=>`<span class="chip down">«${esc(s.w)}» → «${esc(s.fix)}»</span>`)].join('');
+  const missing=Object.keys(LEX).filter(c=>!r.cats.includes(c));
+  $('#e-tip').textContent=r.len<20?'Escribe al menos una oración.':pct<25?`Floja. Prueba a sumar ${missing.slice(0,2).join(' o ').toLowerCase()} y una fecha concreta.`:pct<55?(r.conn?`Va bien. Mezcla otro ingrediente: ${missing[0]?missing[0].toLowerCase():'un detalle físico'}.`:'Va bien. Une los hechos con causa y consecuencia: «cuando…», «por eso…», «desde entonces…».'):pct<80?'Muy buena. Te ofrecerán bastante más.':'Legendaria. Ojo: quien ofrezca mucho va a desconfiar.';
+  $('#e-est').innerHTML=`Con esta historia, la gente pagaría hasta unos <b class="num">${money(niceRound(it.base*(1+r.score*8)))}</b>. Si pides mucho más, nadie va a preguntar.`;
+}
+async function publish(){
+  const it=S.inv.find(i=>i.id===editing);if(!it)return;
+  const story=$('#e-story').value.trim();const price=Math.round(+$('#e-price').value);
+  if(story.length<10){toast('Escribe una historia de al menos una oración.');return}
+  if(!(price>0)){toast('Pon un precio mayor que cero.');return}
+  if(!canAct())return;
+  const r=storyScore(story,it);let score=r.score,note='';
+  if(aiReady()){
+    const btn=$('#e-publish');btn.disabled=true;btn.textContent='El jurado está leyendo…';
+    try{const j=await aiStory(story,it);const ai=(j.cr*.4+j.co*.35+j.ve*.25)/10;score=clamp(r.score*.45+ai*.55,0,1);note=`creatividad ${j.cr}/10, coherencia ${j.co}/10, credibilidad ${j.ve}/10. ${j.com}`}
+    catch(e){aiFail(e)}
+    btn.disabled=false;btn.textContent='Publicar anuncio';
+  }
+  for(const s of r.kw)S.lexUse[s]=(S.lexUse[s]||0)+1;
+  Object.assign(it,{story,price,score,kw:r.kw,listed:true,aiNote:note,spawned:it.spawned||0,maxBuyers:2+Math.round(score*3),nextSpawn:S.t+ri(3,7)});
+  drain();
+  $('#editor').hidden=true;editing=null;
+  toast(note?`Anuncio publicado. Gancho final: ${Math.round(score*100)} %.`:'Anuncio publicado.','good');
+  dirty=true;save();renderPage();
+}
+
+/* ================= TRABAJITOS: minijuegos ================= */
+const JOBMAX={plates:12,survey:5,typing:8},JOBKEY={plates:'plates',survey:'surveys',typing:'typing'};
+function openJob(kind){
+  if(!canAct())return;
+  if(S.jobsDone[JOBKEY[kind]]>=JOBMAX[kind]){toast('Ya llenaste el cupo de hoy.');return}
+  job={kind};$('#job').hidden=false;
+  if(kind==='plates')startPlate();else if(kind==='survey')startSurvey();else startTyping();
+}
+function closeJob(){job=null;$('#job').hidden=true;dirty=true}
+function jobPaid(amount,label){S.money+=amount;S.day$.jobs+=amount;flashMoney(1);drain();S.jobsDone[JOBKEY[job.kind]]++;save();dirty=true;toast(`${label} +${money(amount)}`,'good')}
+function jobNext(){
+  if(S.jobsDone[JOBKEY[job.kind]]>=JOBMAX[job.kind])return `<button class="btn" data-act="job-close">Listo por hoy</button>`;
+  return `<div class="job-acts"><button class="btn" data-act="job-again">Otra más</button><button class="btn ghost" data-act="job-close">Salir</button></div>`;
+}
+function startPlate(){
+  $('#job-title').textContent='Lavar platos · $3';
+  $('#job-body').innerHTML=`<p class="job-tip">Frota con el dedo o el ratón hasta que el plato brille.</p>
+  <div class="dish-wrap"><div class="plate"></div><canvas id="dish" width="300" height="300" aria-label="Plato sucio"></canvas><div class="sponge" id="sponge" hidden></div></div>
+  <div class="job-prog"><div class="bar"><i id="dish-bar" style="width:0%;background:var(--good)"></i></div><span id="dish-pct" class="num">0 %</span></div><div id="job-done"></div>`;
+  const cv=$('#dish'),ctx=cv.getContext('2d');
+  for(let i=0,n=ri(9,15);i<n;i++){const a=rand(0,6.28),r=rand(0,105),x=150+Math.cos(a)*r,y=150+Math.sin(a)*r;
+    ctx.fillStyle=pick(['rgba(122,82,40,.92)','rgba(170,120,30,.9)','rgba(150,40,30,.85)','rgba(95,105,40,.9)']);
+    ctx.beginPath();for(let k=0;k<9;k++){const aa=k/9*6.28,rr=rand(14,34);ctx.lineTo(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr)}ctx.closePath();ctx.fill()}
+  const count=()=>{const d=ctx.getImageData(0,0,300,300).data;let n=0;for(let i=3;i<d.length;i+=24)if(d[i]>40)n++;return n};
+  const total=count();let moves=0,done=false,last=null;
+  const pos=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/r.width*300,(e.clientY-r.top)/r.height*300,e.clientX-r.left,e.clientY-r.top]};
+  const sp=$('#sponge');
+  const scrub=e=>{if(done)return;const [x,y,px,py]=pos(e);sp.hidden=false;sp.style.transform=`translate(${px}px,${py}px)`;
+    if(!(e.buttons||e.pointerType==='touch')){last=null;return}
+    ctx.globalCompositeOperation='destination-out';ctx.lineCap='round';ctx.lineWidth=40;ctx.beginPath();
+    if(last){ctx.moveTo(last[0],last[1]);ctx.lineTo(x,y);ctx.stroke()}else{ctx.arc(x,y,20,0,6.28);ctx.fill()}last=[x,y];
+    if(++moves%6===0){const pct=Math.round((1-count()/total)*100);$('#dish-bar').style.width=pct+'%';$('#dish-pct').textContent=pct+' %';
+      if(pct>=93){done=true;ctx.clearRect(0,0,300,300);$('#dish-bar').style.width='100%';$('#dish-pct').textContent='100 %';jobPaid(3,'Plato limpio');$('#job-done').innerHTML=`<p class="job-ok">¡Brillante! Te pagaron $3.</p>${jobNext()}`}}};
+  cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);scrub(e)});
+  cv.addEventListener('pointermove',scrub);cv.addEventListener('pointerleave',()=>{sp.hidden=true;last=null});cv.addEventListener('pointerup',()=>last=null);
+}
+function startSurvey(){
+  const qs=[...SURVEY_Q].sort(()=>Math.random()-.5).slice(0,4);
+  qs.splice(ri(1,3),0,[pick(ATTENTION),['Rojo','Azul','Verde','Amarillo'].sort(()=>Math.random()-.5)]);
+  job.qs=qs;job.i=0;job.fail=false;$('#job-title').textContent='Encuesta en línea · $4';renderSurvey();
+}
+function renderSurvey(){
+  const q=job.qs[job.i];
+  $('#job-body').innerHTML=`<p class="job-tip">Pregunta ${job.i+1} de ${job.qs.length}</p><div class="job-prog"><div class="bar"><i style="width:${job.i/job.qs.length*100}%;background:var(--cobalt)"></i></div></div>
+  <h3 class="sv-q">${esc(q[0])}</h3><div class="sv-opts">${q[1].map(o=>`<button class="sv-opt" data-act="sv" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
+}
+function answerSurvey(v){
+  const q=job.qs[job.i];if(ATTENTION.includes(q[0])&&v!=='Azul')job.fail=true;
+  job.i++;if(job.i<job.qs.length)return renderSurvey();
+  if(job.fail){S.jobsDone.surveys++;drain();save();$('#job-body').innerHTML=`<p class="job-bad">Fallaste la pregunta de control. La encuesta no se paga.</p>${jobNext()}`}
+  else{jobPaid(4,'Encuesta completa');$('#job-body').innerHTML=`<p class="job-ok">¡Gracias por tu opinión! Te pagaron $4.</p>${jobNext()}`}
+}
+function startTyping(){
+  job.phrase=pick(TYPE_PHRASES);$('#job-title').textContent='Transcribir · $3';
+  $('#job-body').innerHTML=`<p class="job-tip">Copia la frase exactamente igual, con mayúsculas, tildes y puntuación.</p>
+  <blockquote class="ty-src">${esc(job.phrase)}</blockquote>
+  <textarea id="ty-in" class="ty-in" rows="3" autocomplete="off" spellcheck="false" aria-label="Tu copia"></textarea>
+  <button class="btn" data-act="ty-send">Entregar</button><div id="job-done"></div>`;
+  setTimeout(()=>$('#ty-in')&&$('#ty-in').focus(),50);
+}
+function sendTyping(){
+  const v=$('#ty-in').value.trim();if(!v)return;
+  if(v===job.phrase){jobPaid(3,'Texto entregado');$('#job-body').innerHTML=`<p class="job-ok">Perfecto, sin errores. Te pagaron $3.</p>${jobNext()}`}
+  else{let i=0;while(i<v.length&&v[i]===job.phrase[i])i++;S.jobsDone.typing++;drain();save();
+    $('#job-body').innerHTML=`<p class="job-bad">Tenía errores, no te pagan. El primero está en «…${esc(job.phrase.slice(Math.max(0,i-6),i+6))}…».</p>${jobNext()}`}
+}
+
+/* ================= ESTADO ================= */
+function renderStats(){
+  const bar=(v,label,icon)=>`<div class="st-bar"><div class="st-lab"><span>${icon} ${label}</span><b class="num">${Math.round(v)} %</b></div><div class="bar big"><i style="width:${v}%;background:${v>=70?'var(--good)':v>=DRAIN?'var(--warn)':'var(--bad)'}"></i><span class="tick" style="left:70%"></span></div></div>`;
+  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);const rot=fi.day<=S.day-1;return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${rot?'Se pudre esta noche':'Comprado hoy'} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span><button class="btn sm" data-act="eat" data-id="${fi.uid}">${F.drink>F.food?'Tomar':'Comer'}</button></div>`}).join('');
+  $('#stats-body').innerHTML=`${bar(S.food,'Comida','🍔')}${bar(S.drink,'Bebida','💧')}
+  <p class="st-note">Cada venta, anuncio o trabajito tiene 1 posibilidad entre 4 de bajar tu comida un ${DRAIN} % y 1 entre 5 de bajar tu bebida otro ${DRAIN} %. Necesitas al menos 70 % de las dos al terminar el día o mañana amanecerás débil. Por debajo del ${DRAIN} % no puedes trabajar.</p>
+  ${S.weak?'<p class="st-weak">Hoy estás débil: convences un 25 % menos.</p>':''}
+  <h3 class="st-h">Refrigerador</h3>
+  ${S.fridge?(items||'<p class="st-note">Vacío. Lo que pidas se guarda aquí y se pudre si no lo consumes para el segundo día.</p>'):'<p class="st-note">No tienes refrigerador: la comida se consume apenas llega. Búscalo en una tienda de electrodomésticos.</p>'}
+  <h3 class="st-h">Clientes</h3>
+  <label class="st-toggle" for="ai-toggle"><span><b>Clientes con IA</b><small>${sampleFn?(aiState==='off'?'No disponible ahora mismo.':'Claude interpreta tus mensajes y responde como el cliente. Usa tu cuenta de Claude.'):'No disponible en esta vista. Se usa el motor clásico.'}</small></span><input type="checkbox" id="ai-toggle" ${S.aiOn?'checked':''} ${sampleFn?'':'disabled'}></label>`;
+}
+function eat(uid){const fi=S.fridgeItems.find(f=>f.uid===uid);if(!fi)return;consume(FOOD.find(f=>f.id===fi.id));S.fridgeItems=S.fridgeItems.filter(f=>f!==fi);renderStats();save()}
+
+/* ================= HUD Y EFECTOS ================= */
+function renderTaskbar(){
+  $('#money').textContent=money(S.money);
+  const h=Math.floor(S.min/60),m=S.min%60;
+  $('#clock').textContent=`Día ${S.day} · ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  const col=v=>v>=70?'var(--good)':v>=DRAIN?'var(--warn)':'var(--bad)';
+  $('#tb-food').style.width=S.food+'%';$('#tb-food').style.background=col(S.food);$('#tb-food-n').textContent=Math.round(S.food);
+  $('#tb-drink').style.width=S.drink+'%';$('#tb-drink').style.background=col(S.drink);$('#tb-drink-n').textContent=Math.round(S.drink);
+  const unread=S.buyers.filter(b=>b.status==='open'&&b.unread).length;$('#tb-badge').hidden=!unread;$('#tb-badge').textContent=unread;
+  $('#tb-end').classList.toggle('late',night());
+  $('#tb-bills').hidden=!S.bills.some(b=>b.due<=S.day);
+}
+function renderMini(){
+  const b=S.buyers.find(x=>x.id===S.lastChat);const el=$('#mini');
+  if(!b||b.status!=='open'||S.cur!=null){el.hidden=true;return}
+  el.hidden=false;el.innerHTML=`<span class="av sm" style="--h:${hue(b.name)}">${esc(b.name[0])}</span><span class="mini-i"><b>${esc(b.name)}</b><span class="minibar"><i style="width:${b.conv}%;background:${convColor(b.conv)}"></i></span></span><b class="num">${Math.round(b.conv)} %</b>`;
+}
+function flashMoney(dir){const el=$('#money');el.classList.remove('up','down');void el.offsetWidth;el.classList.add(dir>0?'up':'down');setTimeout(()=>el.classList.remove('up','down'),1100)}
+function pulseStat(f,d){const el=$('.tb-stats');const tag=document.createElement('span');tag.className='float-tag';tag.textContent=(f?`🍔 −${DRAIN} `:'')+(d?`💧 −${DRAIN}`:'');el.appendChild(tag);setTimeout(()=>tag.remove(),1400)}
+function toast(t,cls,onClick){const el=document.createElement('div');el.className='toast '+(cls||'')+(onClick?' click':'');el.textContent=t;if(onClick){el.addEventListener('click',()=>{el.remove();onClick()});el.title='Abrir'}
+  $('#toasts').appendChild(el);setTimeout(()=>el.remove(),3800);while($('#toasts').children.length>3)$('#toasts').firstChild.remove()}
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const box=$('#fx');const colors=['#FFC531','#2645F2','#138A59','#F2542D','#E63946','#7088FF'];
+  for(let i=0;i<34;i++){const p=document.createElement('i');p.style.left=rand(20,80)+'%';p.style.background=pick(colors);p.style.setProperty('--dx',rand(-160,160)+'px');p.style.setProperty('--r',rand(-540,540)+'deg');p.style.animationDelay=rand(0,.15)+'s';box.appendChild(p);setTimeout(()=>p.remove(),1700)}
+}
+function playDayTransition(sum,done){
+  const el=$('#daytx');const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $('#dt-a').innerHTML=`<span class="eyebrow">Fin del día ${sum.day}</span><b>${sum.sales} venta${sum.sales===1?'':'s'} · ${sum.profit>=0?'+':''}${money(sum.profit)}</b>`;
+  $('#dt-b').innerHTML=`<span class="eyebrow">Buenos días</span><b>Día ${S.day}</b>`;
+  el.className='daytx';el.hidden=false;void el.offsetWidth;el.classList.add('p1');
+  const T=reduce?[500,900,1300]:[1600,2900,3900];
+  setTimeout(()=>el.classList.add('p2'),T[0]);
+  setTimeout(()=>{el.classList.add('p3');done&&done()},T[1]);
+  setTimeout(()=>{el.hidden=true;el.className='daytx'},T[2]);
+}
+
+/* ================= EVENTOS ================= */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  if(g){e.preventDefault();go(g.dataset.go);return}
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const a=t.dataset.act,id=t.dataset.id;
+  switch(a){
+    case 'tab':if(e.target.closest('.tx'))return;S.tab=+id;renderPage(true);break;
+    case 'close-tab':{e.stopPropagation();const i=S.tabs.findIndex(x=>x.id==id);S.tabs.splice(i,1);
+      if(!S.tabs.length)S.tabs.push({id:S.nextId++,url:'buscalo.com',back:[],fwd:[]});
+      if(S.tab==id)S.tab=S.tabs[Math.max(0,i-1)].id;renderPage(true);save();break}
+    case 'new-tab':go('buscalo.com',true);setTimeout(()=>$('#bs-q')&&$('#bs-q').focus(),30);break;
+    case 'back':{const tb=curTab();if(tb.back.length){tb.fwd.push(tb.url);tb.url=tb.back.pop();renderPage(true)}break}
+    case 'fwd':{const tb=curTab();if(tb.fwd.length){tb.back.push(tb.url);tb.url=tb.fwd.pop();renderPage(true)}break}
+    case 'buy':{const l=S.shop.find(x=>x.id==id);if(!l||l.bought||S.money<l.price)break;
+      S.money-=l.price;S.day$.spent+=l.price;l.bought=true;flashMoney(-1);
+      let c=CATALOG.find(x=>x[0]===l.name);if(l.type==='mystery')c=pick(CATALOG);
+      S.inv.push({id:S.nextId++,name:c[0],icon:c[1],g:c[3],base:c[2],paid:l.price,listed:false,price:0,story:'',score:0,kw:[],spawned:0});
+      toast(l.type==='mystery'?`¡La caja traía ${c[3]==='f'?'una':'un'} ${low(c[0])}!`:`Compraste ${art({g:c[3]})} ${low(c[0])}. Publícalo en Mis cosas.`,'',()=>go('bazarito.com/mis-cosas'));
+      dirty=true;save();break}
+    case 'edit':openEditor(+id);break;
+    case 'close-editor':$('#editor').hidden=true;editing=null;break;
+    case 'publish':publish();break;
+    case 'e-bot':$('#editor').hidden=true;go('cuentero.ai');break;
+    case 'open-chat':openChat(+id);break;
+    case 'close-chat':closeChat();break;
+    case 'send':sendMsg();break;
+    case 'hag-open':{const b=S.buyers.find(x=>x.id===S.cur);if(!b)break;const it=itemOf(b);$('#hag-in').value=it?Math.max(b.offer+1,Math.min(it.price,niceRound(b.offer*1.25))):b.offer;$('#haggle').hidden=!$('#haggle').hidden;if(!$('#haggle').hidden)$('#hag-in').focus();break}
+    case 'hag-send':sendOffer();break;
+    case 'reject':{const b=S.buyers.find(x=>x.id===S.cur);if(b&&b.status==='open'){b.msgs.push({from:'sys',cls:'lose',text:'Rechazaste la oferta.'});b.status='lost';renderChat();dirty=true}break}
+    case 'cam':openCam();break;
+    case 'cam-close':$('#camera').hidden=true;camState=null;break;
+    case 'shoot':shoot();break;
+    case 'cam-retry':$('#cam-result').hidden=true;$('#cam-controls').hidden=false;break;
+    case 'cam-send':sendPhoto();break;
+    case 'mini':if(S.lastChat)openChat(S.lastChat);break;
+    case 'hire':{const c=S.cands.find(x=>x.id===id);if(c&&S.money>=c.cost&&!S.hired.some(h=>h.id===id)){S.money-=c.cost;S.day$.spent+=c.cost;S.hired.push(Object.assign({},c,{busy:null,until:0}));flashMoney(-1);toast(`Contrataste a ${c.name}.`);dirty=true;save()}break}
+    case 'fire':{const h=S.hired.find(x=>x.id===id);if(h&&!h.busy){S.hired=S.hired.filter(x=>x!==h);toast(`Despediste a ${h.name}.`);dirty=true;save()}else if(h)toast('Espera a que termine la conversación que está atendiendo.');break}
+    case 'bot-sub':if(S.money>=50){S.money-=50;S.botSub=true;flashMoney(-1);toast('Te suscribiste a Cuentero.ai.');dirty=true;save()}break;
+    case 'bot-ask':botAsk(`Escríbeme una historia para: ${t.dataset.item}`);break;
+    case 'bot-use':{const it=S.inv.find(i=>i.name===t.dataset.item&&!i.listed)||S.inv.find(i=>i.name===t.dataset.item);if(it)openEditor(it.id,t.dataset.story);break}
+    case 'pay':payBill(+id);break;
+    case 'loan':takeLoan(+id);break;
+    case 'order':order(id);break;
+    case 'buy-fridge':if(!S.fridge&&S.money>=FRIDGE_PRICE){S.money-=FRIDGE_PRICE;S.fridge=true;flashMoney(-1);toast('¡Refrigerador nuevo! Ahora la comida se guarda.');dirty=true;save()}break;
+    case 'buy-drone':if(!S.drone&&S.money>=DRONE_PRICE){S.money-=DRONE_PRICE;S.drone=true;S.droneDay=S.day;flashMoney(-1);toast('Drones activados: tus ventas se entregan en el día.');dirty=true;save()}break;
+    case 'job':openJob(id);break;
+    case 'job-close':closeJob();break;
+    case 'job-again':{const k=job.kind;if(!canAct())break;if(k==='plates')startPlate();else if(k==='survey')startSurvey();else startTyping();break}
+    case 'sv':answerSurvey(t.dataset.v);break;
+    case 'ty-send':sendTyping();break;
+    case 'stats':renderStats();$('#stats').hidden=false;break;
+    case 'stats-close':$('#stats').hidden=true;break;
+    case 'eat':eat(+id);break;
+    case 'msgs':{const tb=S.tabs.find(x=>parseUrl(x.url).host==='bazarito.com');if(tb){S.tab=tb.id;go('bazarito.com/mensajes')}else go('bazarito.com/mensajes',true);break}
+    case 'end-day':openNight();break;
+    case 'sleep':endDay();break;
+    case 'night-close':$('#night').hidden=true;break;
+    case 'start':S.seenIntro=true;$('#intro').hidden=true;save();break;
+    case 'intro-next':$('#intro-1').hidden=true;$('#intro-2').hidden=false;break;
+    case 'reset':$('#reset-confirm').hidden=false;break;
+    case 'reset-no':$('#reset-confirm').hidden=true;break;
+    case 'reset-yes':try{localStorage.removeItem('lvc-save-v3')}catch(err){}newGame();$('#stats').hidden=true;$('#reset-confirm').hidden=true;closeChat();$('#intro').hidden=false;$('#intro-1').hidden=false;$('#intro-2').hidden=true;renderTaskbar();renderPage(true);save();break;
+  }
+});
+document.addEventListener('submit',e=>{
+  e.preventDefault();const id=e.target.id;
+  if(id==='omni'){omni($('#addr').value);$('#addr').blur()}
+  if(id==='bs-form'){const q=$('#bs-q').value.trim();if(q)go('buscalo.com/buscar?q='+encodeURIComponent(q))}
+  if(id==='bot-form'){const v=$('#bot-in').value.trim();if(v){$('#bot-in').value='';botAsk(v)}}
+  if(id==='haggle')sendOffer();
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='auto'){S.auto=e.target.checked;save()}
+  if(e.target.id==='ai-toggle'){S.aiOn=e.target.checked;if(S.aiOn&&aiState==='off'&&sampleFn)aiState='ok';renderAIBadge();save()}
+});
+document.addEventListener('input',e=>{if(e.target.id==='e-story')updateEditor();if(e.target.id==='c-input')autosize();if(e.target.closest&&e.target.closest('#cam-controls'))updateCam()});
+document.addEventListener('keydown',e=>{
+  if(e.target.id==='c-input'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}
+  if(e.target.id==='ty-in'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTyping()}
+});
+$('#addr').addEventListener('focus',e=>e.target.select());
+
+/* ================= ARRANQUE ================= */
+function start(data){
+  S=(data&&data.S)||load()||newGame();
+  for(const b of S.buyers)if(b.typing){b.typing=false;b.waitingSince=S.t;b.msgs.forEach(m=>m.pending=false)}
+  if(S.cur!=null&&S.buyers.some(b=>b.id===S.cur))openChat(S.cur);else S.cur=null;
+  $('#intro').hidden=!!S.seenIntro;
+  renderTaskbar();renderPage(true);renderMini();
+  setInterval(tick,1000);
+  initAI();
+}
+try{window.claude?.hot?.snapshot?.(()=>({S}))}catch(e){}
+window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
+
+</script>
+
+</body>
+</html>
