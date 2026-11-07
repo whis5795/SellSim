@@ -1426,14 +1426,14 @@ body.webfull .wf-bar{display:flex}.wf-bar button{width:34px;height:34px;border:0
 .wf-bar.idle{opacity:.35}
 
 /* casino: menú de juegos en una columna lateral */
-.cs-wrap{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;max-width:none;padding:8px 10px 24px 6px;align-items:start}
-.cs-side{position:sticky;top:6px;display:flex;flex-direction:column;align-items:center;gap:8px;width:68px}
+.cs-wrap{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;max-width:none;padding:6px 10px 6px 6px;align-items:start}
+.cs-side{position:sticky;top:6px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;align-items:center;gap:8px;width:68px}
 .cs-side .cs-head{flex-direction:column;gap:6px}.cs-side .cs-logo{font-size:13px;line-height:1;text-align:center;letter-spacing:.02em}.cs-side .cs-logo span{display:block;margin:0;font-size:17px}
 .cs-side .cs-bal{font-size:10.5px;padding:4px 6px;white-space:nowrap}
 .cs-side .cs-nav{flex-direction:column;margin:0;padding:0;gap:6px;overflow:visible;width:100%}
 .cs-side .cs-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:14px;font-size:9.5px;line-height:1.05;text-align:center}
 .cs-side .cs-nav a i{font-style:normal;font-size:22px;line-height:1}.cs-side .cs-nav a span{max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cs-main{min-width:0}.cs-main .cs-home{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.cs-main{min-width:0}.rk-play.side{display:grid;grid-template-columns:auto 160px;grid-template-areas:'card acts' 'card res';justify-content:center;align-items:center;column-gap:10px}.rk-play.side #rk-card{grid-area:card}.rk-play.side .rk-acts{grid-area:acts;flex-direction:column;align-self:end}.rk-play.side #cs-res{grid-area:res;align-self:start}.rk-play.side .rk-acts .cs-btn{width:100%}@media (max-height:720px){.cs-side .cs-nav a{padding:4px 2px;font-size:8.5px}.cs-side .cs-nav a i{font-size:18px}.cs-side .cs-nav{gap:4px}.cs-side{gap:5px}}.cs-main:not(:has(.cs-home)) .cs-fine{display:none}.cs-main .cs-home{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
 @media (min-width:700px){.cs-side{width:120px}.cs-side .cs-nav a{flex-direction:row;justify-content:flex-start;gap:8px;padding:9px 10px;font-size:12.5px}.cs-side .cs-nav a span{max-width:none}.cs-side .cs-logo{font-size:18px}.cs-side .cs-logo span{display:inline;font-size:18px;margin-left:3px}.cs-side .cs-bal{font-size:12px}}
 .menu-foot{margin:4px 0 0;font-size:11px;opacity:.6;text-align:center}
 .mhead{display:flex;align-items:center;gap:10px}.mhead h2{margin:0;font:800 24px var(--f-display)}
@@ -6887,11 +6887,11 @@ const VIDS={
 
 /* ================= PÁGINAS WEB A PANTALLA COMPLETA + ZOOM ================= */
 const WF={z:1};try{WF.z=Math.min(1.6,Math.max(.8,+localStorage.getItem('lvc-zoom')||1))}catch(e){}
-function wfZoom(z){WF.z=Math.round(Math.min(1.6,Math.max(.8,z))*10)/10;try{localStorage.setItem('lvc-zoom',WF.z)}catch(e){}const p=$('#page');if(p)p.style.zoom=WF.z===1?'':WF.z;const s=$('#wf-z');if(s)s.textContent=Math.round(WF.z*100)+'%';setTimeout(()=>{try{rkFit(true)}catch(e){}},30)}
+function wfZoom(z){WF.z=Math.round(Math.min(1.6,Math.max(.8,z))*10)/10;try{localStorage.setItem('lvc-zoom',WF.z)}catch(e){}const p=$('#page');if(p)p.style.zoom=WF.z===1?'':WF.z;const s=$('#wf-z');if(s)s.textContent=Math.round(WF.z*100)+'%';setTimeout(()=>{try{rkFit(true);csFit()}catch(e){}},30)}
 function wfOn(){return document.body.classList.contains('webfull')}
 function wfSet(on){document.body.classList.toggle('webfull',on);const fs=document.fullscreenElement;
   try{if(on&&!fs&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});if(!on&&fs&&window.__wfFs)document.exitFullscreen().catch(()=>{})}catch(e){}window.__wfFs=on;
-  wfIdle();setTimeout(()=>{try{rkFit(true)}catch(e){}},120)}
+  wfIdle();setTimeout(()=>{try{rkFit(true);csFit()}catch(e){}},120)}
 (function(){const f=$('#omni');if(f&&!$('.wf-b')){const b=document.createElement('button');b.type='button';b.className='nav-b wf-b';b.dataset.act='wf';b.setAttribute('aria-label','Ver la página a pantalla completa');
   b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';f.appendChild(b)}
   const bar=document.createElement('div');bar.className='wf-bar';bar.innerHTML='<button data-act="wf-out" aria-label="Achicar">−</button><span id="wf-z">100%</span><button data-act="wf-in" aria-label="Agrandar">+</button><button data-act="wf-fit" aria-label="Tamaño normal">1:1</button><button data-act="wf-x" aria-label="Salir de pantalla completa">✕</button>';document.body.appendChild(bar);wfZoom(WF.z)})();
@@ -6902,14 +6902,21 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act^="wf"]
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&wfOn()&&window.__wfFs){window.__wfFs=false;document.body.classList.remove('webfull')}});
 const _leavePCWF=leavePC;leavePC=function(){if(wfOn())wfSet(false);return _leavePCWF.apply(this,arguments)};
 // rasca y gana: la tarjeta se ajusta para verse lo más grande posible sin salirse de la pantalla
-function rkFit(re){const card=$('#page #rk-card'),vp=$('#viewport');if(!card||!vp)return;const z=WF.z||1;
-  const wrap=card.parentNode,availW=wrap.clientWidth;card.style.width='400px';const ratio=card.offsetHeight/400;
-  const below=(($('#page .rk-acts')||{}).offsetHeight||0)+(($('#page #cs-res')||{}).offsetHeight||0)+34;
-  const availH=vp.clientHeight/z-below-8;const w=Math.max(260,Math.min(availW,640,availH/ratio));card.style.width=Math.floor(w)+'px';
+function rkFit(re){const card=$('#page #rk-card'),vp=$('#viewport'),pg=$('#page');if(!card||!vp)return;csSide();const z=WF.z||1;
+  const wrap=card.parentNode;const side=wrap.clientWidth>560&&wrap.clientWidth>vp.clientHeight/z*1.05;wrap.classList.toggle('side',side);const availW=wrap.clientWidth-(side?170:0);card.style.zoom='';card.style.width='400px';const ratio=card.offsetHeight/400;
+  const below=side?14:(($('#page .rk-acts')||{}).offsetHeight||0)+(($('#page #cs-res')||{}).offsetHeight||0)+26;
+  vp.scrollTop=0;const top=(card.getBoundingClientRect().top-pg.getBoundingClientRect().top)/z;
+  const availH=vp.clientHeight/z-below-top;let w=Math.max(200,Math.min(availW,640,availH/ratio));card.style.width=Math.floor(w)+'px';
+  for(let i=0;i<4&&card.offsetHeight>availH&&w>200;i++){w=Math.max(200,w*availH/card.offsetHeight-2);card.style.width=Math.floor(w)+'px'}
+  card.style.zoom='';if(card.offsetHeight>availH)card.style.zoom=Math.max(.5,availH/card.offsetHeight).toFixed(3);
   if(re)document.querySelectorAll('#page .rk-c canvas.rk-cv').forEach(cv=>{if(!cv._n){cv._p=0}});
-  if(!card._sc){card._sc=1;const top=card.getBoundingClientRect().top-vp.getBoundingClientRect().top+vp.scrollTop-6;vp.scrollTop=top}
   if(re)try{rkInit()}catch(e){}}
-addEventListener('resize',()=>{clearTimeout(window.__rkR);window.__rkR=setTimeout(()=>{try{rkFit(true)}catch(e){}},150)});
+// juegos del casino: si no entra en la pantalla, se achica para verse entero sin desplazarse
+function csSide(){const sd=$('#page .cs-side'),vp=$('#viewport');if(sd&&vp){sd.style.maxHeight=Math.floor(vp.clientHeight/(WF.z||1)-14)+'px'}}
+function csFit(){const m=$('#page .cs-main'),vp=$('#viewport');if(!m||!vp)return;csSide();if(m.querySelector('.cs-home,.rk-cat-wrap,#rk-card')){m.style.zoom='';return}
+  m.style.zoom='';const z=WF.z||1;const h=m.scrollHeight,av=vp.clientHeight/z-14;m.style.zoom=h>av?Math.max(.55,av/h).toFixed(3):'';vp.scrollTop=0}
+const _renderPageCF=renderPage;renderPage=function(f){_renderPageCF(f);if($('#page .cs-main'))requestAnimationFrame(csFit)};
+addEventListener('resize',()=>{clearTimeout(window.__rkR);window.__rkR=setTimeout(()=>{try{rkFit(true);csFit()}catch(e){}},150)});
 const _rkInitWF=rkInit;rkInit=function(){if($('#page #rk-card')&&!$('#page #rk-card').style.width)rkFit(false);return _rkInitWF()};
 
 /* ================= ICONOS DIBUJADOS: datos (game-icons.net CC BY 3.0, Phosphor MIT) ================= */
