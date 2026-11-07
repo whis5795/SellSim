@@ -621,6 +621,58 @@ input.field.price{font:700 18px var(--f-mono)}
 .coach-dots i{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}.coach-dots i.done{background:var(--good)}.coach-dots i.on{background:var(--cobalt)}
 .tb-end{font-size:12px}
 
+/* ---------- habitación ---------- */
+.room{position:fixed;inset:0;z-index:30;--rm-wall:#CDD5E4;--rm-floor:#8E6A4D;--rm-plank:#7C5B41;--rm-base:#F1F3F8;--rm-tile:#E4EAF2;--rm-tileline:#CBD4E2;--rm-dash:#6B7894;background:var(--rm-wall);overflow:hidden;touch-action:pan-y}
+.room.zoom #rm-scene{transform:scale(2.6) translateY(16%);opacity:0;transition:transform .42s ease-in,opacity .42s ease-in}
+.room.wake #rm-scene{animation:wake .42s ease-out}
+@keyframes wake{from{transform:scale(1.4);opacity:0}to{transform:none;opacity:1}}
+#rm-scene{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+#rm-scene.from-r{animation:fromR .35s ease-out}#rm-scene.from-l{animation:fromL .35s ease-out}
+@keyframes fromR{from{transform:translateX(28%);opacity:.2}to{transform:none;opacity:1}}
+@keyframes fromL{from{transform:translateX(-28%);opacity:.2}to{transform:none;opacity:1}}
+.room .hot{cursor:pointer;transition:filter .2s}
+.room .hot:hover,.room .hot:focus{filter:drop-shadow(0 0 6px #FFC531) drop-shadow(0 0 2px #FFC531)}
+.room .hot.pc{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{filter:drop-shadow(0 0 5px rgba(255,197,49,.9))}}
+.rm-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px}
+.rm-hud,.rm-stats,.rm-icon{background:rgba(14,18,36,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border-radius:12px}
+.rm-hud{display:flex;flex-direction:column;padding:6px 12px;margin-right:auto}
+.rm-hud b{font-size:18px}.rm-hud span{font-size:11px;opacity:.8}
+.rm-stats{display:flex;flex-direction:column;gap:5px;width:120px;padding:8px 10px}
+.rm-stats>span{display:grid;grid-template-columns:18px 1fr;align-items:center;gap:6px;font-size:13px}
+.rm-stats .minibar{height:9px;background:rgba(255,255,255,.2)}
+.rm-icon{width:44px;height:44px;display:grid;place-items:center}.rm-icon svg{width:22px;height:22px}
+.rm-bottom{position:absolute;left:0;right:0;bottom:0;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px}
+.rm-hint{margin:0;background:rgba(14,18,36,.72);color:#fff;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;text-align:center;max-width:100%}
+.room.late .rm-hint{background:#4C2A8A}
+.rm-nav{display:flex;align-items:center;gap:10px;width:100%;max-width:520px;justify-content:space-between}
+.rm-arrow{background:rgba(14,18,36,.72);color:#fff;border-radius:999px;height:48px;padding:0 16px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.rm-arrow span{font-size:13px;opacity:.85}
+.rm-where{display:flex;flex-direction:column;align-items:center;gap:5px;color:#fff;background:rgba(14,18,36,.72);padding:6px 14px;border-radius:12px}
+.rm-where b{font:800 15px var(--f-display)}
+.rm-dots{display:flex;gap:5px}.rm-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}.rm-dots i.on{background:#FFC531}
+@media (max-width:420px){.rm-arrow span{display:none}.rm-arrow{width:48px;justify-content:center;padding:0}}
+
+/* ---------- perfil del cliente ---------- */
+.av-btn{cursor:pointer;box-shadow:0 0 0 2px var(--surface),0 0 0 4px #E1306C}
+.pf{gap:16px!important}
+.pf-top{display:flex;align-items:center;gap:18px}
+.pf-ring{padding:3px;border-radius:50%;background:conic-gradient(#FEDA75,#FA7E1E,#D62976,#962FBF,#4F5BD5,#FEDA75)}
+.pf-av{width:84px;height:84px;font-size:34px;border:3px solid var(--surface)}
+.pf-stats{flex:1;display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.pf-stats b{display:block;font-size:17px}.pf-stats span{font-size:11px;color:var(--muted)}
+.pf-bio{display:flex;flex-direction:column;gap:2px}.pf-bio p{margin:0;font-size:14px}.pf-loc{color:var(--muted)}
+.pf-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pf-btn{background:var(--cobalt);color:var(--cobalt-ink);font-weight:700;border-radius:9px;padding:8px}.pf-btn.ghost{background:var(--surface-2);color:var(--ink)}
+.pf-hl{display:flex;gap:16px;overflow-x:auto;padding:4px}
+.pf-hl div{display:flex;flex-direction:column;align-items:center;gap:4px;flex:none}
+.pf-hl span{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:hsl(var(--h) var(--tileS) var(--tileL));box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--line)}
+.pf-hl small{font-size:11px}
+.pf-pin{background:var(--surface);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow)}
+.pf-pin span{font-size:11px;font-weight:700;color:var(--muted)}.pf-pin p{margin:2px 0 0;font-size:14px}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:0 -4px}
+.pf-grid div{aspect-ratio:1;max-width:100%;display:grid;place-items:center;font-size:clamp(26px,9vw,44px);background:hsl(var(--h) var(--tileS) var(--tileL))}
+
 @media (max-width:420px){.tb-stats{width:96px;padding:6px 8px}.tb-stats>span{grid-template-columns:16px 1fr;gap:4px}.tb-stats .num{display:none}.taskbar{gap:6px}.tb-btn{width:36px}.tb-end{padding:0 9px;font-size:12px}#money{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -640,16 +692,38 @@ input.field.price{font:700 18px var(--f-mono)}
   <div class="tb-money"><span id="money">$0</span><span id="clock">Día 1</span></div>
   <button class="tb-stats" data-act="stats" aria-label="Comida, bebida y refrigerador"><span>🍔<span class="minibar"><i id="tb-food"></i></span><b class="num" id="tb-food-n">100</b></span><span>💧<span class="minibar"><i id="tb-drink"></i></span><b class="num" id="tb-drink-n">100</b></span></button>
   <button class="tb-btn" data-act="msgs" aria-label="Mensajes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="tb-badge" id="tb-badge" hidden>0</span><span class="tb-badge" id="tb-bills" hidden style="left:-4px;right:auto;background:var(--warn)">$</span></button>
-  <button class="tb-end" id="tb-end" data-act="end-day">Terminar día</button>
+  <button class="tb-end" id="tb-end" data-act="leave-pc">Levantarse</button>
   <button class="tb-btn" id="tb-menu" data-act="menu" aria-label="Menú y partidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </footer>
 
 <button class="mini" id="mini" data-act="mini" hidden></button>
 
+<section class="room" id="room" hidden>
+  <svg id="rm-scene" viewBox="0 0 360 480" preserveAspectRatio="xMidYMid meet" aria-label="Tu habitación"></svg>
+  <div class="rm-top gut">
+    <div class="rm-hud"><b id="rm-money" class="num">$0</b><span id="rm-clock" class="num"></span></div>
+    <button class="rm-stats" data-act="stats" aria-label="Comida y bebida"><span>🍔<span class="minibar"><i id="rm-food"></i></span></span><span>💧<span class="minibar"><i id="rm-drink"></i></span></span></button>
+    <button class="rm-icon" id="rm-menu" data-act="menu" aria-label="Menú y partidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+  <div class="rm-bottom gut">
+    <p class="rm-hint" id="rm-hint"></p>
+    <div class="rm-nav" id="rm-nav">
+      <button class="rm-arrow" id="rm-prev" data-act="turn-l" aria-label="Girar a la izquierda">‹ <span></span></button>
+      <div class="rm-where"><b id="rm-wall"></b><div class="rm-dots" id="rm-dots"></div></div>
+      <button class="rm-arrow" id="rm-next" data-act="turn-r" aria-label="Girar a la derecha"><span></span> ›</button>
+    </div>
+  </div>
+</section>
+<div class="overlay" id="pkg" hidden><div class="box"><span class="eyebrow">Pedido en la puerta</span><h2 id="pkg-title"></h2><p id="pkg-text"></p>
+  <div class="row-acts"><button class="btn" data-act="pkg-eat">Comer ahora</button><button class="btn ghost" data-act="pkg-store">Guardar en el refrigerador</button><button class="btn ghost" data-act="pkg-close">Dejarlo</button></div></div></div>
+<div class="overlay" id="fridge" hidden><div class="box"><span class="eyebrow">Cocina</span><h2>Refrigerador</h2><div id="fridge-body" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div class="row-acts"><button class="btn ghost" data-act="fridge-close">Cerrar</button></div></div></div>
+
+
 <section class="sheet" id="chat" hidden>
   <div class="sh-head gut">
     <button class="back" data-act="close-chat" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div class="av" id="c-av">?</div>
+    <button class="av av-btn" id="c-av" data-act="profile" aria-label="Ver su perfil">?</button>
     <div class="sh-title"><b id="c-name">—</b><span id="c-sub">—</span></div>
     <span class="price-tag" id="c-offer">$0</span>
   </div>
@@ -674,6 +748,11 @@ input.field.price{font:700 18px var(--f-mono)}
   </div></div>
 </section>
 
+
+<section class="sheet z2" id="profile" hidden>
+  <div class="sh-head gut"><button class="back" data-act="pf-close" aria-label="Volver al chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sh-title"><b id="pf-handle">@</b><span>Perfil</span></div></div>
+  <div class="sh-body"><div class="sh-in gut pf" id="pf-body"></div></div>
+</section>
 <section class="sheet z2 cam" id="camera" hidden>
   <div class="sh-head gut"><button class="back" data-act="cam-close" aria-label="Cerrar cámara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="sh-title"><b>Cámara</b><span style="color:#A3A3B0">Enfoca, ajusta la luz y encuadra</span></div></div>
   <div class="sh-body"><div class="sh-in gut">
@@ -1046,6 +1125,7 @@ const PERSONAS={
  desconfiado:{label:'Desconfiado',desc:'Cualquier error le pesa el doble',pos:.9,neg:1.45,proof:1.2,story:1,start:-10,why:'Es para un regalo, y no quiero quedar mal con algo falso.'},
  apurado:{label:'Con prisa',desc:'Poca paciencia, odia los textos largos',pos:1.15,neg:1,proof:1,story:1,start:0,why:'Es un regalo para mañana, por eso tengo prisa.'},
  amable:{label:'Amable',desc:'Le cae bien la buena actitud',pos:1.25,neg:.8,proof:1,story:1,start:6,why:'Me encantan las cosas con historia, nada más.'},
+ tikismikis:{label:'Tikismikis',desc:'Se fija muchísimo en la ortografía',pos:1,neg:1.1,proof:1,story:1,start:-4,why:'Busco algo especial, y espero un trato impecable.'},
 };
 const FOOD=[
  {id:'hotdog',name:'Hot dog con mostaza',icon:'🌭',kind:'junk',price:2,food:20,drink:0,desc:'Llena poco, pero es barato.'},
@@ -1068,7 +1148,7 @@ function newGame(){
   S={money:20,day:1,min:8*60,t:0,shop:[],nextShop:0,inv:[],buyers:[],hired:[],cands:[],auto:true,cur:null,lastChat:null,nextId:1,
      sales:0,earned:0,day$:{sales:0,profit:0,jobs:0,spent:0},seenIntro:false,botDay:ri(2,3),botSub:false,botMsgs:[],used:{},
      bills:[],food:100,drink:100,weak:false,fridge:false,fridgeItems:[],deliveries:[],jobsDone:{plates:0,surveys:0,typing:0},
-     shipments:[],drone:false,droneDay:0,loan:null,lexUse:{},aiOn:true,tabs:[],tab:null};
+     shipments:[],drone:false,droneDay:0,loan:null,view:'room',wall:0,door:[],lexUse:{},aiOn:true,tabs:[],tab:null};
   for(let i=0;i<6;i++)addListing(true);
   S.cands=genCands();
   const t={id:S.nextId++,url:'buscalo.com',back:[],fwd:[]};S.tabs.push(t);S.tab=t.id;
@@ -1230,7 +1310,7 @@ const CONCERNS={
  confianza:{label:'que seas de fiar',asks:()=>['¿Cómo sé que no me vas a estafar?','¿Qué pasa si llega y no es lo que dices?'],stems:['garantia','devol','reembols','referencia','opinion','calificac','resena','honest','pago al recibir','contra entrega','en persona','comprobante','factura']},
  foto:{label:'verlo con mis propios ojos',asks:()=>['¿Me mandas una foto?','¿Puedo ver una foto antes de decidir?'],photo:true},
 };
-const PERSONA_CONCERNS={coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
+const PERSONA_CONCERNS={tikismikis:['estado','confianza'],coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
 const SALES_WORDS=/(precio|envi|compr|vend|pago|pagar|foto|estado|historia|regalo|dinero|oferta|garantia|objeto|articulo|pieza|anuncio|trato|cerrar|cerramos|interes)/;
 function prepBuyer(b){b.concerns=b.concerns||[];b.resolved=b.resolved||[];b.facts=b.facts||{years:[],rel:{}};b.insults=b.insults||0}
 function relNames(text){const out={};for(const m of String(text).matchAll(/\b(bisabuel[oa]|abuel[oa]|t[ií][oa]|padre|madre)\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)/g))out[strip(m[1].toLowerCase())]=m[2];return out}
@@ -1258,7 +1338,7 @@ function nextQuestion(b,it,topic,text){
 }
 function answers(q,d,text){
   if(!q||q.photo)return false;
-  return q.a.some(s=>s==='__any__'?text.length>25:s==='__long__'?text.length>70:s==='NUM'?/\d/.test(d):s==='__name__'?/[a-záéíóúñ,]\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}/.test(text):rx(s).test(d));
+  return q.a.some(s=>s==='__any__'?text.trim().length>1:s==='__long__'?text.length>40:s==='NUM'?/\d/.test(d):s==='__name__'?/[a-záéíóúñ,]\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}/.test(text):rx(s).test(d));
 }
 function qType(d){
   if(/(te preocupa|te inquieta|tus dudas|alguna duda|alguna pregunta|que necesitas saber|que te falta|que te haria|que mas necesitas|que te frena|que te detiene|en que te puedo ayudar|que quieres saber)/.test(d))return 'doubt';
@@ -1284,7 +1364,8 @@ function formCheck(text,b){
   const d=norm(text);
   const ins=INSULTS.filter(w=>rx(w).test(d)).length;
   if(ins){add(-28*Math.min(ins,2),'Falta de respeto');f.insult=true}
-  for(const s of spellIssues(text)){add(s.hard?-7:-3,`«${s.w}» → «${s.fix}»`);f.spell++}
+  const tk=b.persona==='tikismikis';
+  for(const s of spellIssues(text)){f.spell++;if(tk)add(s.hard?-12:-6,`«${s.w}» → «${s.fix}»`);else if(s.hard)add(-1,`«${s.w}» → «${s.fix}»`)}
   const sl=SLANG.filter(s=>new RegExp('(^|[^a-z])'+s+'([^a-z]|$)').test(d)).length;
   if(sl){add(-5*Math.min(sl,3),'Poco profesional');f.slang=true}
   const letters=text.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ]/g,''),up=text.replace(/[^A-ZÁÉÍÓÚÑ]/g,'');
@@ -1293,10 +1374,13 @@ function formCheck(text,b){
   const gib=toks.filter(w=>w.length>3&&(!/[aeiouy]/.test(w)||/[bcdfghjklmnpqrstvwxz]{4,}/.test(w))).length;
   if(toks.length&&gib/toks.length>.34){add(-8,'No se entiende');f.gib=true}
   if(/[!?]{3,}/.test(text))add(-4,'Exceso de signos');
-  if(/^[a-záéíóúñ]/.test(text))add(-2,'Empieza en minúscula');
-  if(!/[.!?…)"»]$/.test(text))add(-2,'Sin punto final');
-  if(/\?/.test(text)&&!/¿/.test(text))add(-1,'Falta el «¿»');
-  if(text.length<15&&b.persona!=='apurado'){add(-5,'Respuesta muy seca');f.dry=true}
+  if(tk){
+    let p=0;
+    if(/^[a-záéíóúñ]/.test(text)){add(-4,'Empieza en minúscula');p++}
+    if(!/[.!?…)"»]$/.test(text)){add(-4,'Sin punto final');p++}
+    if(/\?/.test(text)&&!/¿/.test(text)){add(-3,'Falta el «¿»');p++}
+    if(!p&&!f.spell&&text.length>30)add(8,'Escritura impecable');
+  }
   if(text.length>380)add(b.persona==='apurado'?-10:-3,'Demasiado largo');
   if(/(te ruego|por favor compr|compralo ya|urgente|no seas malo|necesito el dinero)/.test(d))add(-6,'Suena desesperado');
   if(b.last&&d.trim()===b.last)add(-10,'Mensaje repetido');
@@ -1314,7 +1398,6 @@ function evaluateLocal(text,b,it,form){
   const add=(v,l)=>{chips.push({v,l});v>0?pos+=v:neg+=v};
   const sd=norm(it.story);
   if(f.insult)b.insults++;
-  if(text.length>=40&&text.length<=380)add(3,'Buena extensión');
   const first=strip(b.name.split(/[ _.]/)[0].toLowerCase());
   if(first.length>2&&!['don','senor'].includes(first)&&rx(first).test(d))add(4,'Lo llamaste por su nombre');
   const cityWord=strip(b.city.split(' ').pop().toLowerCase());
@@ -1381,8 +1464,10 @@ const VOICE={
  amable:{good:['¡Qué bien!','¡Me encanta!','Ay, qué lindo.'],bad:['Uy, eso no me gustó mucho.','Mmm, me dejas pensando.'],ok:['Entiendo.','Ajá.']},
  desconfiado:{good:['Bueno, eso suena mejor.','Puede ser.'],bad:['Ya me lo imaginaba.','No me convences.'],ok:['Mmm.','Ya veo.']},
  apurado:{good:['Perfecto.','Bien, rápido.'],bad:['No tengo tiempo para esto.','Al grano, por favor.'],ok:['Vale.','Ok.']},
+ tikismikis:{good:['Así da gusto leer.','Muy bien escrito, se agradece.'],bad:['Esa ortografía duele.','Revisa lo que escribes, por favor.'],ok:['Entiendo.','Correcto.']},
  coleccionista:{good:['Interesante, muy interesante.','Eso tiene valor para mí.'],bad:['Un coleccionista nota esas cosas.','Eso le quita valor.'],ok:['Comprendo.','Anotado.']},
 };
+const chipsHaveForm=ev=>ev.chips.some(c=>c.v<0&&(c.l.includes('→')||/minúscula|punto final|«¿»/.test(c.l)));
 function buyerReply(b,ev,it){
   prepBuyer(b);
   const L=[],f=ev.f,V=VOICE[b.persona];let keepQ=false,nextQ=null;
@@ -1390,7 +1475,8 @@ function buyerReply(b,ev,it){
   if(f.insult)L.push(b.insults>1?'Otra vez faltándome el respeto. Última vez que te lo paso.':pick(['¿Perdón? Así no se le habla a un cliente.','Qué falta de respeto. Me estoy arrepintiendo.']));
   else if(f.gib)L.push(pick(['No entendí nada de lo que escribiste.','¿Qué? Eso no se entiende.']));
   else if(f.caps)L.push('¿Por qué me gritas?');
-  else if(f.spell>=2)L.push(pick(['Escribes un poco raro… ¿eres un vendedor serio?','Con tantas faltas me cuesta confiar.']));
+  else if(b.persona==='tikismikis'&&chipsHaveForm(ev))L.push(pick(['Perdona, pero esa ortografía duele.','Revisa lo que escribes, por favor: '+((ev.chips.find(c=>c.l.includes('→'))||{}).l||'hay errores')+'.','Un vendedor serio cuida cómo escribe.']));
+  else if(f.spell>=4)L.push(pick(['Escribes un poco raro… ¿eres un vendedor serio?','Con tantas faltas me cuesta confiar.']));
   else if(f.slang)L.push(pick(['Uf, qué informal todo…','No sé si estoy hablando con alguien serio.']));
   /* 2. lo que tú le preguntaste */
   if(f.ask){
@@ -1411,7 +1497,7 @@ function buyerReply(b,ev,it){
     if(f.ask==='photo_offer'){nextQ={id:'po',q:'¿Me la mandas ahora?',photo:true}}
   }
   /* 3. su pregunta pendiente */
-  if(f.answered)L.push(f.answerWord&&Math.random()<.6?`«${f.answerWord}»… vale, eso me sirve.`:pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
+  if(f.answered)L.push(f.answerWord&&f.answerWord.length>3&&Math.random()<.6?`«${f.answerWord}»… vale, eso me sirve.`:pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
   else if(f.giveUpQ)L.push('Veo que no me vas a responder eso. Lo tendré en cuenta.');
   else if(f.evaded&&b.q){keepQ='Eso no es una respuesta.'}
   else if(f.partial&&b.q){keepQ='Bien, pero no me respondiste del todo.'}
@@ -1488,7 +1574,7 @@ NUEVO MENSAJE DEL VENDEDOR
 Problemas de forma ya detectados y puntuados aparte (no los vuelvas a puntuar, pero puedes reaccionar a ellos en tu respuesta si son graves): ${formIssues}
 
 Evalúa el CONTENIDO del nuevo mensaje como lo haría una persona real y lista: ¿entiende y responde tu pregunta pendiente (aunque use otras palabras)? ¿Es coherente con el anuncio y con lo dicho antes, o inventa algo nuevo o contradictorio? ¿Aporta detalles concretos y creíbles (procedencia, pruebas, estado, envío, garantía)? ¿Suena honesto o a estafa? ¿Es amable y persuasivo, o presiona y suena desesperado? Si pide más dinero o menciona un precio, ten en cuenta que eso se negocia aparte; solo reacciona.
-Sé exigente pero justo: un mensaje genérico vale poco; uno que responde con precisión y suma un detalle verificable vale mucho; una contradicción con el anuncio resta mucho.
+Sé exigente pero justo: una respuesta breve que contesta bien vale tanto como una larga; un mensaje genérico vale poco; uno que responde con precisión y suma un detalle verificable vale mucho; una contradicción con el anuncio resta mucho.
 
 Responde SOLO con un objeto JSON, sin texto alrededor:
 {"puntos": entero entre -25 y 25,
@@ -1540,16 +1626,21 @@ function winBuyer(b,by){
   const half=Math.floor(b.offer/2),rest=b.offer-half;
   S.money+=half;S.sales++;S.earned+=profit;S.day$.sales++;S.day$.profit+=profit;flashMoney(1);
   const sh={id:S.nextId++,name:it.name,icon:it.icon,buyer:b.name,city:b.city,rest};
-  if(droneOn()){sh.at=S.t+ri(20,40);sh.drone=true}else sh.day=S.day+b.dist;
+  sh.pending=true;sh.dist=b.dist;
   S.shipments.push(sh);
-  b.msgs.push({from:'sys',text:`Cobraste ${money(half)} (50 %). El resto, ${money(rest)}, al entregar en ${sh.city}: ${sh.drone?'hoy mismo, en dron':`en ${b.dist} día${b.dist>1?'s':''}`}.`});
+  b.msgs.push({from:'sys',text:`Cobraste ${money(half)} (50 %). El resto, ${money(rest)}, cuando lo envíes por la ventana de tu cuarto y llegue a ${sh.city}.`});
   for(const o of S.buyers)if(o!==b&&o.itemId===b.itemId&&o.status==='open'){o.status='lost';o.msgs.push({from:'sys',cls:'lose',text:'El artículo ya se vendió a otra persona.'})}
   S.inv=S.inv.filter(i=>i!==it);
   if(!by)drain();
-  toast(`${by?by+' vendió':'Vendiste'} ${art(it)} ${low(it.name)} por ${money(b.offer)}. Cobras ${money(half)} ahora y ${money(rest)} al entregar.`,'good');
+  toast(`${by?by+' vendió':'Vendiste'} ${art(it)} ${low(it.name)} por ${money(b.offer)}. Cobras ${money(half)} ahora; envíalo por la ventana para cobrar el resto.`,'good');
   confetti();dirty=true;
 }
 function loseBuyer(b,why){b.status='lost';b.msgs.push({from:'sys',cls:'lose',text:why});dirty=true}
+function dispatchAll(){
+  const p=S.shipments.filter(s=>s.pending);if(!p.length)return 0;
+  for(const sh of p){sh.pending=false;if(droneOn()){sh.at=S.t+ri(20,40);sh.drone=true}else sh.day=S.day+(sh.dist||1)}
+  dirty=true;save();return p.length;
+}
 function deliverShipment(sh){
   S.shipments=S.shipments.filter(x=>x!==sh);S.money+=sh.rest;flashMoney(1);
   toast(`${sh.drone?'El dron entregó':'Se entregó'} ${low(sh.name)} en ${sh.city}. Cobraste el resto: ${money(sh.rest)}.`,'good');dirty=true;
@@ -1630,14 +1721,15 @@ function tick(){
   }
   for(const dl of S.deliveries.filter(x=>S.t>=x.at)){
     const F=FOOD.find(f=>f.id===dl.food);
-    if(S.fridge){S.fridgeItems.push({uid:S.nextId++,id:F.id,day:S.day});toast(`Llegó: ${F.name}. Lo guardaste en el refrigerador.`)}
-    else{consume(F);toast(`Llegó: ${F.name}. Te lo comiste en el momento.`)}
+    S.door.push({uid:S.nextId++,id:F.id,day:S.day});
+    toast(`Tocan la puerta: llegó ${low(F.name)}.`,'',()=>{leavePC();S.wall=1;roomKey='';renderRoom()});
     dirty=true;
   }
   S.deliveries=S.deliveries.filter(x=>S.t<x.at);
   for(const sh of S.shipments.filter(x=>x.at&&S.t>=x.at))deliverShipment(sh);
   employeesWork();
   renderTaskbar();updateTimers();
+  if(inRoom())renderRoom();
   if(dirty){renderPage();if(S.cur!=null)renderChat(true);renderMini();if(!$('#stats').hidden)renderStats();dirty=false}
   if(S.t%5===0)save();
 }
@@ -1655,7 +1747,9 @@ function openNight(){
     <div class="sum-line ${hungry?'bad':'ok'}">Comida ${Math.round(S.food)} % ${hungry?'· menos de 70 %: mañana estarás débil':'· bien alimentado'}</div>
     <div class="sum-line ${thirsty?'bad':'ok'}">Bebida ${Math.round(S.drink)} % ${thirsty?'· menos de 70 %: mañana estarás débil':'· bien hidratado'}</div>
     ${due.length?`<div class="sum-line bad">Tienes ${due.length} factura${due.length>1?'s':''} que vence${due.length>1?'n':''} hoy (${money(due.reduce((a,b)=>a+b.amount,0))}). Si no pagas, suben un 10 %${due.some(b=>b.kind==='salary')?' y los empleados sin pago renuncian':''}${due.some(b=>b.kind==='internet')?', y te cortan internet':''}.</div>`:'<div class="sum-line ok">No tienes facturas vencidas.</div>'}
-    ${S.fridgeItems.some(f=>f.day<=S.day-1)?'<div class="sum-line bad">Hay comida en el refrigerador que se pudre esta noche.</div>':''}`;
+    ${S.fridgeItems.some(f=>f.day<=S.day-1)?'<div class="sum-line bad">Hay comida en el refrigerador que se pudre esta noche.</div>':''}
+    ${S.shipments.some(s=>s.pending)?`<div class="sum-line bad">Tienes ${S.shipments.filter(s=>s.pending).length} paquete${S.shipments.filter(s=>s.pending).length>1?'s':''} sin enviar: hasta que no los envíes por la ventana no cobras el resto.</div>`:''}
+    ${S.door.length?`<div class="sum-line bad">Dejaste ${S.door.length} pedido${S.door.length>1?'s':''} en la puerta. Sin refrigerador se pudre${S.door.length>1?'n':''} si no lo${S.door.length>1?'s':''} comes.</div>`:''}`;
   $('#night').hidden=false;
 }
 function endDay(){
@@ -1667,8 +1761,8 @@ function endDay(){
     else{b.amount=Math.ceil(b.amount*1.1);b.late=true}
   }
   S.day++;S.min=8*60;
-  const rotten=S.fridgeItems.filter(f=>f.day<=S.day-2);
-  if(rotten.length){toast(`Se pudrió: ${rotten.map(r=>FOOD.find(f=>f.id===r.id).name).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f))}
+  const rotten=S.fridgeItems.filter(f=>f.day<=S.day-2),rotDoor=S.door.filter(f=>f.day<=S.day-2);
+  if(rotten.length||rotDoor.length){toast(`Se pudrió: ${[...rotten,...rotDoor].map(r=>low(FOOD.find(f=>f.id===r.id).name)).join(', ')}.`);S.fridgeItems=S.fridgeItems.filter(f=>!rotten.includes(f));S.door=S.door.filter(f=>!rotDoor.includes(f))}
   for(const sh of S.shipments.filter(x=>x.day&&x.day<=S.day))deliverShipment(sh);
   S.food=clamp(S.food-10,0,100);S.drink=clamp(S.drink-10,0,100);
   for(const h of S.hired)addBill('salary',`Sueldo de ${h.name}`,h.salary,S.day,{emp:h.id});
@@ -1682,8 +1776,8 @@ function endDay(){
   S.shop=[];for(let i=0;i<6;i++)addListing(true);
   S.day$={sales:0,profit:0,jobs:0,spent:0};
   S.buyers=S.buyers.filter(b=>b.status==='open'||b.id===S.lastChat);
-  $('#night').hidden=true;dirty=true;save();
-  playDayTransition(summary,()=>{
+  $('#night').hidden=true;dirty=true;S.view='room';S.wall=0;roomKey='';save();
+  playDayTransition(summary,()=>{renderRoom();
     if(S.day===S.botDay)toast('Cuentero.ai ya está en línea. Búscalo en el buscador.');
     if(S.weak)toast('Amaneciste débil: hoy convences un 25 % menos.');
     renderTaskbar();renderPage();
@@ -1829,8 +1923,8 @@ function pageBazarito(path){
 }
 function bzShip(){
   if(!S.shipments.length)return '';
-  return `<h2 class="bz-h2">Envíos en camino</h2>`+S.shipments.map(s=>`<div class="bz-row ship"><div class="bz-thumb sm" style="--h:${hue(s.name)}">${s.icon}</div><div class="bz-ri"><b>${esc(s.name)}</b>
-    <span class="bz-sub">Para ${esc(s.buyer)}, en ${esc(s.city)} · ${s.drone?'en dron, llega hoy':s.day<=S.day+1?'llega mañana':`llega el día ${s.day}`}</span><span class="bz-pill live">Te falta cobrar ${money(s.rest)}</span></div></div>`).join('');
+  return `<h2 class="bz-h2">Envíos</h2>`+S.shipments.map(s=>`<div class="bz-row ship"><div class="bz-thumb sm" style="--h:${hue(s.name)}">${s.icon}</div><div class="bz-ri"><b>${esc(s.name)}</b>
+    <span class="bz-sub">Para ${esc(s.buyer)}, en ${esc(s.city)} · ${s.pending?'sin enviar: ve a la ventana de tu cuarto':s.drone?'en dron, llega hoy':s.day<=S.day+1?'llega mañana':`llega el día ${s.day}`}</span><span class="bz-pill live">Te falta cobrar ${money(s.rest)}</span></div></div>`).join('');
 }
 function bzInv(){
   if(!S.inv.length)return bzShip()+`<div class="bz-empty"><b>No tienes nada para vender.</b><br>Compra algo barato en Ofertas y vuelve aquí para publicarlo con una buena historia.</div>`;
@@ -1985,7 +2079,7 @@ function pageComeYa(){
   const w=pendingFor('junk');
   return {title:'ComeYa · Comida rápida',host:'comeya.com',cls:'altoque',html:`<div class="at-head"><div class="at-in"><div class="at-logo">COME YA</div><p>Comida rápida a domicilio · llega en minutos</p></div></div>
   <div class="at-in at-body">${w!=null?`<div class="at-pend">Tu pedido llega en ${w} s</div>`:''}
-  <p class="at-note">${S.fridge?'Tienes refrigerador: lo que pidas se guarda para después.':'Sin refrigerador, te lo comes apenas llega.'}</p>
+  <p class="at-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes comerlos o guardarlos en el refrigerador.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p>
   ${FOOD.filter(f=>f.kind==='junk').map(f=>foodCard(f,'at')).join('')}</div>`};
 }
 function pageSuper(){
@@ -1993,7 +2087,7 @@ function pageSuper(){
   return {title:'SuperPronto · Supermercado',host:'superpronto.com',cls:'super',html:`<div class="sp-head"><div class="sp-in"><div class="sp-logo">Super<b>Pronto</b></div><p>Envío a domicilio en unos 30 minutos</p></div></div>
   <div class="sp-in sp-body">${w!=null?`<div class="sp-pend">Pedido en camino · llega en ${w} s</div>`:''}
   <h2 class="sp-h2">Despensa y bebidas</h2>${FOOD.filter(f=>f.kind==='super').map(f=>foodCard(f,'sp')).join('')}
-  <p class="sp-note">${S.fridge?'Tienes refrigerador: el pedido se guarda al llegar.':'Sin refrigerador, te comes todo apenas llega. Los refrigeradores se venden en tiendas de electrodomésticos.'}</p></div>`};
+  <p class="sp-note">Los pedidos llegan a la puerta de tu cuarto. ${S.fridge?'Puedes guardarlos en el refrigerador de la cocina.':'Sin refrigerador hay que comerlos antes de que se pudran.'}</p></div>`};
 }
 function order(id){
   const F=FOOD.find(f=>f.id===id);if(!F||S.money<F.price)return;
@@ -2033,10 +2127,11 @@ function convColor(v){return v>=70?'var(--good)':v>=35?'var(--warn)':'var(--bad)
 function openChat(id){
   const b=S.buyers.find(x=>x.id===id);if(!b)return;
   if(isOffline()){toast('Sin internet: paga la factura en Cuentas Claras.');return}
+  if(S.view!=='pc'){S.view='pc';$('#room').hidden=true;renderPage(true)}
   S.cur=id;S.lastChat=id;b.unread=0;window._lastDelta=null;
   $('#chat').hidden=false;$('#haggle').hidden=true;renderChat();renderTaskbar();renderMini();dirty=true;
 }
-function closeChat(){S.cur=null;$('#chat').hidden=true;dirty=true;renderPage();renderMini()}
+function closeChat(){S.cur=null;$('#chat').hidden=true;$('#profile').hidden=true;dirty=true;renderPage();renderMini()}
 function renderAIBadge(){const el=$('#c-ai');if(!el)return;const on=aiReady();el.textContent=on?'Cliente con IA':aiState==='checking'?'…':'Motor clásico';el.className='ai-pill '+(on?'on':'')}
 function renderChat(keepScroll){
   const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const it=itemOf(b);const P=PERSONAS[b.persona];
@@ -2047,7 +2142,7 @@ function renderChat(keepScroll){
   $('#c-pct').textContent=Math.round(b.conv)+' %';
   const bar=$('#c-bar');bar.style.width=b.conv+'%';bar.style.backgroundColor=convColor(b.conv);
   const dl=$('#c-delta');const ld=window._lastDelta;if(ld!=null){dl.textContent=(ld>=0?'+':'')+ld;dl.style.color=ld>=0?'var(--good)':'var(--bad)'}else dl.textContent='';
-  $('#c-persona').textContent=`${P.label} · vive en ${b.city}`;
+  $('#c-persona').textContent=b.seenProfile?`${P.label} · vive en ${b.city}`:'Toca su foto para ver su perfil';
   $('#c-pat').textContent='●'.repeat(Math.max(0,b.patience))+'○'.repeat(Math.max(0,b.patMax-b.patience));
   renderAIBadge();
   const box=$('#c-msgs');const atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
@@ -2272,16 +2367,16 @@ function sendTyping(){
 /* ================= ESTADO ================= */
 function renderStats(){
   const bar=(v,label,icon)=>`<div class="st-bar"><div class="st-lab"><span>${icon} ${label}</span><b class="num">${Math.round(v)} %</b></div><div class="bar big"><i style="width:${v}%;background:${v>=70?'var(--good)':v>=DRAIN?'var(--warn)':'var(--bad)'}"></i><span class="tick" style="left:70%"></span></div></div>`;
-  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);const rot=fi.day<=S.day-1;return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${rot?'Se pudre esta noche':'Comprado hoy'} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span><button class="btn sm" data-act="eat" data-id="${fi.uid}">${F.drink>F.food?'Tomar':'Comer'}</button></div>`}).join('');
+  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);const rot=fi.day<=S.day-1;return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${rot?'Se pudre esta noche':'Comprado hoy'} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span></div>`}).join('');
   $('#stats-body').innerHTML=`${bar(S.food,'Comida','🍔')}${bar(S.drink,'Bebida','💧')}
   <p class="st-note">Cada venta, anuncio o trabajito tiene 1 posibilidad entre 4 de bajar tu comida un ${DRAIN} % y 1 entre 5 de bajar tu bebida otro ${DRAIN} %. Necesitas al menos 70 % de las dos al terminar el día o mañana amanecerás débil. Por debajo del ${DRAIN} % no puedes trabajar.</p>
   ${S.weak?'<p class="st-weak">Hoy estás débil: convences un 25 % menos.</p>':''}
   <h3 class="st-h">Refrigerador</h3>
-  ${S.fridge?(items||'<p class="st-note">Vacío. Lo que pidas se guarda aquí y se pudre si no lo consumes para el segundo día.</p>'):'<p class="st-note">No tienes refrigerador: la comida se consume apenas llega. Búscalo en una tienda de electrodomésticos.</p>'}
+  ${S.fridge?(items?items+'<p class="st-note">Para comer, ve a la cocina de tu cuarto.</p>':'<p class="st-note">Vacío. Lo que guardes ahí se pudre si no lo consumes para el segundo día.</p>'):'<p class="st-note">No tienes refrigerador: tu cocina está vacía y los pedidos hay que comerlos al recogerlos en la puerta.</p>'}
   <h3 class="st-h">Clientes</h3>
   <label class="st-toggle" for="ai-toggle"><span><b>Clientes con IA</b><small>${sampleFn?(aiState==='off'?'No disponible ahora mismo.':'Claude interpreta tus mensajes y responde como el cliente. Usa tu cuenta de Claude.'):'No disponible en esta vista. Se usa el motor clásico.'}</small></span><input type="checkbox" id="ai-toggle" ${S.aiOn?'checked':''} ${sampleFn?'':'disabled'}></label>`;
 }
-function eat(uid){const fi=S.fridgeItems.find(f=>f.uid===uid);if(!fi)return;consume(FOOD.find(f=>f.id===fi.id));S.fridgeItems=S.fridgeItems.filter(f=>f!==fi);renderStats();save()}
+function eat(uid){const fi=S.fridgeItems.find(f=>f.uid===uid);if(!fi)return;const F=FOOD.find(f=>f.id===fi.id);consume(F);S.fridgeItems=S.fridgeItems.filter(f=>f!==fi);toast(`${F.drink>F.food?'Tomaste':'Comiste'}: ${low(F.name)}.`,'good');if(!$('#fridge').hidden)openFridge();roomKey='';renderRoom();save()}
 
 /* ================= HUD Y EFECTOS ================= */
 function renderTaskbar(){
@@ -2292,7 +2387,7 @@ function renderTaskbar(){
   $('#tb-food').style.width=S.food+'%';$('#tb-food').style.background=col(S.food);$('#tb-food-n').textContent=Math.round(S.food);
   $('#tb-drink').style.width=S.drink+'%';$('#tb-drink').style.background=col(S.drink);$('#tb-drink-n').textContent=Math.round(S.drink);
   const unread=S.buyers.filter(b=>b.status==='open'&&b.unread).length;$('#tb-badge').hidden=!unread;$('#tb-badge').textContent=unread;
-  $('#tb-end').classList.toggle('late',night());
+  renderRoomHUD();
   $('#tb-bills').hidden=!S.bills.some(b=>b.due<=S.day);
 }
 function renderMini(){
@@ -2375,7 +2470,6 @@ document.addEventListener('click',e=>{
     case 'stats-close':$('#stats').hidden=true;break;
     case 'eat':eat(+id);break;
     case 'msgs':{const tb=S.tabs.find(x=>parseUrl(x.url).host==='bazarito.com');if(tb){S.tab=tb.id;go('bazarito.com/mensajes')}else go('bazarito.com/mensajes',true);break}
-    case 'end-day':openNight();break;
     case 'sleep':endDay();break;
     case 'night-close':$('#night').hidden=true;break;
     case 'menu':openMenu('pause');break;
@@ -2407,6 +2501,193 @@ function start(data){
   setInterval(tick,1000);
   initAI();
 }
+
+/* ================= LA HABITACIÓN ================= */
+const WALLS=['Escritorio','Puerta','Cocina','Cama'];
+let roomKey='',turnDir=0,pendingPkg=null;
+function skyAt(min){const h=min/60;
+  if(h<17)return {a:'#7DB8FF',b:'#D6ECFF',night:0,sun:true};
+  if(h<19)return {a:'#FF9E6B',b:'#FFD8A0',night:.12,sun:true};
+  if(h<20.5)return {a:'#5B3F8C',b:'#F08A6B',night:.28,sun:false};
+  return {a:'#0B1030',b:'#222B57',night:.45,sun:false};}
+function inRoom(){return S&&S.view!=='pc'}
+function enterPC(){
+  if(!S)return;S.view='pc';const r=$('#room');r.classList.add('zoom');
+  setTimeout(()=>{r.hidden=true;r.classList.remove('zoom')},420);
+  renderPage(true);renderTaskbar();save();
+}
+function leavePC(){
+  if(!S)return;S.view='room';S.cur=null;['#chat','#editor','#job','#camera'].forEach(s=>$(s).hidden=true);
+  $('#room').hidden=false;$('#room').classList.add('wake');setTimeout(()=>$('#room').classList.remove('wake'),420);
+  roomKey='';renderRoom();renderMini();save();
+}
+function turn(dir){S.wall=(S.wall+dir+4)%4;turnDir=dir;roomKey='';renderRoom();save()}
+function pickup(uid){
+  const p=S.door.find(x=>x.uid===uid);if(!p)return;const F=FOOD.find(f=>f.id===p.id);
+  if(S.fridge){pendingPkg=uid;$('#pkg-title').textContent=F.name;$('#pkg-text').textContent=`${F.food?'Comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'Bebida +'+F.drink:''}. ¿Te lo comes ahora o lo guardas?`;$('#pkg').hidden=false;return}
+  S.door=S.door.filter(x=>x!==p);consume(F);toast(`Te comiste: ${low(F.name)}.`,'good');roomKey='';renderRoom();save();
+}
+function pkgChoice(kind){
+  const p=S.door.find(x=>x.uid===pendingPkg);$('#pkg').hidden=true;pendingPkg=null;if(!p)return;const F=FOOD.find(f=>f.id===p.id);
+  S.door=S.door.filter(x=>x!==p);
+  if(kind==='eat'){consume(F);toast(`Te comiste: ${low(F.name)}.`,'good')}
+  else{S.fridgeItems.push({uid:S.nextId++,id:F.id,day:p.day});toast(`Guardaste ${low(F.name)} en el refrigerador.`)}
+  roomKey='';renderRoom();save();
+}
+function openFridge(){
+  const items=S.fridgeItems.map(fi=>{const F=FOOD.find(f=>f.id===fi.id);const rot=fi.day<=S.day-1;return `<div class="st-item"><span class="st-ic">${F.icon}</span><span class="st-ii"><b>${F.name}</b><span>${rot?'Se pudre esta noche':'Fresco'} · ${F.food?'comida +'+F.food:''}${F.food&&F.drink?' · ':''}${F.drink?'bebida +'+F.drink:''}</span></span><button class="btn sm" data-act="eat" data-id="${fi.uid}">${F.drink>F.food?'Tomar':'Comer'}</button></div>`}).join('');
+  $('#fridge-body').innerHTML=items||'<p class="st-note">Vacío. Lo que guardes aquí se pudre si no lo consumes para el segundo día.</p>';
+  $('#fridge').hidden=false;
+}
+function bag(x,F,uid,old){return `<g class="hot" data-act="pickup" data-id="${uid}" transform="translate(${x} 392)"><title>Recoger ${F.name}</title>
+  <path d="M2 10 L34 10 L32 44 L4 44 Z" fill="${old?'#9C8466':'#C9A16A'}"/><path d="M2 10 L8 2 L28 2 L34 10 Z" fill="${old?'#7E6A52':'#B08752'}"/>
+  <path d="M12 6 q6 -10 12 0" fill="none" stroke="#6B4E2E" stroke-width="2"/><text x="18" y="34" font-size="16" text-anchor="middle">${F.icon}</text></g>`}
+function wallSVG(w,sky){
+  const base=`<rect x="-2000" y="-2000" width="4400" height="2380" fill="var(--rm-wall)"/><rect x="-2000" y="380" width="4400" height="3000" fill="var(--rm-floor)"/>
+   <g stroke="var(--rm-plank)" stroke-width="1.5">${Array.from({length:12},(_,i)=>`<line x1="-2000" y1="${392+i*14+i*i*1.6}" x2="2400" y2="${392+i*14+i*i*1.6}"/>`).join('')}</g>
+   <rect x="-2000" y="370" width="4400" height="10" fill="var(--rm-base)"/>`;
+  const unread=S.buyers.filter(b=>b.status==='open'&&b.unread).length;
+  if(w===0)return base+`
+   <rect x="38" y="58" width="124" height="134" rx="4" fill="#F3F5FA"/><rect x="46" y="66" width="108" height="118" fill="url(#sky)"/>
+   ${sky.sun?`<circle cx="128" cy="96" r="13" fill="#FFE07A" opacity=".9"/>`:`<circle cx="124" cy="92" r="10" fill="#EEF0FF"/><circle cx="129" cy="89" r="9" fill="${sky.a}"/>`}
+   <rect x="98" y="66" width="4" height="118" fill="#F3F5FA"/><rect x="46" y="123" width="108" height="4" fill="#F3F5FA"/><rect x="34" y="190" width="132" height="7" rx="2" fill="#E2E6EF"/>
+   <g transform="rotate(3 262 130)"><rect x="214" y="72" width="94" height="118" rx="3" fill="#FFC531"/><text x="261" y="118" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="22" text-anchor="middle" fill="#2A1E00">VENDE</text><text x="261" y="146" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="22" text-anchor="middle" fill="#2A1E00">CARO</text><text x="261" y="174" font-size="18" text-anchor="middle">💸</text></g>
+   <g><line x1="300" y1="290" x2="300" y2="232" stroke="#3A3F52" stroke-width="3"/><path d="M286 232 L314 232 L306 214 L294 214 Z" fill="#3A3F52"/>${sky.night>.2?'<ellipse cx="300" cy="262" rx="38" ry="30" fill="#FFE7A0" opacity=".28"/>':''}</g>
+   <rect x="28" y="290" width="304" height="14" rx="3" fill="#7A5236"/><rect x="40" y="304" width="10" height="70" fill="#5E3F29"/><rect x="310" y="304" width="10" height="70" fill="#5E3F29"/><rect x="230" y="304" width="78" height="40" rx="2" fill="#6B472F"/><rect x="262" y="320" width="14" height="3" rx="1.5" fill="#C9A16A"/>
+   <g class="hot pc" data-act="use-pc"><title>Usar la computadora</title>
+     <rect x="104" y="166" width="152" height="104" rx="8" fill="#1B1F2E"/><rect x="111" y="173" width="138" height="88" rx="3" fill="url(#scr)"/>
+     <rect x="117" y="179" width="126" height="9" rx="2" fill="rgba(255,255,255,.85)"/><rect x="117" y="194" width="58" height="34" rx="3" fill="rgba(255,255,255,.75)"/><rect x="181" y="194" width="62" height="34" rx="3" fill="rgba(255,255,255,.55)"/><rect x="117" y="234" width="126" height="20" rx="3" fill="#FFC531"/>
+     <rect x="170" y="270" width="20" height="16" fill="#2A2F42"/><rect x="150" y="284" width="60" height="7" rx="2" fill="#2A2F42"/>
+     ${unread?`<circle cx="250" cy="172" r="12" fill="#E5484D"/><text x="250" y="177" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace">${unread}</text>`:''}</g>
+   <rect x="112" y="283" width="34" height="6" rx="2" fill="#3A3F52"/>
+   <path d="M150 318 h60 v48 h-60 z" fill="#2B3047"/><rect x="146" y="364" width="68" height="10" rx="4" fill="#23273A"/><rect x="176" y="374" width="8" height="26" fill="#23273A"/>
+   <g transform="translate(46 254)"><rect x="0" y="22" width="26" height="14" rx="2" fill="#B5643B"/><path d="M13 22 C2 10 4 2 8 0 C10 8 12 12 13 22 C14 10 20 4 24 2 C24 12 20 18 13 22Z" fill="#3E8E5A"/></g>`;
+  if(w===1){const pk=S.door.slice(0,6);return base+`
+   <rect x="118" y="112" width="124" height="262" fill="#E5E8F0"/><rect x="126" y="120" width="108" height="252" rx="2" fill="#9C6B47"/>
+   <rect x="138" y="134" width="84" height="96" rx="3" fill="none" stroke="#7E5434" stroke-width="3"/><rect x="138" y="246" width="84" height="112" rx="3" fill="none" stroke="#7E5434" stroke-width="3"/>
+   <circle cx="220" cy="248" r="6" fill="#E4C27A"/><rect x="216" y="252" width="8" height="2" fill="#B8913E"/>
+   <rect x="262" y="210" width="16" height="24" rx="3" fill="#F3F5FA" stroke="#C8CEDB"/><rect x="267" y="216" width="6" height="10" rx="2" fill="#C8CEDB"/>
+   <g transform="translate(58 150)"><circle cx="0" cy="0" r="4" fill="#3A3F52"/><path d="M-16 6 Q0 -2 16 6 L22 70 L-22 70 Z" fill="#2645F2"/><path d="M-6 6 L0 26 L6 6" fill="none" stroke="#1A33C4" stroke-width="2"/></g>
+   <rect x="112" y="378" width="136" height="16" rx="4" fill="#8A3B2E"/><text x="180" y="390" font-size="9" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#F2C9A8" font-family="Figtree,sans-serif">BIENVENIDO</text>
+   ${pk.map((p,i)=>bag(i<3?20+i*42:228+(i-3)*42,FOOD.find(f=>f.id===p.id),p.uid,p.day<=S.day-1)).join('')}`}
+  if(w===2)return base+`
+   <rect x="-2000" y="190" width="4400" height="110" fill="var(--rm-tile)"/>
+   <g stroke="var(--rm-tileline)" stroke-width="1">${Array.from({length:6},(_,i)=>`<line x1="-2000" y1="${208+i*18}" x2="2400" y2="${208+i*18}"/>`).join('')}${Array.from({length:30},(_,i)=>`<line x1="${-300+i*24}" y1="190" x2="${-300+i*24}" y2="300"/>`).join('')}</g>
+   <rect x="300" y="254" width="16" height="22" rx="3" fill="#F3F5FA" stroke="#C8CEDB"/><circle cx="305" cy="262" r="1.6" fill="#8A90A3"/><circle cx="311" cy="262" r="1.6" fill="#8A90A3"/><circle cx="308" cy="270" r="1.4" fill="#8A90A3"/>
+   ${S.fridge?`<g class="hot" data-act="open-fridge"><title>Abrir el refrigerador</title>
+     <rect x="112" y="140" width="136" height="236" rx="12" fill="#E9EEF6"/><rect x="112" y="140" width="136" height="236" rx="12" fill="none" stroke="#B9C2D3" stroke-width="2"/>
+     <line x1="114" y1="226" x2="246" y2="226" stroke="#B9C2D3" stroke-width="2"/><rect x="226" y="160" width="7" height="48" rx="3" fill="#AEB7C9"/><rect x="226" y="242" width="7" height="70" rx="3" fill="#AEB7C9"/>
+     <rect x="134" y="250" width="40" height="30" rx="2" fill="#FFF7C2" transform="rotate(-6 154 265)"/><circle cx="154" cy="250" r="4" fill="#E5484D"/>
+     ${S.fridgeItems.length?`<circle cx="244" cy="146" r="13" fill="#2645F2"/><text x="244" y="151" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace">${S.fridgeItems.length}</text>`:''}
+     <rect x="122" y="372" width="14" height="8" fill="#9AA3B8"/><rect x="224" y="372" width="14" height="8" fill="#9AA3B8"/></g>`:
+   `<rect x="112" y="150" width="136" height="226" rx="12" fill="none" stroke="var(--rm-dash)" stroke-width="2.5" stroke-dasharray="8 7"/>
+    <text x="180" y="254" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">Aquí cabe</text><text x="180" y="272" font-size="13" font-weight="700" text-anchor="middle" fill="var(--rm-dash)" font-family="Figtree,sans-serif">un refrigerador</text>`}`;
+  return base+`
+   ${(()=>{const pend=S.shipments.filter(s=>s.pending);return `<g class="hot ${pend.length?'pc':''}" data-act="ship-window"><title>Enviar paquetes por la ventana</title>
+     <rect x="146" y="70" width="150" height="140" rx="4" fill="#F3F5FA"/><rect x="154" y="78" width="134" height="124" fill="url(#sky)"/>
+     ${sky.sun?'<circle cx="262" cy="104" r="12" fill="#FFE07A" opacity=".9"/>':'<circle cx="258" cy="100" r="9" fill="#EEF0FF"/>'}
+     <path d="M154 202 L190 168 L214 186 L236 170 L288 202 Z" fill="#5E7F9E" opacity=".55"/>
+     <rect x="219" y="78" width="4" height="124" fill="#F3F5FA"/><rect x="140" y="206" width="162" height="9" rx="2" fill="#E2E6EF"/>
+     ${pend.slice(0,4).map((s,i)=>`<g transform="translate(${158+i*34} 178)"><rect width="28" height="28" rx="2" fill="#C9A16A"/><path d="M0 9 H28 M14 0 V28" stroke="#9C7A48" stroke-width="2"/><text x="14" y="20" font-size="11" text-anchor="middle">${s.icon}</text></g>`).join('')}
+     ${pend.length?`<circle cx="296" cy="72" r="13" fill="#E5484D"/><text x="296" y="77" font-size="13" font-weight="700" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace">${pend.length}</text>`:''}</g>`})()}
+   <g transform="translate(16 304)"><rect width="56" height="70" rx="4" fill="#7A5236"/><rect x="6" y="30" width="44" height="3" fill="#5E3F29"/><rect x="10" y="-26" width="38" height="26" rx="4" fill="#23273A"/>
+     <text x="29" y="-8" font-size="12" font-weight="700" text-anchor="middle" fill="${sky.night>.2?'#FF6B75':'#7CFFB2'}" font-family="JetBrains Mono,monospace">${String(Math.floor(S.min/60)).padStart(2,'0')}:${String(S.min%60).padStart(2,'0')}</text></g>
+   <g class="hot bed" data-act="use-bed"><title>Dormir</title>
+     <rect x="80" y="236" width="20" height="140" rx="5" fill="#5E3F29"/><rect x="96" y="318" width="250" height="40" rx="8" fill="#F3F5FA"/>
+     <ellipse cx="132" cy="314" rx="30" ry="13" fill="#FFFFFF" stroke="#D9DEEA" stroke-width="2"/>
+     <path d="M166 304 h180 v58 h-180 z" fill="#2645F2"/><path d="M166 304 h180 v14 h-180 z" fill="#4C68FF"/><path d="M166 362 h180 v14 h-180 z" fill="#1A33C4"/>
+     <rect x="96" y="358" width="10" height="20" fill="#5E3F29"/><rect x="334" y="358" width="10" height="20" fill="#5E3F29"/></g>`;
+}
+function roomHint(){
+  if(S.wall===0)return 'Toca la computadora para usarla';
+  if(S.wall===1)return S.door.length?`Tienes ${S.door.length} pedido${S.door.length>1?'s':''} en la puerta: tócalo para recogerlo`:'Aquí llegan tus pedidos de comida';
+  if(S.wall===2)return S.fridge?'Toca el refrigerador para comer algo':'La cocina está vacía';
+  const pend=S.shipments.filter(s=>s.pending).length;
+  if(pend)return `Tienes ${pend} paquete${pend>1?'s':''} para enviar: toca la ventana`;
+  return night()?'Ya es tarde: toca la cama para dormir':'Toca la cama para dormir o la ventana para enviar paquetes';
+}
+function renderRoomHUD(){
+  if(!inRoom())return;
+  const h=Math.floor(S.min/60),m=S.min%60;
+  $('#rm-money').textContent=money(S.money);$('#rm-clock').textContent=`Día ${S.day} · ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  const col=v=>v>=70?'var(--good)':v>=DRAIN?'var(--warn)':'var(--bad)';
+  $('#rm-food').style.width=S.food+'%';$('#rm-food').style.background=col(S.food);$('#rm-drink').style.width=S.drink+'%';$('#rm-drink').style.background=col(S.drink);
+}
+function renderRoom(){
+  if(!S)return;const r=$('#room');r.hidden=!inRoom();if(r.hidden)return;
+  const sky=skyAt(S.min);
+  const key=[S.shipments.filter(s=>s.pending).length,S.wall,S.door.map(p=>p.uid+':'+(p.day<=S.day-1)).join(),S.fridge,S.fridgeItems.length,sky.a,S.wall===3?S.min:'',S.buyers.filter(b=>b.status==='open'&&b.unread).length].join('|');
+  renderRoomHUD();
+  if(key===roomKey)return;roomKey=key;
+  const svg=$('#rm-scene');
+  svg.innerHTML=`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky.a}"/><stop offset="1" stop-color="${sky.b}"/></linearGradient>
+    <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2645F2"/><stop offset="1" stop-color="#6F86FF"/></linearGradient></defs>
+    ${wallSVG(S.wall,sky)}<rect x="-2000" y="-2000" width="4400" height="5000" fill="#0A0E28" opacity="${sky.night}" pointer-events="none"/>`;
+  if(turnDir){svg.classList.remove('from-l','from-r');void svg.getBoundingClientRect();svg.classList.add(turnDir>0?'from-r':'from-l');turnDir=0}
+  $('#rm-wall').textContent=WALLS[S.wall];$('#rm-prev').querySelector('span').textContent=WALLS[(S.wall+3)%4];$('#rm-next').querySelector('span').textContent=WALLS[(S.wall+1)%4];
+  $('#rm-dots').innerHTML=WALLS.map((w,i)=>`<i class="${i===S.wall?'on':''}"></i>`).join('');
+  $('#rm-hint').textContent=roomHint();
+  $('#room').classList.toggle('late',night());
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+  if(a==='use-pc')enterPC();
+  else if(a==='leave-pc')leavePC();
+  else if(a==='turn-l')turn(-1);
+  else if(a==='turn-r')turn(1);
+  else if(a==='pickup')pickup(+t.dataset.id);
+  else if(a==='pkg-eat')pkgChoice('eat');
+  else if(a==='pkg-store')pkgChoice('store');
+  else if(a==='pkg-close'){$('#pkg').hidden=true;pendingPkg=null}
+  else if(a==='open-fridge')openFridge();
+  else if(a==='fridge-close')$('#fridge').hidden=true;
+  else if(a==='use-bed')openNight();
+  else if(a==='ship-window'){const n=dispatchAll();toast(n?`Enviaste ${n} paquete${n>1?'s':''} por la ventana${droneOn()?': los drones los entregan hoy':''}.`:'No hay paquetes para enviar. Cuando vendas algo, aparecerá aquí.',n?'good':'');roomKey='';renderRoom()}
+});
+document.addEventListener('keydown',e=>{if(!inRoom()||menuOpen()||e.target.matches('input,textarea'))return;if(e.key==='ArrowLeft')turn(-1);if(e.key==='ArrowRight')turn(1)});
+(()=>{let sx=null,sy=null;const r=$('#room');
+  r.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY});
+  r.addEventListener('pointerup',e=>{if(sx==null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)turn(dx<0?1:-1)});})();
+
+/* ================= PERFILES DE LOS CLIENTES ================= */
+const PROFILE_BIO={
+ coleccionista:[['Coleccionista de antigüedades desde 1998 🏺','Solo piezas originales. Nada de réplicas.'],['Restaurador aficionado 🛠️','Si tiene historia, me interesa. Si es falso, lo noto.']],
+ desconfiado:[['Ya me estafaron dos veces. No habrá una tercera.','Sin pruebas no hay trato 🔍'],['Escéptico profesional 🧐','Creo lo que veo, no lo que me cuentan.']],
+ apurado:[['Siempre a mil 🏃','Respondo rápido y espero lo mismo.'],['Agenda llena 📅','Sin vueltas, por favor.']],
+ amable:[['Amo las cosas con historia ✨','Buena actitud ante todo 🌻'],['Jardinera y soñadora 🌷','Cada objeto cuenta algo.']],
+ tikismikis:[['Profesora de lengua jubilada 📚','Las tildes no son decoración.'],['Corrector de estilo ✒️','Escribe bien y hablamos. Escribe mal y también, pero menos.']],
+};
+const PROFILE_POSTS={coleccionista:['🏺','🕰️','📜','🗝️','🖼️','⚱️'],desconfiado:['🔍','🧾','🔐','🧐','⚖️','🕵️'],apurado:['🏃','☕','⏱️','🚗','✈️','⚡'],amable:['🌻','🐶','🍰','🌷','🐱','🌈'],tikismikis:['📚','✒️','📝','📖','🔤','🎓']};
+const PROFILE_HL={coleccionista:['Colección','Ferias','Restauros'],desconfiado:['Estafas','Pruebas','Reseñas'],apurado:['Viajes','Trabajo','Café'],amable:['Familia','Jardín','Recetas'],tikismikis:['Libros','Clases','Errores ajenos']};
+const CONCERN_PIN={autenticidad:'Me vendieron una réplica una vez. Nunca más.',procedencia:'Me encanta saber quién tuvo cada cosa antes que yo.',estado:'Lo primero que miro es el estado. Siempre.',envio:'Odio esperar envíos eternos.',precio:'Nunca pago de más. Nunca.',confianza:'Sin garantía no compro nada.',foto:'Sin fotos no hay trato 📸'};
+function ensureProfile(b){
+  if(b.profile)return b.profile;
+  const h=hue(b.name+b.id);
+  const handle=strip(b.name.toLowerCase()).replace(/[^a-z]+/g,'_').replace(/^_|_$/g,'')+'_'+(h%97);
+  const posts=[...(PROFILE_POSTS[b.persona]||PROFILE_POSTS.amable)].sort(()=>Math.random()-.5).concat(['🌅','🍝','🏖️']).sort(()=>Math.random()-.5);
+  b.profile={handle,bio:pick(PROFILE_BIO[b.persona]||PROFILE_BIO.amable),posts:posts.slice(0,9),hl:PROFILE_HL[b.persona]||PROFILE_HL.amable,
+    pin:CONCERN_PIN[(b.concerns||[])[0]]||'',n:{posts:12+h%300,fol:40+(h*7)%2400,seg:30+(h*3)%800}};
+  return b.profile;
+}
+function openProfile(){
+  const b=S.buyers.find(x=>x.id===S.cur);if(!b)return;const p=ensureProfile(b);b.seenProfile=true;
+  $('#pf-handle').textContent='@'+p.handle;
+  $('#pf-body').innerHTML=`
+   <div class="pf-top"><div class="pf-ring"><span class="av pf-av" style="--h:${hue(b.name)}">${esc(b.name[0])}</span></div>
+     <div class="pf-stats"><div><b class="num">${p.n.posts}</b><span>publicaciones</span></div><div><b class="num">${p.n.fol}</b><span>seguidores</span></div><div><b class="num">${p.n.seg}</b><span>seguidos</span></div></div></div>
+   <div class="pf-bio"><b>${esc(b.name)}</b><p>${esc(p.bio[0])}</p><p>${esc(p.bio[1])}</p><p class="pf-loc">📍 ${esc(b.city)}</p></div>
+   <div class="pf-acts"><button class="pf-btn" data-act="pf-follow">${b.followed?'Siguiendo':'Seguir'}</button><button class="pf-btn ghost" data-act="pf-close">Mensaje</button></div>
+   <div class="pf-hl">${p.hl.map((l,i)=>`<div><span style="--h:${(hue(l)+i*40)%360}">${p.posts[i]}</span><small>${esc(l)}</small></div>`).join('')}</div>
+   ${p.pin?`<div class="pf-pin"><span>📌 Fijado</span><p>«${esc(p.pin)}»</p></div>`:''}
+   <div class="pf-grid">${p.posts.map((e,i)=>`<div style="--h:${(hue(e)+i*23)%360}">${e}</div>`).join('')}</div>`;
+  $('#profile').hidden=false;renderChat(true);
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;
+  if(t.dataset.act==='profile')openProfile();
+  if(t.dataset.act==='pf-close')$('#profile').hidden=true;
+  if(t.dataset.act==='pf-follow'){const b=S.buyers.find(x=>x.id===S.cur);if(b){b.followed=!b.followed;if(b.followed&&!b.followBonus){b.followBonus=true;b.conv=clamp(b.conv+3,0,100);toast(`A ${b.name} le gustó que lo sigas (+3).`)}openProfile()}}
+});
 
 /* ================= MENÚ Y PARTIDAS ================= */
 let menuMode='title',menuView='main',menuConfirm=null,menuMsg='';
@@ -2459,8 +2740,9 @@ function renderMenu(){
 }
 function afterLoad(){
   for(const b of S.buyers)if(b.typing){b.typing=false;b.waitingSince=S.t;b.msgs.forEach(m=>m.pending=false)}
-  S.cur=null;$('#chat').hidden=true;$('#editor').hidden=true;$('#job').hidden=true;$('#stats').hidden=true;
-  lastRenderedUrl=null;renderTaskbar();renderPage(true);renderMini();
+  S.view=S.view||'room';S.wall=S.wall||0;S.door=S.door||[];if(S.view==='pc'){S.view='room'}
+  S.cur=null;$('#chat').hidden=true;$('#fridge').hidden=true;$('#pkg').hidden=true;$('#editor').hidden=true;$('#job').hidden=true;$('#stats').hidden=true;
+  lastRenderedUrl=null;roomKey='';renderTaskbar();renderPage(true);renderMini();renderRoom();
 }
 function loadSlot(n){const st=readSlot(n);if(!st){menuMsg='No se pudo leer esa partida.';renderMenu();return}SLOT=n;S=st;afterLoad();save();closeMenu();tutStop();toast(`Partida cargada: día ${S.day}.`)}
 function newInSlot(n){SLOT=n;newGame();save();afterLoad();closeMenu();tutStart()}
@@ -2504,6 +2786,7 @@ const onBazar=p=>{const u=parseUrl(curTab().url);return u.host==='bazarito.com'&
 const tutItem=m=>S.inv.find(i=>i.id===m.itemId)||S.inv[S.inv.length-1];
 const STEPS=[
  {center:true,title:'Bienvenido a Lo Vendo Caro',text:'Te enseño lo básico en un par de minutos: comprar algo barato, publicarlo con una buena historia y convencer a tu primer cliente.',next:'Empezar'},
+ {target:'[data-act=use-pc]',title:'Tu habitación',text:'Empiezas en tu cuarto. Toca la computadora para usarla.',enter:()=>{if(inRoom()){S.wall=0;roomKey='';renderRoom()}},wait:()=>S.view==='pc'},
  {target:'.omni',title:'Todo pasa en este navegador',text:'Escribe bazarito.com en la barra de direcciones y pulsa Enter.',wait:()=>onBazar(''),action:{label:'Llévame',fn:()=>go('bazarito.com')}},
  {target:m=>`[data-act=buy][data-id="${m.listing}"]`,title:'Ofertas relámpago',
   text:m=>onBazar('')?'Cada oferta desaparece en segundos. Compra esta, que es barata.':'Vuelve a bazarito.com para comprar.',
@@ -2526,8 +2809,10 @@ const STEPS=[
  {target:'#c-hag',title:'Fotos y regateo',text:'Con la cámara le mandas fotos (enfócalas bien) y con Regatear le pides otro precio. Sigue hablando hasta cerrar la venta.',next:'Siguiente'},
  {target:'[data-act=close-chat]',title:'Sal cuando quieras',text:'Puedes salir del chat: el cliente espera un rato y te avisa si se impacienta.',wait:()=>S.cur==null||$('#chat').hidden,action:{label:'Salir del chat',fn:()=>closeChat()}},
  {target:'.tb-stats',title:'Comida y bebida',text:'Trabajar cansa. Si alguna baja del 15 % no puedes hacer nada, así que pide comida cuando haga falta.',next:'Siguiente'},
- {target:'#tb-end',title:'Tú decides cuándo termina el día',text:'Al dormir se cobran las facturas, descansas y llegan ofertas nuevas.',next:'Siguiente'},
- {target:'#tb-menu',title:'Menú y partidas',text:'Aquí guardas, cargas o exportas partidas y puedes repetir este tutorial.',next:'Siguiente'},
+ {target:'#tb-end',title:'Levántate',text:'Cuando quieras, levántate de la computadora para volver a tu cuarto.',wait:()=>inRoom()},
+ {target:'#rm-next',title:'Gira la cabeza',text:'Con las flechas (o deslizando) miras hacia otra parte del cuarto.',enter:m=>{m.w0=S.wall},wait:m=>inRoom()&&S.wall!==m.w0},
+ {center:false,target:'#rm-nav',title:'Tu cuarto',text:'En la puerta recoges los pedidos de comida y en la cocina va el refrigerador. Junto a la cama está la ventana: por ahí envías lo que vendes para cobrar el resto. En la cama terminas el día.',next:'Siguiente'},
+ {target:'#rm-menu',title:'Menú y partidas',text:'Aquí guardas, cargas o exportas partidas y puedes repetir este tutorial.',next:'Siguiente'},
  {center:true,title:'¡Listo para vender!',text:'Lo demás lo descubres tú. Trabajos, empleados, facturas y mucho más se encuentran buscando en el navegador.',next:'A vender'},
 ];
 function tutStart(){TUT={i:0,mem:{}};$('#coach').hidden=false;enterStep()}
