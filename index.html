@@ -5103,6 +5103,28 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   if(a==='pin-toggle'){e.preventDefault();togglePin(pinUrl())}
   if(a==='pin-del'||a==='pin-res'){e.preventDefault();togglePin(t.dataset.url,(t.dataset.title||'').split(' · ')[0].split(' - ')[0])}});
 
+/* ================= MODO AYUDANTE: no tocar lo que estás escribiendo ================= */
+// Si hay un campo con el foco (y el teclado abierto), no se reemplaza; solo se actualizan los mensajes,
+// la barra y la oferta. Así el teclado no se reinicia (mayúsculas) ni se cierra (numérico).
+const _hpRenderK=hpRender;
+const typingIn=()=>{const a=document.activeElement,hp=$('#hp');return a&&hp&&hp.contains(a)&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&a.type!=='range'};
+hpRender=async function(soft){
+  if(!typingIn())return _hpRenderK(soft);
+  const live=$('#hp');const tmp=document.createElement('div');
+  live.id='hp-live';tmp.id='hp';tmp.style.cssText='position:fixed;left:-9999px;top:0;width:'+live.clientWidth+'px;visibility:hidden';document.body.appendChild(tmp);
+  try{await _hpRenderK(soft)}catch(e){}
+  tmp.remove();live.id='hp';
+  const sel=['.hp-bar','.hp-offer','.hp-q','.hp-qr','.hp-err','.hp-stats','.hb-stat','.hp-role','.hp-clock'];
+  // mensajes: copiar el contenido manteniendo el scroll
+  const nm=tmp.querySelector('#hp-msgs'),om=live.querySelector('#hp-msgs');
+  if(nm&&om&&nm.innerHTML!==om.innerHTML){const atB=om.scrollHeight-om.scrollTop-om.clientHeight<60,st=om.scrollTop;om.innerHTML=nm.innerHTML;om.scrollTop=atB?om.scrollHeight:st}
+  for(const s of sel){const n=tmp.querySelector(s),o=live.querySelector(s);if(n&&o&&n.innerHTML!==o.innerHTML)o.innerHTML=n.innerHTML;else if(n&&!o&&s!=='.hp-clock'){/* aparece algo nuevo: se agrega al soltar el teclado */HX.pendingFull=true}}
+  // lista de chats o de compras: actualizar sin tocar el campo activo
+  for(const s of ['.hb-list']){const n=tmp.querySelector(s),o=live.querySelector(s);if(n&&o&&!o.contains(document.activeElement)&&n.innerHTML!==o.innerHTML){const st=o.scrollTop;o.innerHTML=n.innerHTML;o.scrollTop=st}}
+};
+// al cerrar el teclado, dibujar lo que haya quedado pendiente
+document.addEventListener('focusout',e=>{if(!$('#hp')||!$('#hp').contains(e.target))return;setTimeout(()=>{if(!typingIn()&&HX.pendingFull){HX.pendingFull=false;hpRender(true)}},150)});
+
 /* ================= MENÚ Y PARTIDAS ================= */
 let installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;try{if(!$('#menu').hidden)renderMenu()}catch(_){}});
