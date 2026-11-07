@@ -1947,12 +1947,26 @@ function qType(d){
   if(/(como te llamas|quien eres|tu nombre)/.test(d))return 'name';
   return 'other';
 }
+// Unidades que indican que el número NO es un precio (días, kilos, años, medidas…)
+const NOT_PRICE=/^\s*(?:o\s+\d+\s*)?(?:dias?|horas?|hs|minutos?|min|segundos?|semanas?|mes(?:es)?|anos?|decadas?|siglos?|kilos?|kilogramos?|kg|kgs|gramos?|gr|g|toneladas?|libras?|lbs?|cm|centimetros?|metros?|mts?|m|mm|milimetros?|pulgadas?|litros?|lts?|l|ml|%|por ciento|veces|vez|piezas?|partes?|unidades?|personas?|duenos?|hijos?|nietos?|patas?|ruedas?|botones?|cuadras?|km|kilometros?|grados?|watts?|w|volts?|v|pisos?|cajones?|paginas?|capitulos?|tomos?|cuerdas?|colores?|ojos?|velas?|anillos?|vueltas?|pasos?|puntos?|estrellas?|numero|cosas?)(?![a-z])/;
+const PRICE_CUE=/(\$|dolar|plata|precio|pago|pagar|pagas|oferta|ofrezco|vend|cobr|cuesta|vale|dejo|rebaja|descuento|barato|caro|menos|mas|final|ultimo|trato|tuyo|tuya|cerramos|cerrar|listo|hecho|acepto|aceptas|ofrec)/;
 function parsePrice(text,b){
-  const m=text.match(/(?:\$|us\$|usd)\s?(\d[\d.,]*)|(\d[\d.,]*)\s?(?:d[oó]lares|pesos|usd|bucks)/i);
+  const m=text.match(/(?:\$|us\$|usd)\s?(\d[\d.,]*)|(\d[\d.,]*)\s?(?:d[oó]lares|pesos|usd|bucks|verdes|mangos)/i);
   if(m)return parseInt((m[1]||m[2]).replace(/[.,]/g,''),10);
   const d=norm(text);
-  const c=d.match(/(?:por|en|a|quiero|pido|minimo|vale|cuesta|precio|ofrece|ofreceme|dejo|deja|dame|sube|subes|subir|sea|serian|son|menos de|mas de)\s+(?:unos\s+|los\s+)?(\d{1,5})(?![\d])/);
-  if(c){const n=+c[1];if(!(n>=1800&&n<=2030))return n}
+  // palabras que casi siempre van con un precio
+  const strong=/(?:^|[^a-z])(?:quiero|pido|minimo|vale|cuesta|precio|ofrece|ofreceme|ofrezco|dejo|deja|dame|sube|subes|subir|subeme|serian|cobro|vendo|pagame|pagas|menos de|mas de|no menos de|lo menos|lo minimo|final|ultimo precio|precio final|mi precio)\s+(?:es\s+|seria\s+|de\s+)?(?:unos\s+|los\s+|en\s+|a\s+|por\s+)?(\d{1,5})(?!\d)/g;
+  // palabras débiles: "a", "en", "por", "son"… solo si el contexto habla de dinero
+  const weak=/(?:^|[^a-z])(?:por|en|a|son|sea|seria|y)\s+(?:unos\s+|los\s+)?(\d{1,5})(?!\d)/g;
+  const ok=(n,idx,len)=>{if(n>=1800&&n<=2030)return false;if(NOT_PRICE.test(d.slice(idx+len)))return false;return true};
+  let r;
+  while((r=strong.exec(d))){const n=+r[1];if(ok(n,r.index,r[0].length))return n}
+  const cue=PRICE_CUE.test(d);
+  while((r=weak.exec(d))){const n=+r[1];if(!ok(n,r.index,r[0].length))continue;
+    if(/(llega|llegan|tarda|demora|mando|envio|envia|despacho|sale|hace|tiene|tuve|mide|pesa|cabe|caben|vive|queda|esta|calle|edad|cumple)\s*$/.test(d.slice(Math.max(0,r.index-16),r.index+1)))continue;
+    // un número suelto muy lejos del precio en juego probablemente no es una oferta
+    const ref=b?(b.offer||1):n;
+    if(cue?(n<ref*.25||n>ref*6):(n<ref*.6||n>ref*3))continue;return n}
   if(b&&/(sube|subir|subes|subeme|ofrece mas|ofreceme mas|un poco mas|algo mas de dinero|mas dinero|paga mas|pagar mas|me parece poco|es muy poco|muy poca plata)/.test(d))return niceRound(b.offer*1.15)||b.offer+1;
   return null;
 }
