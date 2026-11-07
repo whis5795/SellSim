@@ -2892,6 +2892,10 @@ const QR={
 function quickReplies(b,it){
   const out=[];const q=b.q;
   if(b.status!=='open'||b.emp)return out;
+  // Solo 40 % de las veces aparecen sugerencias: el resto hay que pensar la respuesta
+  const key=(q&&q.id||'none')+'|'+b.pmsgs;
+  if(b.qrKey!==key){b.qrKey=key;b.qrShow=Math.random()<.4}
+  if(!b.qrShow)return q&&q.photo?['📷 Mandar una foto']:[];
   if(q&&q.id==='qb')out.push('¡Hola! Sí, sigue disponible. Es tuyo.');
   if(b.pmsgs===0)out.push('¡Hola! Gracias por tu interés.');
   if(q&&q.photo)out.push('📷 Mandar una foto');
