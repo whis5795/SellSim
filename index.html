@@ -1131,6 +1131,8 @@ body.helper{background:var(--bg)}
 .hp-view{height:200px;border-radius:16px;background:hsl(var(--h) 45% 82%);display:grid;place-items:center;overflow:hidden;position:relative;font-size:90px}.hp-view span{transition:filter .1s,transform .1s}
 .hp-grid{position:absolute;inset:0;background:linear-gradient(90deg,transparent 33%,rgba(255,255,255,.35) 33%,rgba(255,255,255,.35) 33.5%,transparent 33.5%,transparent 66%,rgba(255,255,255,.35) 66%,rgba(255,255,255,.35) 66.5%,transparent 66.5%),linear-gradient(transparent 33%,rgba(255,255,255,.35) 33%,rgba(255,255,255,.35) 33.5%,transparent 33.5%,transparent 66%,rgba(255,255,255,.35) 66%,rgba(255,255,255,.35) 66.5%,transparent 66.5%)}
 .hp-camhint{margin:0;font-size:13px;color:var(--muted)}.hp-lq{display:flex;gap:8px;align-items:center}.hp-lq .minibar{flex:1}
+.hp-slh{display:flex;justify-content:space-between;align-items:center;gap:8px}.hp-slh .cam-st{font-style:normal}
+.hp-camhint{font-weight:700;color:var(--ink)!important}
 .hp-sl{display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:700}.hp-sl input{width:100%}
 
 .hp-cutl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px}.hp-cutl b{color:var(--good)}.hp-cutl input{width:100%;margin-top:6px}
@@ -4700,14 +4702,19 @@ hpRender=async function(soft){
 function camHTML(c){const k=HX.cam;return `<div class="hp-cam"><div class="hp-camb"><h3>📷 Foto para ${esc(c.name)}</h3>
   <div class="hp-view" style="--h:${c.h}"><span id="hx-sub">${c.icon||'📦'}</span><i class="hp-grid"></i></div>
   <p class="hp-camhint" id="hx-hint"></p><div class="hp-lq"><span class="minibar"><i id="hx-qb"></i></span><b id="hx-q">0 %</b></div>
-  ${[['f','🔍 Enfoque'],['l','☀️ Luz'],['z','🔭 Zoom']].map(([s,l])=>`<label class="hp-sl">${l}<input type="range" id="hx-${s}" min="0" max="100" value="${k[s]}"></label>`).join('')}
+  ${[['f','🔍 Enfoque'],['l','☀️ Luz'],['z','🔭 Zoom']].map(([s,l])=>`<label class="hp-sl"><span class="hp-slh">${l}<em class="cam-st" id="hx-${s}s"></em></span><input type="range" id="hx-${s}" min="0" max="100" value="${k[s]}"></label>`).join('')}
   <div class="hp-acts"><button class="hp-btn" data-act="hx-shoot">Sacar y enviar</button><button class="hp-btn ghost" data-act="hx-close">Cancelar</button></div></div></div>`}
 function camVals2(){const k=HX.cam,f=+$('#hx-f').value,l=+$('#hx-l').value,z=+$('#hx-z').value;k.f=f;k.l=l;k.z=z;
   const ef=Math.abs(f-k.tf),el=l-k.tl,ez=z-k.tz;return {ef,el,ez,blur:+(ef*.14).toFixed(2),br:+clamp(1+el/55,.15,2.3).toFixed(2),sc:+clamp(1+ez/70,.35,2.4).toFixed(2),q:clamp(Math.round(100-(ef+Math.abs(el)*.7+Math.abs(ez)*.6)),0,100)}}
 function camUpdate(){if(!$('#hx-f'))return;const v=camVals2();const s=$('#hx-sub');s.style.filter=`blur(${v.blur}px) brightness(${v.br})`;s.style.transform=`scale(${v.sc})`;
   $('#hx-q').textContent=v.q+' %';$('#hx-qb').style.width=v.q+'%';$('#hx-qb').style.background=convColor(v.q);
-  const errs=[[v.ef,'Le falta enfoque.'],[Math.abs(v.el)*.7,v.el<0?'Le falta luz.':'Tiene demasiada luz.'],[Math.abs(v.ez)*.6,v.ez<0?'Acércate un poco.':'Aléjate un poco.']].sort((a,b)=>b[0]-a[0]);
-  $('#hx-hint').textContent=v.q>=92?'¡Perfecta! Sácala.':'Pista: '+errs[0][1]}
+  // estado de cada control, igual que en la cámara de la partida
+  const st=(id,diff,okT,lowT,highT)=>{const el=$(id);if(!el)return;const a=Math.abs(diff);el.className='cam-st '+(a<=4?'ok':a<=15?'near':'far');el.textContent=a<=4?okT:(diff<0?lowT:highT)+(a<=15?' (casi)':'')};
+  st('#hx-fs',+$('#hx-f').value-HX.cam.tf,'Nítido ✓','Súbelo →','← Bájalo');
+  st('#hx-ls',v.el,'Bien ✓','Oscura →','← Muy clara');
+  st('#hx-zs',v.ez,'Encuadre ✓','Lejos →','← Muy cerca');
+  const errs=[[v.ef,'Le falta enfoque: el objeto se ve borroso.'],[Math.abs(v.el)*.7,v.el<0?'Le falta luz: está muy oscura.':'Tiene demasiada luz: se ve quemada.'],[Math.abs(v.ez)*.6,v.ez<0?'Acércate: el objeto se ve muy chico.':'Aléjate un poco: no se ve entero.']].sort((a,b)=>b[0]-a[0]);
+  $('#hx-hint').textContent=v.q>=92?'¡Perfecta! Saca la foto.':v.q>=85?'Muy buena. '+errs[0][1].split(':')[0]+' un poquito más y queda perfecta.':'Pista: '+errs[0][1]}
 document.addEventListener('input',e=>{if(/^hx-/.test(e.target.id))camUpdate()});
 function hxSend(o){if(!HP.ch)return;HP.ch.send(JSON.stringify(Object.assign({id:HP.cur},o)))}
 document.addEventListener('submit',e=>{if(e.target.dataset.hp==='hag'){e.preventDefault();const p=Math.round(+$('#hp-hag').value);if(p>0){hxSend({t:'offer',p});HX.hag=false;hpRender()}}},true);
