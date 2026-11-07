@@ -5473,10 +5473,10 @@ const VMORE={
 for(const k in VMORE){if(!VOICE[k])VOICE[k]={good:[],bad:[],ok:[]};for(const t of ['good','bad','ok'])VOICE[k][t]=[...new Set([...(VOICE[k][t]||[]),...VMORE[k][t]])]}
 
 /* ================= RECHAZAR DESDE LA LISTA DE CHATS + AVISO DE AYUDANTE EN EL CHAT ================= */
-// qué amigo está con cada cliente: el que tiene ese chat abierto, o el último que le escribió
+// qué amigo está con cada cliente: solo el que tiene ese chat abierto ahora mismo
 function chatFriend(b){if(typeof friendList!=='function')return null;const fr=friendList();
   const v=fr.find(p=>p.viewing==b.id);if(v)return v.name;
-  if(b.friend&&fr.some(p=>p.name===b.friend)&&b.status==='open')return b.friend;return null}
+  return null}
 // dos toques para rechazar desde la lista (el estado sobrevive a los redibujos)
 const LR={id:null,until:0};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act="list-rej"]');if(!t)return;e.preventDefault();e.stopPropagation();
