@@ -1129,6 +1129,8 @@ function spawnBuyer(it){
   const b={id:S.nextId++,itemId:it.id,name:pick(NAMES),persona:pid,offer,conv,patience:pid==='apurado'?ri(5,6):ri(7,9),city:city[0],dist:city[1],
     msgs:[],status:'open',unread:1,q:null,last:'',discounted:false,waitingSince:S.t,emp:null,pmsgs:0,typing:false,asked:[],seen:[],photos:0,haggles:0};
   b.patMax=b.patience;
+  const pc=PERSONA_CONCERNS[pid].slice();const extra=pick(Object.keys(CONCERNS).filter(c=>!pc.includes(c)));
+  b.concerns=Math.random()<.6?pc.concat(extra):pc;b.resolved=[];b.facts={years:[],rel:{}};b.insults=0;
   const q=nextQuestion(b,it,null);
   b.msgs.push({from:'b',text:opening(b,it)+' '+q.q});b.q=q;
   S.buyers.push(b);
@@ -1146,24 +1148,24 @@ function opening(b,it){
   return pick([`Hola.${ask} Te soy sincero: la historia me suena a cuento.`,`Buenas. Me interesa ${n}, aunque esa historia me parece demasiado buena para ser verdad.${ask}`]);
 }
 
-/* ---------- temas que el cliente detecta (motor local) ---------- */
+/* ---------- temas que el cliente detecta en tus mensajes ---------- */
 const findStem=(d,list)=>list.find(s=>rx(s).test(d));
 const TOPICS=[
  {id:'photo',find:(t,d)=>/(foto|video|imagen)/.test(d)&&'foto',react:()=>['De acuerdo, mándame la foto.'],ask:()=>[{id:'tp',q:'¿Me la mandas ahora?',photo:true}]},
- {id:'proof',find:(t,d)=>{const s=findStem(d,['certificad','factura','document','tasacion','papeles','sello','constancia','registro','recibo']);return s&&wordFor(t,s)},
+ {id:'proof',find:(t,d)=>{const s=findStem(d,['certificad','factura','document','tasacion','papeles','sello','constancia','registro','recibo','pasaporte','carta']);return s&&wordFor(t,s)},
   react:x=>[`Que tenga ${x} cambia bastante las cosas.`,`Lo del ${x} me deja más tranquilo.`],
-  ask:()=>[{id:'tpr1',q:'¿Quién lo firmó? ¿Un experto, un museo, un notario?',a:['museo','expert','tasador','notari','perito','universidad','instituto','subasta','fundacion','asociacion','club','especialista','casa de']},{id:'tpr2',q:'¿Me lo puedes mostrar? Aunque sea con una foto.',photo:true}]},
+  ask:()=>[{id:'tpr1',q:'¿Quién lo emitió o lo firmó? ¿Un experto, un museo, un notario?',a:['museo','expert','tasador','notari','perito','universidad','instituto','subasta','fundacion','asociacion','club','especialista','casa de','__name__']},{id:'tpr2',q:'¿Me lo puedes mostrar? Aunque sea con una foto.',photo:true}]},
  {id:'famous',find:(t,d,it)=>{const k=it.kw.find(k=>rx(k).test(d));return k&&wordFor(t,k)},
-  react:x=>[`Lo de «${x}» es lo que más me llama la atención.`,`Eso de «${x}» suena increíble.`],
-  ask:x=>[{id:'tf1',q:'¿Y cómo termina algo así en una venta por internet?',a:['herencia','hered','subasta','regal','encontr','compr','famili','necesito','mudanza','espacio','consegu','dinero']},{id:'tf2',q:`¿Hay alguna prueba de lo de «${x}»?`,a:PROOF.concat(['diario','libro','nota','articulo','testigo'])}]},
+  react:x=>[`Lo de «${x}» es lo que más me llama la atención.`,`Eso de «${x}» suena increíble, si es cierto.`],
+  ask:x=>[{id:'tf1',q:'¿Y cómo termina algo así en una venta por internet?',a:['herencia','hered','subasta','regal','encontr','compr','famili','necesito','mudanza','espacio','consegu','dinero']},{id:'tf2',q:`¿Hay alguna prueba de lo de «${x}»?`,a:PROOF.concat(['diario','libro','nota','articulo','testigo','pasaporte','carta'])}]},
  {id:'year',find:t=>{const m=t.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/);return m&&m[1]},
-  react:x=>[`¿${x}? Eso es mucho tiempo.`,`Así que de ${x}… interesante.`],
-  ask:x=>[{id:'ty1',q:`¿Y cómo llegó hasta ti desde ${x}?`,a:ORIGIN},{id:'ty2',q:`¿Cómo sabes que es de ${x}? ¿Tiene alguna marca o fecha grabada?`,a:PROOF.concat(['marca','grabad','inscrip','fecha','etiqueta','serie','abajo','atras'])}]},
+  react:x=>[`¿${x}? Eso es mucho tiempo.`,`Así que ${x}… interesante.`],
+  ask:x=>[{id:'ty1',q:`¿Y cómo llegó hasta ti desde ${x}?`,a:ORIGIN},{id:'ty2',q:`¿Cómo sabes lo de ${x}? ¿Tiene alguna marca o fecha grabada?`,a:PROOF.concat(['marca','grabad','inscrip','fecha','etiqueta','serie','abajo','atras','conto','decia'])}]},
  {id:'rel',find:(t,d)=>{const m=d.match(/(^|[^a-z])(bisabuel[oa]|abuel[oa]|padre|madre|papa|mama|tio|tia|primo|prima)([^a-z]|$)/);return m&&m[2]},
   react:x=>[`Qué bonito que haya sido de tu ${x}.`,'Las cosas de familia tienen otro valor.'],
-  ask:x=>[{id:'tr1',q:`¿Y tu ${x} qué opina de que lo vendas?`,a:['muri','falleci','opina','dice','quiere','acuerdo','permiso','sabe','feliz','bendic','ya no','cielo','descans']},{id:'tr2',q:`¿Tu ${x} te contó alguna anécdota con esto?`,a:['conto','contaba','decia','anecdota','una vez','siempre','recuerd','dijo']}]},
+  ask:x=>[{id:'tr1',q:`¿Y tu ${x} qué opina de que lo vendas?`,a:['muri','falleci','opina','dice','quiere','acuerdo','permiso','sabe','feliz','bendic','ya no','cielo','descans','no esta']},{id:'tr2',q:`¿Tu ${x} te contó alguna anécdota con esto?`,a:['conto','contaba','decia','anecdota','una vez','siempre','recuerd','dijo','__long__']}]},
  {id:'guar',find:(t,d)=>findStem(d,['garantia','devol','reembols'])&&'garantía',react:()=>['Una garantía me deja más tranquilo.'],
-  ask:()=>[{id:'tg',q:'¿De cuántos días es la garantía?',a:['dia','semana','mes','ano','NUM']}]},
+  ask:()=>[{id:'tg',q:'¿De cuántos días es la garantía y qué cubre?',a:['dia','semana','mes','ano','NUM','cubre','todo']}]},
  {id:'ship',find:(t,d)=>findStem(d,SHIP)&&'envío',react:()=>['Que hagas envíos me sirve.','Perfecto lo del envío.'],
   ask:()=>[{id:'ts',q:'¿Cuánto tarda en llegar y quién paga el envío?',a:['dia','hora','manana','semana','hoy','gratis','incluid','pago yo','corre por','NUM']}]},
  {id:'cond',find:(t,d)=>findStem(d,CONDITION)&&'estado',react:()=>['El estado me importa mucho.'],
@@ -1171,27 +1173,51 @@ const TOPICS=[
  {id:'reason',find:(t,d)=>findStem(d,['mudanza','me mudo','necesito','deuda','espacio','viajo','viaje','no tengo lugar','me separo','me caso'])&&'motivo',
   react:()=>['Entiendo, a veces hay que soltar las cosas.'],ask:()=>[{id:'tre',q:'¿No te da pena desprenderte de él?',a:['si','no','pena','duele','necesito','toca','momento','mejor','manos','cuide','alguien']}]},
 ];
+/* preocupaciones ocultas de cada cliente: resolverlas es la forma más directa de convencerlo */
+const CONCERNS={
+ autenticidad:{label:'que sea auténtico',asks:()=>['¿Cómo sé que no es una copia?','¿Tienes algo que demuestre que es auténtico?'],stems:PROOF.concat(['firma','grabad','marca','inscrip','numero de serie','pasaporte','carta'])},
+ procedencia:{label:'de dónde salió',asks:()=>['¿Cómo llegó a tus manos?','¿Quién lo tuvo antes que tú?'],stems:ORIGIN},
+ estado:{label:'el estado en que está',asks:()=>['¿En qué estado está, de verdad?','¿Tiene golpes o le falta alguna pieza?'],stems:CONDITION.concat(['completo','falta','pieza','limpi','restaur'])},
+ envio:{label:'cómo me llega',asks:b=>[`¿Cómo me lo haces llegar a ${b.city}?`,'¿Cuánto tarda el envío y quién lo paga?'],stems:SHIP.concat(['dia','manana','semana','gratis','incluid','dron'])},
+ precio:{label:'el precio',asks:b=>[`¿Por qué vale ${money(b.offer)}?`,'¿No es un poco caro para lo que es?'],stems:['vale','valor','precio','tasacion','unic','raro','pocos','inversion','descuento','rebaja','justo','ganga','barato']},
+ confianza:{label:'que seas de fiar',asks:()=>['¿Cómo sé que no me vas a estafar?','¿Qué pasa si llega y no es lo que dices?'],stems:['garantia','devol','reembols','referencia','opinion','calificac','resena','honest','pago al recibir','contra entrega','en persona','comprobante','factura']},
+ foto:{label:'verlo con mis propios ojos',asks:()=>['¿Me mandas una foto?','¿Puedo ver una foto antes de decidir?'],photo:true},
+};
+const PERSONA_CONCERNS={coleccionista:['autenticidad','procedencia'],desconfiado:['confianza','autenticidad'],apurado:['envio','precio'],amable:['estado','procedencia']};
+const SALES_WORDS=/(precio|envi|compr|vend|pago|pagar|foto|estado|historia|regalo|dinero|oferta|garantia|objeto|articulo|pieza|anuncio|trato|cerrar|cerramos|interes)/;
+function prepBuyer(b){b.concerns=b.concerns||[];b.resolved=b.resolved||[];b.facts=b.facts||{years:[],rel:{}};b.insults=b.insults||0}
+function relNames(text){const out={};for(const m of String(text).matchAll(/\b(bisabuel[oa]|abuel[oa]|t[ií][oa]|padre|madre)\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)/g))out[strip(m[1].toLowerCase())]=m[2];return out}
+function yearClaims(d){return [...d.matchAll(/(es de|data de|del ano|fabricad[oa] en|hech[oa] en|fue en|en el ano|desde)\s+(1[0-9]\d\d|20[0-2]\d)/g)].map(m=>m[2])}
+
 function nextQuestion(b,it,topic,text){
+  prepBuyer(b);
   const d=text?norm(text):'';const fresh=q=>!b.asked.includes(q.id)&&!(text&&answers(q,d,text));
-  if(topic){const T=TOPICS.find(t=>t.id===topic.id);for(const q of T.ask(topic.x))if(fresh(q)){b.asked.push(q.id);return q}}
+  const take=q=>{b.asked.push(q.id);return q};
+  if(topic&&Math.random()<.55){const T=TOPICS.find(t=>t.id===topic.id);for(const q of T.ask(topic.x))if(fresh(q))return take(q)}
+  for(const c of b.concerns){if(b.resolved.includes(c))continue;const C=CONCERNS[c];
+    const qs=C.asks(b).map((q,i)=>({id:'c-'+c+i,q,a:C.stems,concern:c,photo:!!C.photo}));
+    const q=qs.find(fresh);if(q)return take(q)}
   const opts=[];
   const y=(it.story.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/)||[])[1];
   if(y)opts.push({id:'fy',q:`En el anuncio dices ${y}. ¿Cómo sabes la fecha exacta?`,a:PROOF.concat(['marca','grabad','fecha','abuel','famili','conto','sabe','registr','diario','libro','etiqueta'])});
   for(const k of it.kw.slice(0,4)){const w=wordFor(it.story,k);if(w)opts.push({id:'fk'+k,q:`Cuéntame más de eso de «${w}» que pusiste en el anuncio.`,a:[k,'__long__']})}
   if(!b.photos)opts.push({id:'fp',q:'¿Me puedes mandar una foto del artículo?',photo:true});
-  opts.push({id:'fv',q:`¿Por qué debería pagar ${money(b.offer)} por esto?`,a:['histor','unic','raro','tasacion','valor','coleccion','pocos','antig','famos'].concat(it.kw)});
+  opts.push({id:'fv',q:`¿Por qué debería pagar ${money(b.offer)} por esto?`,a:['histor','unic','raro','tasacion','valor','coleccion','pocos','famos'].concat(it.kw)});
   opts.push({id:'fs',q:'¿En qué estado está?',a:CONDITION.concat(['bien','mal','excelente','bueno','usad'])});
   opts.push({id:'fe',q:'¿Haces envíos?',a:SHIP.concat(['si','no','claro','por supuesto'])});
   opts.push({id:'fa',q:'¿Algo más que quieras contarme antes de decidir?',a:['__any__']});
   const av=opts.filter(fresh);
-  const q=av.length?(Math.random()<.5?pick(av.slice(0,3)):av[0]):{id:'fz'+b.pmsgs,q:'¿Entonces? Convénceme.',a:['__any__']};
-  b.asked.push(q.id);return q;
+  return take(av.length?(Math.random()<.5?pick(av.slice(0,3)):av[0]):{id:'fz'+b.pmsgs,q:'¿Entonces? Convénceme.',a:['__any__']});
 }
 function answers(q,d,text){
   if(!q||q.photo)return false;
-  return q.a.some(s=>s==='__any__'?text.length>25:s==='__long__'?text.length>70:s==='NUM'?/\d/.test(d):rx(s).test(d));
+  return q.a.some(s=>s==='__any__'?text.length>25:s==='__long__'?text.length>70:s==='NUM'?/\d/.test(d):s==='__name__'?/[a-záéíóúñ,]\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}/.test(text):rx(s).test(d));
 }
 function qType(d){
+  if(/(te preocupa|te inquieta|tus dudas|alguna duda|alguna pregunta|que necesitas saber|que te falta|que te haria|que mas necesitas|que te frena|que te detiene|en que te puedo ayudar|que quieres saber)/.test(d))return 'doubt';
+  if(/(quieres (una |mas )?foto|te mando (una )?foto|te paso (una )?foto)/.test(d))return 'photo_offer';
+  if(/(como (me )?pagas|como pagarias|forma de pago|transferencia|efectivo|tarjeta)/.test(d))return 'pay';
+  if(/(para cuando|cuando lo necesitas|cuando lo quieres|tienes prisa)/.test(d))return 'when';
   if(/(cuanto|precio|ofrec|ofert|pagar|pagas|pagarias|subir|subes|mas dinero)/.test(d))return 'price';
   if(/(te interesa|lo quieres|lo quiere|cerramos|trato|lo compras|lo compra|te decides|decidiste|lo llevas|te convence|te convenci)/.test(d))return 'close';
   if(/(para que lo|por que lo quier|que vas a hacer|para que es|para quien)/.test(d))return 'why';
@@ -1234,62 +1260,144 @@ function formCheck(text,b){
   return {chips,pos,neg,f,d};
 }
 
-/* ---------- evaluación local del contenido (si la IA no está disponible) ---------- */
+/* ---------- evaluación local del contenido: memoria, preocupaciones, evasivas y contradicciones ---------- */
 function evaluateLocal(text,b,it,form){
+  prepBuyer(b);
   const P=PERSONAS[b.persona];const chips=[...form.chips];let pos=form.pos,neg=form.neg;const f=form.f,d=form.d;
   const add=(v,l)=>{chips.push({v,l});v>0?pos+=v:neg+=v};
+  const sd=norm(it.story);
+  if(f.insult)b.insults++;
   if(text.length>=40&&text.length<=380)add(3,'Buena extensión');
   const first=strip(b.name.split(/[ _.]/)[0].toLowerCase());
   if(first.length>2&&!['don','senor'].includes(first)&&rx(first).test(d))add(4,'Lo llamaste por su nombre');
-  const pr=PROOF.filter(w=>rx(w).test(d)).length;
-  if(pr)add(Math.round(6*Math.min(pr,2)*P.proof),'Pruebas o garantías');
+  const cityWord=strip(b.city.split(' ').pop().toLowerCase());
+  if((cityWord.length>3&&rx(cityWord).test(d))||(b.persona==='coleccionista'&&/coleccion/.test(d))||(b.persona!=='coleccionista'&&/regalo/.test(d)))add(4,'Trato personalizado');
+  const relevant=itemWords(it.name).some(w=>rx(w).test(d))||it.kw.some(k=>rx(k).test(d))||SALES_WORDS.test(d)||Object.values(CONCERNS).some(C=>C.stems&&C.stems.some(s=>rx(s).test(d)))||/\b(1[0-9]\d\d|20[0-2]\d)\b/.test(text)||text.includes('?');
+  const evasive=/(no se|ni idea|no importa|confia en mi|creeme|no te puedo decir|eso no importa|da igual|que mas da|no hace falta|no tengo idea)/.test(d);
+  /* promesas incumplidas */
+  if(b.photoPromised){add(-6,'Prometiste una foto y no llegó');f.brokePromise=true;b.photoPromised=false}
+  /* pregunta pendiente */
+  const asksDoubt=text.includes('?')&&qType(d)==='doubt';
+  if(asksDoubt&&b.q&&!b.q.photo){chips.push({v:0,l:'Le preguntaste qué le preocupa'});b.q=null;f.askedDoubt=true}
   if(b.q){
-    if(b.q.photo){if(/(foto|mando|ahi va|ya va|enseguida|ahora te)/.test(d))f.photoPromise=true;else{add(-6,'No mandaste la foto');f.ignored=true;b.q=null}}
-    else if(answers(b.q,d,text)){add(10,'Respondiste su pregunta');f.answered=true;b.q=null}
-    else{add(-6,'Ignoraste su pregunta');f.ignored=true;f.ignoredQ=b.q.q;b.q=null}
+    const q=b.q;q.tries=(q.tries||0);
+    if(q.photo){
+      if(/(foto|mando|ahi va|ya va|enseguida|ahora te|en un momento)/.test(d)){f.photoPromise=true;b.photoPromised=true}
+      else{add(-6,'No mandaste la foto');f.ignored=true;f.ignoredQ=q.q;q.tries++}
+    }else if(answers(q,d,text)&&!evasive){
+      add(10,'Respondiste su pregunta');f.answered=true;f.answerWord=(q.a.map(s=>s.startsWith('__')||s==='NUM'?null:wordFor(text,s)).find(Boolean))||null;
+      if(q.concern&&!b.resolved.includes(q.concern)){b.resolved.push(q.concern);add(6,'Resolviste: '+CONCERNS[q.concern].label);f.resolvedNow=[q.concern]}
+      b.q=null;
+    }else if(evasive){add(-9,'Esquivaste la pregunta');f.evaded=true;q.tries++}
+    else if(text.length>70&&relevant){chips.push({v:0,l:'Respuesta a medias'});f.partial=true;q.tries+=.5}
+    else{add(-6,'Ignoraste su pregunta');f.ignored=true;f.ignoredQ=q.q;q.tries++}
+    if(b.q&&q.tries>=2){add(-4,'Insiste y no le respondes');f.giveUpQ=true;b.q=null}
   }
+  /* preocupaciones que el mensaje resuelve por su cuenta */
+  for(const c of b.concerns){
+    const C=CONCERNS[c];if(b.resolved.includes(c)||C.photo)continue;
+    if(C.stems.some(s=>rx(s).test(d))){b.resolved.push(c);add(Math.round(8*(c==='autenticidad'?P.proof:1)),'Resolviste: '+C.label);f.resolvedNow=(f.resolvedNow||[]).concat(c)}
+  }
+  if(f.resolvedNow&&b.concerns.every(c=>b.resolved.includes(c))&&!b.allClear){b.allClear=true;add(8,'Ya no le quedan dudas');f.allClear=true}
+  /* información útil que no era una preocupación */
+  const info=[['envio',SHIP],['garantia',['garantia','devol','reembols']],['estado',CONDITION]].filter(([k,st])=>!(f.resolvedNow||[]).includes(k)&&st.some(s=>rx(s).test(d))).length;
+  if(info)add(4*Math.min(info,2),'Información útil');
+  /* pruebas sueltas */
+  const pr=PROOF.filter(w=>rx(w).test(d)).length;
+  if(pr&&!(f.resolvedNow||[]).includes('autenticidad'))add(Math.round(4*Math.min(pr,2)*P.proof),'Pruebas o garantías');
+  /* coherencia con el anuncio */
   const cons=it.kw.filter(k=>rx(k).test(d)).length;
   if(cons)add(Math.round(5*Math.min(cons,3)*P.story),'Coherente con el anuncio');
-  const sd=norm(it.story);
-  const contra=CONTRA.filter(k=>rx(k).test(d)&&!rx(k).test(sd)).length;
-  if(contra){add(-9*Math.min(contra,2),'Eso no estaba en el anuncio');f.contra=true}
+  /* contradicciones */
+  const storyYears=(it.story.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/g)||[]);
+  const known=new Set([...storyYears,...b.facts.years]);
+  for(const y of yearClaims(d))if(storyYears.length&&!known.has(y)){add(-12,'Cambiaste la fecha');f.yearClash={was:storyYears[0],now:y};break}
+  const knownRel=Object.assign({},b.facts.rel,relNames(it.story));
+  const saidRel=relNames(text);
+  for(const r in saidRel)if(knownRel[r]&&knownRel[r]!==saidRel[r]){add(-12,'Cambiaste un nombre');f.nameClash={rel:r,was:knownRel[r],now:saidRel[r]};break}
+  const newClaims=CONTRA.filter(k=>rx(k).test(d)&&!rx(k).test(sd));
+  if(newClaims.length){add(-9*Math.min(newClaims.length,2),'Eso no estaba en el anuncio');f.contra=true}
+  if(newClaims.length>=2||/(el mejor del mundo|unico en el mundo|vale millones|nadie mas tiene|el mas famoso|mas valioso del mundo|imposible de conseguir)/.test(d)){add(-6,'Suena exagerado');f.exag=true}
+  /* presión y desvíos */
+  if(/(decidete ya|ultima oportunidad|ahora o nunca|si no lo compras|hay otros interesados|otro interesado|se lo vendo a otro)/.test(d)){
+    if(b.persona==='apurado')add(3,'Le gusta la rapidez');else{add(b.persona==='desconfiado'?-9:-5,'Lo estás presionando');f.pressure=true}}
+  if(!relevant&&!f.answered&&!f.evaded&&text.length>15&&!f.insult){add(-5,'Se fue del tema');f.offtopic=true}
+  /* memoria de lo que dijiste */
+  for(const y of (text.match(/\b(1[0-9]\d\d|20[0-2]\d)\b/g)||[]))if(!b.facts.years.includes(y))b.facts.years.push(y);
+  for(const r in saidRel)if(!b.facts.rel[r])b.facts.rel[r]=saidRel[r];
   f.ask=text.includes('?')?qType(d):null;
   f.topics=[];for(const T of TOPICS){const x=T.find(text,d,it);if(x)f.topics.push({id:T.id,x})}
   const e=ease(b)*(S.weak?.75:1);
   return {delta:Math.min(34,Math.round(pos*P.pos*e+neg*P.neg)),chips,f,text};
 }
+const VOICE={
+ amable:{good:['¡Qué bien!','¡Me encanta!','Ay, qué lindo.'],bad:['Uy, eso no me gustó mucho.','Mmm, me dejas pensando.'],ok:['Entiendo.','Ajá.']},
+ desconfiado:{good:['Bueno, eso suena mejor.','Puede ser.'],bad:['Ya me lo imaginaba.','No me convences.'],ok:['Mmm.','Ya veo.']},
+ apurado:{good:['Perfecto.','Bien, rápido.'],bad:['No tengo tiempo para esto.','Al grano, por favor.'],ok:['Vale.','Ok.']},
+ coleccionista:{good:['Interesante, muy interesante.','Eso tiene valor para mí.'],bad:['Un coleccionista nota esas cosas.','Eso le quita valor.'],ok:['Comprendo.','Anotado.']},
+};
 function buyerReply(b,ev,it){
-  const L=[],f=ev.f;
-  if(f.insult)L.push(pick(['¿Perdón? Así no se le habla a un cliente.','Qué falta de respeto. Me estoy arrepintiendo.','No hace falta tratarme así.']));
+  prepBuyer(b);
+  const L=[],f=ev.f,V=VOICE[b.persona];let keepQ=false,nextQ=null;
+  /* 1. tono */
+  if(f.insult)L.push(b.insults>1?'Otra vez faltándome el respeto. Última vez que te lo paso.':pick(['¿Perdón? Así no se le habla a un cliente.','Qué falta de respeto. Me estoy arrepintiendo.']));
   else if(f.gib)L.push(pick(['No entendí nada de lo que escribiste.','¿Qué? Eso no se entiende.']));
   else if(f.caps)L.push('¿Por qué me gritas?');
-  else if(f.spell>=2)L.push(pick(['Escribes un poco raro… ¿eres un vendedor serio?','Con tantas faltas me cuesta confiar.','¿Lo escribiste con prisa? Parece una estafa.']));
+  else if(f.spell>=2)L.push(pick(['Escribes un poco raro… ¿eres un vendedor serio?','Con tantas faltas me cuesta confiar.']));
   else if(f.slang)L.push(pick(['Uf, qué informal todo…','No sé si estoy hablando con alguien serio.']));
+  /* 2. lo que tú le preguntaste */
   if(f.ask){
-    const conv=b.conv;
-    L.push({price:conv>70?`Te ofrecí ${money(b.offer)}. Si sigues así, cerramos por eso.`:`${money(b.offer)}, ya te dije. Y todavía no estoy seguro.`,
-      close:conv>=80?'Estoy casi convencido.':conv>=50?'Me interesa, pero todavía tengo dudas.':'La verdad, por ahora no me convence.',
-      why:PERSONAS[b.persona].why,where:`Vivo en ${b.city}${b.dist>=3?', así que el envío va a tardar un poco':''}.`,
-      name:`Me llamo ${b.name}, lo ves arriba.`,other:pick(['Buena pregunta, pero contéstame tú primero.','No sé, la verdad.','Eso ahora no importa tanto.'])}[f.ask]);
+    const pend=b.concerns.filter(c=>!b.resolved.includes(c));
+    const ans={
+      doubt:pend.length?`Sinceramente, lo que más me preocupa es ${CONCERNS[pend[0]].label}.`:'La verdad, ya casi no tengo dudas.',
+      photo_offer:'Sí, mándamela, por favor.',
+      pay:'Te pago por transferencia: la mitad al cerrar y el resto cuando me llegue.',
+      when:b.persona==='apurado'?'Lo necesito para mañana, por eso tengo prisa.':'Sin apuro, pero no quiero esperar semanas.',
+      price:b.conv>70?`Te ofrecí ${money(b.offer)}. Si sigues así, cerramos por eso.`:`${money(b.offer)}, ya te dije. Y todavía no estoy seguro.`,
+      close:b.conv>=80?'Estoy casi convencido.':b.conv>=50?'Me interesa, pero todavía tengo dudas.':'La verdad, por ahora no me convence.',
+      why:PERSONAS[b.persona].why,
+      where:`Vivo en ${b.city}${b.dist>=3?', así que el envío va a tardar un poco':''}.`,
+      name:`Me llamo ${b.name}, lo ves arriba.`,
+      other:pick(['Buena pregunta, pero contéstame tú primero.','No sé, la verdad.','Eso ahora no importa tanto.'])}[f.ask];
+    L.push(ans);
+    if(f.ask==='doubt'&&pend.length){const C=CONCERNS[pend[0]];const qs=C.asks(b);nextQ={id:'c-'+pend[0]+'d',q:qs[0],a:C.stems,concern:pend[0],photo:!!C.photo}}
+    if(f.ask==='photo_offer'){nextQ={id:'po',q:'¿Me la mandas ahora?',photo:true}}
   }
-  if(f.answered)L.push(pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
-  else if(f.ignored&&!f.insult)L.push(f.ignoredQ?pick(['No me respondiste lo que te pregunté.','Te hice una pregunta concreta…']):'¿Y la foto?');
-  if(f.contra)L.push(pick(['Espera, eso no lo decía el anuncio. ¿Me estás inventando cosas?','¿Y eso de dónde salió? En la publicación no estaba.']));
+  /* 3. su pregunta pendiente */
+  if(f.answered)L.push(f.answerWord&&Math.random()<.6?`«${f.answerWord}»… vale, eso me sirve.`:pick(['Eso responde mi duda.','Vale, eso me cuadra.','Ah, entiendo.','Perfecto, gracias por aclararlo.']));
+  else if(f.giveUpQ)L.push('Veo que no me vas a responder eso. Lo tendré en cuenta.');
+  else if(f.evaded&&b.q){keepQ='Eso no es una respuesta.'}
+  else if(f.partial&&b.q){keepQ='Bien, pero no me respondiste del todo.'}
+  else if(f.ignored&&b.q&&!f.insult){keepQ=b.q.photo?'¿Y la foto?':'Te repito la pregunta:'}
+  if(f.brokePromise)L.push('Me dijiste que me mandabas una foto y nada.');
+  /* 4. contradicciones */
+  if(f.yearClash)L.push(`Espera: en el anuncio decías ${f.yearClash.was} y ahora dices ${f.yearClash.now}.`);
+  else if(f.nameClash)L.push(`¿No se llamaba ${f.nameClash.was} tu ${f.nameClash.rel}? Ahora dices ${f.nameClash.now}.`);
+  else if(f.contra)L.push(pick(['Eso no lo decía el anuncio. ¿Me estás inventando cosas?','¿Y eso de dónde salió? En la publicación no estaba.']));
+  else if(f.exag)L.push('Me suena muy exagerado, la verdad.');
+  if(f.pressure)L.push(b.persona==='desconfiado'?'Si me presionas, menos te creo.':'No me presiones, por favor.');
+  if(f.offtopic)L.push('¿Y eso qué tiene que ver con el objeto?');
+  /* 5. preocupaciones resueltas */
+  if(f.allClear)L.push('Con eso ya no me quedan dudas importantes.');
+  else if(f.resolvedNow&&!f.answered)L.push(`Eso me quita la duda sobre ${CONCERNS[f.resolvedNow[0]].label}.`);
+  /* 6. reacción al contenido */
   let topic=null;
   if(!f.insult&&!f.gib){
     topic=f.topics.find(t=>!b.seen.includes(t.id))||null;
-    if(topic){b.seen.push(topic.id);if(!f.contra)L.push(pick(TOPICS.find(t=>t.id===topic.id).react(topic.x)))}
-    else if(!f.answered&&!f.ignored&&!f.ask){
-      if(ev.delta>=15)L.push(pick(['¡Eso me convence bastante!','Ahora sí estamos hablando.','Muy bien explicado.']));
-      else if(ev.delta>=5)L.push(pick(['Vale, tiene sentido.','Me gusta lo que escucho.']));
-      else if(f.dry)L.push(pick(['¿Nada más? Esperaba algo más.','Ajá… ¿y?']));
-      else L.push(pick(['Mmm…','No sé, sigo con dudas.']));
+    if(topic){b.seen.push(topic.id);if(!f.contra&&!f.yearClash&&L.length<3)L.push(pick(TOPICS.find(t=>t.id===topic.id).react(topic.x)))}
+    else if(L.length===0){
+      if(ev.delta>=15)L.push(pick(V.good));else if(ev.delta<=-5)L.push(pick(V.bad));else if(f.dry)L.push(pick(['¿Nada más? Esperaba algo más.','Ajá… ¿y?']));else L.push(pick(V.ok));
     }
   }
+  /* 7. sube la oferta si está muy convencido */
+  const after=b.conv+ev.delta;
+  if(after>=80&&!b.raised&&it&&b.offer<it.price&&!f.insult){b.raised=true;b.offer=niceRound(Math.min(it.price,b.offer*1.1));L.push(`Te subo la oferta a ${money(b.offer)} si me respondes esto.`)}
+  /* 8. próxima pregunta */
   if(f.photoPromise)L.push('De acuerdo, espero la foto.');
-  else{const q=nextQuestion(b,it,topic,ev.text);b.q=q;L.push(q.q)}
+  else if(keepQ){L.push(b.q.photo&&keepQ==='¿Y la foto?'?keepQ:keepQ+' '+b.q.q)}
+  else{const q=nextQ||nextQuestion(b,it,topic,ev.text);b.asked.includes(q.id)||b.asked.push(q.id);b.q=q;L.push(q.q)}
   if(b.patience===1)L.push('Te aviso que no tengo todo el día.');
-  return L.join(' ');
+  return L.slice(0,5).join(' ');
 }
 
 /* ---------- cliente con IA (Claude) ---------- */
@@ -1322,6 +1430,7 @@ Tu oferta actual: $${b.offer}
 Tu convencimiento: ${Math.round(b.conv)}/100 (100 = compras)
 Mensajes que te quedan de paciencia: ${b.patience}
 Pregunta que le hiciste y sigue pendiente: ${b.q?'"'+b.q.q+'"':'ninguna'}
+Tus preocupaciones (secretas; si el vendedor las resuelve, suma mucho): ${(b.concerns||[]).map(c=>CONCERNS[c].label+((b.resolved||[]).includes(c)?' (ya resuelta)':'')).join('; ')||'ninguna'}
 
 CONVERSACIÓN HASTA AHORA
 ${hist}
@@ -1987,6 +2096,8 @@ function sendPhoto(){
   const first=!b.photos;b.photos++;
   if(ph.q>=85)add(first?18:5,'Foto nítida');else if(ph.q>=60)add(first?8:3,'Foto aceptable');else if(ph.q>=35)add(-5,'Foto borrosa');else add(-12,'Foto impresentable');
   if(b.q&&b.q.photo&&ph.q>=60){add(8,'Mandaste la foto que pidió');b.q=null}
+  prepBuyer(b);b.photoPromised=false;
+  if(ph.q>=60&&b.concerns.includes('foto')&&!b.resolved.includes('foto')){b.resolved.push('foto');add(6,'Resolviste: verlo con mis propios ojos')}
   const delta=Math.round(pos*P.pos*ease(b)*(S.weak?.75:1)+neg*P.neg);
   b.msgs.push({from:'p',photo:Object.assign({},ph),chips});
   b.patience--;b.waitingSince=null;b.typing=true;renderChat();
