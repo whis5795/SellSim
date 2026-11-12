@@ -9859,6 +9859,16 @@ typo=function(w){if(!w||w.length<4)return null;const r=Math.random(),i=1+Math.fl
   return w+w.slice(-1)};
 const TYPO_EXTRA={abuelita:['PERDÓN SE ME TRABÓ LA MAYÚSCULA','perdón tesoro, estos botones son muy chiquitos','Ay, mandé antes de terminar'],abuelito:['Disculpe, el teléfono escribe solo','perdón, apreté cualquier cosa','A ver, ¿se mandó?'],
   mama:['perdón, me escribió el nene','jaja eso lo escribió mi hijo','perdón, escribo con una mano y con la otra tengo al bebé'],estudiante:['jaja el autocorrector','perdón escribo caminando'],gamer:['xd me comí letras','bueno se entiende'],chismosa:['¡Ay, el corrector!','perdón, escribo rápido de la emoción'],_:['perdón, el autocorrector','jaja perdón, escribo rápido','*eso, perdón']};
+
+// corregir no siempre sale a la primera: *palabra mal, **palabra, ***palabra…
+const FIX_GIVEUP={abuelita:['AY NO PUEDO','bueno, se entiende tesoro'],abuelito:['Bueno, usted me entiende.','este teléfono…'],gamer:['ya fue','se entiende xd'],estudiante:['ya fue jaja','bueno, se entendió'],mama:['ay, ya fue','se entiende 😅'],_:['bueno, se entiende','ya fue jaja','ay, no puedo hoy']};
+function fixChain(w,b){const r=Math.random(),bad=()=>{let x=typo(w);for(let k=0;k<4&&(!x||x===w);k++)x=typo(w);return x&&x!==w?x:w+w.slice(-1)};
+  if(r<.6)return ['*'+w];
+  if(r<.8)return ['*'+bad(),'**'+w];
+  if(r<.9)return ['*'+bad(),'**'+bad(),'***'+w];
+  if(r<.95)return ['*'+bad(),'**'+bad(),'***'+bad(),pick(FIX_GIVEUP[b&&b.persona]||FIX_GIVEUP._)];
+  return Math.random()<.5?['*'+w,'*'+w]:['*'+w+'*'];}
+function fixSend(seq,d0,push){let t=d0;seq.forEach((x,i)=>{setTimeout(()=>push(x),t);t+=ri(600,1500)+x.length*40})}
 const _finishTurnMJ=finishTurn;
 finishTurn=function(b,delta,reply,delay){const n0=b.msgs.length;const res=_finishTurnMJ.apply(this,arguments);try{const p=TYPO_P[b.persona]||0;if(!p||b.lang)return res;
   const d=(delay||1000)*(SPEED[b.persona]||1)*1.5+400;
@@ -9867,11 +9877,12 @@ finishTurn=function(b,delta,reply,delay){const n0=b.msgs.length;const res=_finis
     if(['abuelita','abuelito'].includes(b.persona)&&Math.random()<.12){last.text=last.text.toUpperCase();if(Math.random()<.6)setTimeout(()=>{b.msgs.push({from:'b',text:pick(TYPO_EXTRA[b.persona])});if(S.cur===b.id)renderChat(true);save()},1400);if(S.cur===b.id)renderChat(true);return}
     if(Math.random()>p*1.2)return;const ws=last.text.match(/[A-Za-záéíóúñÁÉÍÓÚÑ]{4,}/g)||[];if(!ws.length)return;const n=Math.random()<.3?2:1,fixed=[];
     for(let k=0;k<n;k++){const w=pick(ws),bad=typo(w);if(bad&&bad!==w&&last.text.includes(w)){last.text=last.text.replace(w,bad);fixed.push(w)}}
-    if(fixed.length&&Math.random()<(TYPO_FIX[b.persona]??TYPO_FIX._))setTimeout(()=>{b.msgs.push({from:'b',text:fixed.length>1?fixed.map(x=>'*'+x).join(' '):Math.random()<.25?pick(TYPO_EXTRA[b.persona]||TYPO_EXTRA._):'*'+fixed[0]});if(S.cur===b.id)renderChat(true);else b.unread=1;save()},ri(700,1800));
+    if(fixed.length&&Math.random()<(TYPO_FIX[b.persona]??TYPO_FIX._)){const seq=fixed.length>1?(Math.random()<.35?fixed.flatMap(x=>fixChain(x,b)):[fixed.map(x=>'*'+x).join(' ')]):Math.random()<.2?[pick(TYPO_EXTRA[b.persona]||TYPO_EXTRA._)]:fixChain(fixed[0],b);
+      fixSend(seq,ri(700,1800),t=>{b.msgs.push({from:'b',text:t});if(S.cur===b.id)renderChat(true);else b.unread=1;save()})}
     if(S.cur===b.id)renderChat(true)}catch(e){}},d);}catch(e){}return res};
 // los amigos también se equivocan al escribir
 const _vdPushMJ=vdPush;vdPush=function(b,text,extra){try{const p=(TYPO_P[b.persona]||0)*.7;if(text&&!extra&&!b.lang&&Math.random()<p){const ws=text.match(/[A-Za-záéíóúñ]{5,}/g)||[];const w=ws.length&&pick(ws),bad=w&&typo(w);
-  if(bad&&bad!==w){const r=_vdPushMJ(b,text.replace(w,bad),extra);if(Math.random()<(TYPO_FIX[b.persona]??TYPO_FIX._))setTimeout(()=>{try{_vdPushMJ(b,'*'+w)}catch(e){}},ri(900,2000));return r}}}catch(e){}return _vdPushMJ.apply(this,arguments)};
+  if(bad&&bad!==w){const r=_vdPushMJ(b,text.replace(w,bad),extra);if(Math.random()<(TYPO_FIX[b.persona]??TYPO_FIX._))fixSend(fixChain(w,b),ri(900,2000),t=>{try{_vdPushMJ(b,t)}catch(e){}});return r}}}catch(e){}return _vdPushMJ.apply(this,arguments)};
 // ---------- comprensión de mensajes profesionales: el cliente reacciona a lo que ofreces ----------
 const PRO_I=[
   ['envioGratis',/(envio gratis|te lo mando gratis|sin costo de envio|envio (sin cargo|incluido)|yo pago el envio)/,{w:['¡Ay, qué amable! Envío gratis, mejor imposible.'],c:['Envío gratis. Bien, eso suma.'],q:['¡Envío gratis! Eso me encanta.']},5],
