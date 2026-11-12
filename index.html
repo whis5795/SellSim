@@ -2141,7 +2141,7 @@ body:has(#menu:not([hidden])) #room .rm-top,body:has(#menu:not([hidden])) #room 
 
 <div class="menu" id="menu" hidden>
   <div class="menu-bg" aria-hidden="true"><span style="left:41%;animation-delay:-17.1s;animation-duration:18.7s;font-size:23px">🎻</span><span style="left:9%;animation-delay:-14.8s;animation-duration:15.1s;font-size:40px">🚲</span><span style="left:7%;animation-delay:-16.4s;animation-duration:16.6s;font-size:24px">📻</span><span style="left:55%;animation-delay:-7.5s;animation-duration:16.9s;font-size:39px">⌚</span><span style="left:54%;animation-delay:-1.1s;animation-duration:20.8s;font-size:29px">🎩</span><span style="left:80%;animation-delay:-11.3s;animation-duration:25.4s;font-size:40px">🏺</span><span style="left:74%;animation-delay:-7.1s;animation-duration:25.7s;font-size:23px">📷</span><span style="left:71%;animation-delay:-15.5s;animation-duration:17.5s;font-size:26px">🧸</span><span style="left:69%;animation-delay:-2.1s;animation-duration:17.7s;font-size:43px">🎸</span><span style="left:23%;animation-delay:-1.9s;animation-duration:20.9s;font-size:28px">💸</span><span style="left:47%;animation-delay:-1.8s;animation-duration:22.5s;font-size:40px">🏷️</span><span style="left:7%;animation-delay:-11.1s;animation-duration:20.0s;font-size:39px">🕰️</span><span style="left:54%;animation-delay:-14.0s;animation-duration:19.6s;font-size:36px">🗝️</span><span style="left:46%;animation-delay:-5.4s;animation-duration:23.5s;font-size:44px">🎭</span><span style="left:31%;animation-delay:-1.5s;animation-duration:17.6s;font-size:37px">💡</span><span style="left:43%;animation-delay:-13.1s;animation-duration:17.5s;font-size:24px">🪕</span><span style="left:15%;animation-delay:-9.2s;animation-duration:16.0s;font-size:32px">🔭</span><span style="left:19%;animation-delay:-16.8s;animation-duration:19.1s;font-size:43px">🧳</span><span style="left:9%;animation-delay:-13.8s;animation-duration:20.9s;font-size:32px">🎻</span><span style="left:43%;animation-delay:-12.5s;animation-duration:21.1s;font-size:40px">🚲</span><span style="left:58%;animation-delay:-1.2s;animation-duration:15.1s;font-size:30px">📻</span><span style="left:60%;animation-delay:-12.5s;animation-duration:14.8s;font-size:44px">⌚</span></div>
-  <span class="menu-ver" aria-label="Versión del juego">v85</span>
+  <span class="menu-ver" aria-label="Versión del juego">v86</span>
   <div class="menu-box">
     <div class="menu-hero">
       <div class="menu-tagline">Simulador de reventa</div>
@@ -7449,6 +7449,12 @@ function rkCount(){const R=S.rk;if(!R)return;const spec=RK_CNT[R.d];const card=$
     el.classList.toggle('ok',!!(sp.ok&&sp.ok(v,R)))})}
 const _rkOpenCNT=rkOpen;rkOpen=function(){const r=_rkOpenCNT.apply(this,arguments);try{rkCount()}catch(e){}return r};
 const _renderPageCNT=renderPage;renderPage=function(f){_renderPageCNT(f);try{if($('#page #rk-card'))rkCount()}catch(e){}};
+// ---------- doble toque (o doble clic) en una casilla: se raspa entera ----------
+const RK_TAP={el:null,t:0};
+document.addEventListener('pointerdown',e=>{const cv=e.target.closest&&e.target.closest('#page .rk-c canvas.rk-cv');if(!cv)return;const cell=cv.parentNode,now=Date.now();
+  if(RK_TAP.el===cell&&now-RK_TAP.t<380){RK_TAP.el=null;const R=S.rk;if(!R||R.done)return;const c=R.sec[+cell.dataset.s].cells[+cell.dataset.i];
+    if(R.picks&&!c.picked)return;setTimeout(()=>{try{rkOpen(cell)}catch(x){}},0);return}
+  RK_TAP.el=cell;RK_TAP.t=now});
 
 /* ================= TIENDAS CARAS: se desbloquean con ventas grandes en la tienda anterior ================= */
 const TIER_REQ={vitrina:{from:'bz',lab:_t(1935),min:35,n:3},subastas:{from:'vitrina',lab:_t(429),min:250,n:3},lujo:{from:'subastas',lab:_t(443),min:1500,n:2}};
