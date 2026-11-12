@@ -1820,6 +1820,19 @@ body.webfull .wf-bar{display:flex}.wf-bar button{width:34px;height:34px;border:0
 /* cupón más chico */
 .cup-pop{width:min(250px,calc(100% - 20px));padding:6px 8px 8px;border-radius:12px}.cup-pop .cup-txt span{display:none}.cup-pop .cup-txt b{font-size:12px;line-height:1.15}.cup-pop .cup-stub{width:54px;padding:4px}.cup-pop .cup-stub b{font-size:13px}.cup-pop .cup-stub small{font-size:8.5px}
 .cup-pop .cup-tick{font-size:9px}.cup-pop .cup-x{font-size:16px}.cup-pop .cup-main{gap:8px;margin-top:3px}.cup-pop .cup-txt code{font-size:10px;padding:1px 5px}.cup-pop .cup-act{margin-top:6px;gap:7px}.cup-pop .cup-save{padding:5px 10px;font-size:11.5px}
+
+/* versión del juego en el menú */
+.menu-ver{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(8px,env(safe-area-inset-bottom,0px));z-index:3;font:600 11px var(--f-mono,monospace);color:#fff;opacity:.55;pointer-events:none;letter-spacing:.04em}
+/* PC: botones a la izquierda y el cuarto del juego se ve a la derecha, difuminado */
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+ .menu{justify-content:flex-start;padding-left:clamp(36px,7vw,120px);background:none;animation:none}
+ .menu::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1200px 600px at 10% -10%,rgba(255,197,49,.45),transparent 60%),radial-gradient(700px 600px at 30% 120%,rgba(242,84,45,.4),transparent 60%),linear-gradient(160deg,#0E1650,#2645F2 55%,#1A2A8C);background-size:140% 140%;animation:menubg 18s ease-in-out infinite alternate;
+   -webkit-mask-image:linear-gradient(90deg,#000 0,#000 34%,rgba(0,0,0,.75) 48%,transparent 74%);mask-image:linear-gradient(90deg,#000 0,#000 34%,rgba(0,0,0,.75) 48%,transparent 74%)}
+ .menu::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;backdrop-filter:blur(5px) saturate(1.15) brightness(.92);-webkit-backdrop-filter:blur(5px) saturate(1.15) brightness(.92);background:linear-gradient(90deg,transparent 40%,rgba(14,22,80,.12))}
+ .menu-bg{-webkit-mask-image:linear-gradient(90deg,#000 30%,transparent 58%);mask-image:linear-gradient(90deg,#000 30%,transparent 58%)}
+ .menu-box{margin:0}
+ .menu-ver{color:#1B1F2E;opacity:.6;background:rgba(255,255,255,.55);padding:2px 7px;border-radius:999px}
+}
 </style>
 
 <div class="chrome">
@@ -1995,6 +2008,7 @@ body.webfull .wf-bar{display:flex}.wf-bar button{width:34px;height:34px;border:0
 
 <div class="menu" id="menu" hidden>
   <div class="menu-bg" aria-hidden="true"><span style="left:41%;animation-delay:-17.1s;animation-duration:18.7s;font-size:23px">🎻</span><span style="left:9%;animation-delay:-14.8s;animation-duration:15.1s;font-size:40px">🚲</span><span style="left:7%;animation-delay:-16.4s;animation-duration:16.6s;font-size:24px">📻</span><span style="left:55%;animation-delay:-7.5s;animation-duration:16.9s;font-size:39px">⌚</span><span style="left:54%;animation-delay:-1.1s;animation-duration:20.8s;font-size:29px">🎩</span><span style="left:80%;animation-delay:-11.3s;animation-duration:25.4s;font-size:40px">🏺</span><span style="left:74%;animation-delay:-7.1s;animation-duration:25.7s;font-size:23px">📷</span><span style="left:71%;animation-delay:-15.5s;animation-duration:17.5s;font-size:26px">🧸</span><span style="left:69%;animation-delay:-2.1s;animation-duration:17.7s;font-size:43px">🎸</span><span style="left:23%;animation-delay:-1.9s;animation-duration:20.9s;font-size:28px">💸</span><span style="left:47%;animation-delay:-1.8s;animation-duration:22.5s;font-size:40px">🏷️</span><span style="left:7%;animation-delay:-11.1s;animation-duration:20.0s;font-size:39px">🕰️</span><span style="left:54%;animation-delay:-14.0s;animation-duration:19.6s;font-size:36px">🗝️</span><span style="left:46%;animation-delay:-5.4s;animation-duration:23.5s;font-size:44px">🎭</span><span style="left:31%;animation-delay:-1.5s;animation-duration:17.6s;font-size:37px">💡</span><span style="left:43%;animation-delay:-13.1s;animation-duration:17.5s;font-size:24px">🪕</span><span style="left:15%;animation-delay:-9.2s;animation-duration:16.0s;font-size:32px">🔭</span><span style="left:19%;animation-delay:-16.8s;animation-duration:19.1s;font-size:43px">🧳</span><span style="left:9%;animation-delay:-13.8s;animation-duration:20.9s;font-size:32px">🎻</span><span style="left:43%;animation-delay:-12.5s;animation-duration:21.1s;font-size:40px">🚲</span><span style="left:58%;animation-delay:-1.2s;animation-duration:15.1s;font-size:30px">📻</span><span style="left:60%;animation-delay:-12.5s;animation-duration:14.8s;font-size:44px">⌚</span></div>
+  <span class="menu-ver" aria-label="Versión del juego">v73</span>
   <div class="menu-box">
     <div class="menu-hero">
       <div class="menu-tagline">Simulador de reventa</div>
@@ -2002,7 +2016,7 @@ body.webfull .wf-bar{display:flex}.wf-bar button{width:34px;height:34px;border:0
       <p class="menu-tag">Compra barato. Inventa una historia. Convence. Vende caro.</p>
     </div>
     <div id="menu-body" class="menu-body"></div>
-    <p class="menu-foot">Tus partidas se guardan en este navegador · v5<br>Iconos: <a href="https://game-icons.net" target="_blank" rel="noopener" style="color:inherit">game-icons.net</a> (CC BY 3.0) y Phosphor Icons (MIT)</p>
+    <p class="menu-foot">Tus partidas se guardan en este navegador<br>Iconos: <a href="https://game-icons.net" target="_blank" rel="noopener" style="color:inherit">game-icons.net</a> (CC BY 3.0) y Phosphor Icons (MIT)</p>
   </div>
 </div>
 
