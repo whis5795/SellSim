@@ -1958,7 +1958,7 @@ body:has(#menu:not([hidden])) #room .rm-top,body:has(#menu:not([hidden])) #room 
 #menu{align-items:flex-start!important}
 #menu .menu-box{margin-top:auto;margin-bottom:auto}
 #menu .menu-box:has([data-act=m-back]){padding-bottom:84px}
-@media (min-width:900px) and (min-aspect-ratio:5/4){.m-float{left:calc(clamp(36px,7vw,120px) + 230px)}}
+@media (min-width:900px) and (min-aspect-ratio:5/4){.m-float{display:none!important}#menu .menu-box:has([data-act=m-back]){padding-bottom:24px}#menu .mhead{position:sticky;top:-24px;z-index:6;padding:30px 0 8px;margin-top:-30px;background:linear-gradient(180deg,#14206E 70%,rgba(20,32,110,0));}}
 
 #menu .mgrid.mg-all .mcard:last-child:nth-child(3n+2){grid-column:span 2!important}#menu .mgrid.mg-all .mcard:last-child:nth-child(3n+1){grid-column:span 3!important}
 
@@ -2139,7 +2139,7 @@ body:has(#menu:not([hidden])) #room .rm-top,body:has(#menu:not([hidden])) #room 
 
 <div class="menu" id="menu" hidden>
   <div class="menu-bg" aria-hidden="true"><span style="left:41%;animation-delay:-17.1s;animation-duration:18.7s;font-size:23px">🎻</span><span style="left:9%;animation-delay:-14.8s;animation-duration:15.1s;font-size:40px">🚲</span><span style="left:7%;animation-delay:-16.4s;animation-duration:16.6s;font-size:24px">📻</span><span style="left:55%;animation-delay:-7.5s;animation-duration:16.9s;font-size:39px">⌚</span><span style="left:54%;animation-delay:-1.1s;animation-duration:20.8s;font-size:29px">🎩</span><span style="left:80%;animation-delay:-11.3s;animation-duration:25.4s;font-size:40px">🏺</span><span style="left:74%;animation-delay:-7.1s;animation-duration:25.7s;font-size:23px">📷</span><span style="left:71%;animation-delay:-15.5s;animation-duration:17.5s;font-size:26px">🧸</span><span style="left:69%;animation-delay:-2.1s;animation-duration:17.7s;font-size:43px">🎸</span><span style="left:23%;animation-delay:-1.9s;animation-duration:20.9s;font-size:28px">💸</span><span style="left:47%;animation-delay:-1.8s;animation-duration:22.5s;font-size:40px">🏷️</span><span style="left:7%;animation-delay:-11.1s;animation-duration:20.0s;font-size:39px">🕰️</span><span style="left:54%;animation-delay:-14.0s;animation-duration:19.6s;font-size:36px">🗝️</span><span style="left:46%;animation-delay:-5.4s;animation-duration:23.5s;font-size:44px">🎭</span><span style="left:31%;animation-delay:-1.5s;animation-duration:17.6s;font-size:37px">💡</span><span style="left:43%;animation-delay:-13.1s;animation-duration:17.5s;font-size:24px">🪕</span><span style="left:15%;animation-delay:-9.2s;animation-duration:16.0s;font-size:32px">🔭</span><span style="left:19%;animation-delay:-16.8s;animation-duration:19.1s;font-size:43px">🧳</span><span style="left:9%;animation-delay:-13.8s;animation-duration:20.9s;font-size:32px">🎻</span><span style="left:43%;animation-delay:-12.5s;animation-duration:21.1s;font-size:40px">🚲</span><span style="left:58%;animation-delay:-1.2s;animation-duration:15.1s;font-size:30px">📻</span><span style="left:60%;animation-delay:-12.5s;animation-duration:14.8s;font-size:44px">⌚</span></div>
-  <span class="menu-ver" aria-label="Versión del juego">v80</span>
+  <span class="menu-ver" aria-label="Versión del juego">v81</span>
   <div class="menu-box">
     <div class="menu-hero">
       <div class="menu-tagline">Simulador de reventa</div>
@@ -11109,6 +11109,25 @@ friendReply=function(b,text){const R=_friendReplyQ1.apply(this,arguments);try{if
 const _vdSayQ1=vdSay;
 vdSay=function(b,parts,cb){try{parts=(parts||[]).filter(Boolean);const bye=parts.findIndex(p=>/(te dejo|me tengo que ir|mañana seguimos|me voy yendo)/i.test(p));
   if(bye>0)parts=parts.filter((p,i)=>i>=bye||!/\?\s*$/.test(p))}catch(e){}return _vdSayQ1.call(this,parts,cb)};
+// ---------- precios escritos con letras: «te lo dejo en cincuenta», «ciento veinte», «mil quinientos» ----------
+const NW_U={cero:0,un:1,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9,diez:10,once:11,doce:12,trece:13,catorce:14,quince:15,dieciseis:16,diecisiete:17,dieciocho:18,diecinueve:19,veinte:20,veintiuno:21,veintiun:21,veintidos:22,veintitres:23,veinticuatro:24,veinticinco:25,veintiseis:26,veintisiete:27,veintiocho:28,veintinueve:29,treinta:30,cuarenta:40,cincuenta:50,sesenta:60,setenta:70,ochenta:80,noventa:90,cien:100,ciento:100,doscientos:200,doscientas:200,trescientos:300,trescientas:300,cuatrocientos:400,quinientos:500,quinientas:500,seiscientos:600,setecientos:700,ochocientos:800,novecientos:900};
+function wordsToNum(text){let x=strip(String(text).toLowerCase()).replace(/\b(treinta|cuarenta|cincuenta|sesenta|setenta|ochenta|noventa) y (uno|un|dos|tres|cuatro|cinco|seis|siete|ocho|nueve)\b/g,(m,a,c)=>a+'_'+c);
+  const val=w=>w.includes('_')?w.split('_').reduce((s,p)=>s+(NW_U[p]||0),0):NW_U[w];
+  const toks=x.split(/(\s+|[.,;:!?¿¡$])/);const out=[];let acc=0,cur=0,seen=false,sep='';
+  const flush=()=>{if(seen){out.push(String(acc+cur));acc=0;cur=0;seen=false}};
+  for(const t of toks){if(t==='')continue;const w=t.trim();if(!w||/^[.,;:!?¿¡$]$/.test(w)){if(seen){sep+=t;continue}out.push(t);continue}
+    const v=val(w);const art=(w==='un'||w==='una'||w==='uno');
+    if(v!=null&&(!art||seen)){cur+=v;seen=true;sep='';continue}
+    if(w==='mil'){acc=(acc+(cur||1))*1000;cur=0;seen=true;sep='';continue}
+    flush();if(sep){out.push(sep);sep=''}out.push(t)}
+  flush();if(sep)out.push(sep);return out.join('')}
+const _parsePriceNW=parsePrice;
+parsePrice=function(text,b){const r=_parsePriceNW.apply(this,arguments);if(r)return r;try{const t2=wordsToNum(text);if(t2!==strip(String(text).toLowerCase())&&/\d/.test(t2))return _parsePriceNW.call(this,t2,b)}catch(e){}return r};
+// número suelto al principio con remate de trato: «65 y es tuyo», «90, último precio», «70?»
+const _parsePriceNW2=parsePrice;
+parsePrice=function(text,b){const r=_parsePriceNW2.apply(this,arguments);if(r)return r;try{const d=strip(wordsToNum(text).toLowerCase()).trim();
+  const m=d.match(/^(?:y\s+|bueno,?\s+|ok,?\s+|dale,?\s+|mira,?\s+)?\$?\s*(\d{1,5})(?!\d)\s*(?:pesos)?\s*[,.]?\s*(y (es|son) tuy|y (listo|cerramos|trato)|y te lo (llevas|quedas)|ultim|final|ni (uno|un peso) menos|no bajo|no acepto menos|es mi|trato hecho|te sirve|te parece|\?|!|$)/);
+  if(m){const n=+m[1];const ref=b?(b.offer||n):n;if(n>=ref*.35&&n<=ref*4&&!(n>=1800&&n<=2030)){parsePrice.weak=false;return n}}}catch(e){}return r};
 
 /* ================= ANIMACIONES AL TOCAR: onda + leve hundimiento en botones de menús e interfaces ================= */
 const RPL_SEL=_t(7840);
