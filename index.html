@@ -9353,6 +9353,27 @@ bzChats=function(){const fam=S.buyers.filter(b=>b.fam);const all=S.buyers;S.buye
   const k=h.indexOf('<p class="bz-sec">Amigos y conocidos');if(k>=0)return h.slice(0,k)+sec+h.slice(k);const c=h.indexOf('<p class="bz-sec">Cerradas');return c>=0?h.slice(0,c)+sec+h.slice(c):h+sec};
 const _renderChatRED=renderChat;renderChat=function(){const r=_renderChatRED.apply(this,arguments);try{const b=S.buyers.find(x=>x.id===S.cur);if(b&&b.fam&&!b.typing)$('#c-persona').textContent=b.fam==='mama'?'Tu mamá':b.fam==='abuela'?'Tu abuela':'Tu hermano';else if(b&&b.partner===1&&S.partner===b.id&&!b.typing)$('#c-persona').textContent='Tu pareja 💕 · romance '+Math.round(b.rom||0)}catch(e){}return r};
 
+// ---------- la familia escribe poco y no contesta eternamente ----------
+// como mucho un mensaje de la familia por día, y cada familiar escribe cada 3 a 6 días
+function famCallOk(){return !S.famCallDay||S.day-S.famCallDay>=5}
+const _vdPingFAM=vdPing;
+vdPing=function(b){if(b&&b.fam){if(b.famNext==null){b.famNext=S.day+ri(2,4);return null}
+    if(S.day<b.famNext||S.famPingDay===S.day||Math.random()<.5)return null;
+    const P=_vdPingFAM.apply(this,arguments);if(P&&P.length){b.famNext=S.day+ri(3,6);S.famPingDay=S.day;return P.slice(0,2)}return P}
+  return _vdPingFAM.apply(this,arguments)};
+// cada familiar contesta unos pocos mensajes por día; después se despide y te deja en visto
+const FAM_BYE={mama:['Bueno, mi amor, te dejo que tengo que hacer las compras. Cuidate mucho 💕','Me voy a mirar la novela. Después hablamos, besito.'],hermano:['bueno me voy, abrazo','che me tengo que ir, después hablamos'],abuela:['BUENO TESORO ME VOY A DORMIR LA SIESTA. UN BESO GRANDE','ME CANSÉ DE ESCRIBIR TESORO. CHAU UN BESO']};
+const _sendMsgFAM=sendMsg;
+sendMsg=async function(ext){const b=S.buyers.find(x=>x.id===(ext?ext.id:S.cur));
+  if(!b||!b.fam||b.status!=='won'||b.typing)return _sendMsgFAM.apply(this,arguments);
+  if(b.famRDay!==S.day){b.famRDay=S.day;b.famR=0;b.famLim=ri(2,4)}
+  if(b.famR>=b.famLim){const inp=$('#c-input');const text=ext?ext.text:(inp.value||'').trim();if(!text)return;
+    b.msgs.push(Object.assign({from:'p',text,chips:[{v:0,l:'No contesta: ya se despidió por hoy'}]},ext&&ext.who?{who:ext.who}:{}));if(!ext){inp.value='';try{autosize()}catch(e){}}
+    renderChat();dirty=true;save();return}
+  b.famR++;const r=await _sendMsgFAM.apply(this,arguments);
+  if(b.famR>=b.famLim&&FAM_BYE[b.fam]){const bye=pick(FAM_BYE[b.fam]);const go=(n)=>{try{if(b.typing&&n<20)return setTimeout(()=>go(n+1),3000);vdSay(b,[bye])}catch(e){}};setTimeout(()=>go(0),ri(9000,16000))}
+  return r};
+
 /* ================= CHAT VIVO: tiempos de respuesta reales, doble tilde, notas de voz, llamadas, notificaciones y autocorrector ================= */
 // ---------- cuánto tarda cada uno en leerte, según su vida ----------
 function readDelay(b){const p=b.persona,m=S.min,w=(typeof WIN!=='undefined'&&(WIN[p]||WIN._))||[9*60,22*60];let f=1;const why=[];
@@ -9469,7 +9490,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-cl],[data-
 let clLastT=-1;
 setInterval(()=>{try{if(!S||S.dead||!S.buyers||S.t===clLastT)return;clLastT=S.t;if(S.t%30||callBusy())return;const V=VD();if(V.callDay!==S.day){V.callDay=S.day;V.calls=0}if(V.calls>=2)return;
   for(const b of S.buyers){if(b.status==='open'||b.typing)continue;const w=(typeof WIN!=='undefined'&&(WIN[b.persona]||WIN._))||[9*60,22*60];if(S.min<w[0]+30||S.min>w[1]-30)continue;
-    const p=b.partner===1&&S.partner===b.id?.07:b.fam==='mama'?.05:b.fam?.012:(b.bond||0)>=40?.006+(b.bond-40)/6000:0;if(p&&Math.random()<p){if(callStart(b,false)){V.calls++;break}}}}catch(e){console.error(e)}},1000);
+    const p=b.partner===1&&S.partner===b.id?.07:b.fam?(typeof famCallOk==='function'&&famCallOk()?(b.fam==='mama'?.004:.0015):0):(b.bond||0)>=40?.006+(b.bond-40)/6000:0;if(p&&Math.random()<p){if(callStart(b,false)){V.calls++;if(b.fam)S.famCallDay=S.day;break}}}}catch(e){console.error(e)}},1000);
 // ---------- autocorrector y sugerencias ----------
 const AC_BASE='hola gracias perfecto claro precio envío envíos foto fotos original auténtico historia abuelo abuela regalo descuento oferta mañana también todavía después entonces garantía certificado estado funciona perfectamente impecable usado antiguo antigüedad colección coleccionista restaurado tasación réplica disponible enseguida ahora cuando cuánto dónde cómo porque querido querida amigo transferencia efectivo pago mitad cuotas seguro asegurado paquete ventana barrio familia herencia época década siglo único especial bonito precioso hermoso conservado detalle detalles marca firma madera metal cuero vidrio cerámica plata oro bronce bueno buenísimo excelente encantado gusto tranquilo trato cerramos acepto propongo pregunta pregunto respuesta mensaje'.split(' ');
 const AC_FUN={precio:'precioso',envío:'envidio',original:'originario',regalo:'regaño',barato:'bárbaro',cuánto:'cuento',seguro:'segundo',garantía:'garganta',estado:'estadio',historia:'histeria',abuelo:'abuela',foto:'feto',oferta:'ofertón',cerramos:'cenamos',perfecto:'perfume',certificado:'certifichado'};
