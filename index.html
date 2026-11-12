@@ -1583,7 +1583,8 @@ body.webfull .wf-bar{display:flex}.wf-bar button{width:34px;height:34px;border:0
 /* ---- perfil social ---- */
 .pf2{display:flex;flex-direction:column;gap:12px;margin:-4px 0 30px}
 .pf2-cover{height:118px;border-radius:16px;overflow:hidden;position:relative}.pf2-cover svg.cv{width:100%;height:100%;opacity:.45;mix-blend-mode:soft-light}
-.pf2-head{display:flex;align-items:flex-end;gap:14px;margin-top:-52px;padding:0 6px}
+.pf2-head{display:flex;align-items:flex-end;gap:14px;margin-top:-52px;padding:0 6px;position:relative;z-index:2}
+.pf2-stats{background:color-mix(in srgb,var(--surface) 82%,transparent);border-radius:12px;padding:6px 2px!important;backdrop-filter:blur(6px)}
 .pf2-av{padding:3px;border-radius:50%;background:var(--surface);flex:none}.pf2-av.story{background:conic-gradient(#FEDA75,#FA7E1E,#D62976,#962FBF,#4F5BD5,#FEDA75)}
 .pf2-av .pf-av{width:88px;height:88px;border:3px solid var(--surface);border-radius:50%;display:block}
 .pf2-stats{flex:1;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;padding-bottom:4px}.pf2-stats b{display:block;font-size:17px}.pf2-stats span{font-size:11px;color:var(--muted)}
@@ -9095,6 +9096,11 @@ for(const k in ARCS)for(const bt of ARCS[k])for(const i of [0,2,3])bt[i]=bt[i].r
 
 // red de seguridad: ninguna plantilla de género queda sin resolver en el chat
 const _renderChatGX=renderChat;renderChat=function(){try{const b=S.buyers.find(x=>x.id===S.cur);if(b)for(const m of b.msgs)if(m.text&&m.text.indexOf('{')>=0&&m.from==='b')m.text=gtx(b,m.text)}catch(e){}return _renderChatGX.apply(this,arguments)};
+// la biografía del perfil concuerda con el género de la persona (Investigador/Investigadora, Jubilado/Jubilada…)
+const BIO_SX=[['Investigador privado (retirado)','Investigadora privada (retirada)'],['👨‍🍳','👩‍🍳'],['👴','👵'],['Restaurador aficionado','Restauradora aficionada'],['Escéptico','Escéptica'],['Cazador','Cazadora'],['Hijo, nieto y bisnieto','Hija, nieta y bisnieta'],['Creador de contenido','Creadora de contenido'],['Investigador','Investigadora'],['Abuelo de','Abuela de'],['Jubilado','Jubilada'],['Jardinero y soñador','Jardinera y soñadora'],['mesero','mesera'],['Profesor de lengua jubilado','Profesora de lengua jubilada'],['Corrector de','Correctora de'],['Perito','Perita'],['Cocinero','Cocinera'],['Pintor ','Pintora '],['Artista plástico','Artista plástica'],['Vecino del barrio','Vecina del barrio'],['Papá de dos','Mamá de dos'],['Enfermero','Enfermera'],['cansado','cansada'],['Papá, enfermero','Mamá, enfermera'],['Viajero','Viajera']];
+function bioSex(t,f){if(!t)return t;const pairs=BIO_SX.map(([m,w])=>f?[m,w]:[w,m]).sort((a,b)=>b[0].length-a[0].length);const map=new Map(pairs);const re=new RegExp(pairs.map(x=>x[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g');return t.replace(re,x=>map.get(x))}
+const _ensureProfileGS=ensureProfile;
+ensureProfile=function(b){const p=_ensureProfileGS.apply(this,arguments);try{if(p&&p.bio&&p._bs!==sexOf(b)){p._bs=sexOf(b);p.bio=p.bio.map?p.bio.map(x=>bioSex(x,p._bs==='f')):bioSex(p.bio,p._bs==='f')}}catch(e){}return p};
 
 /* ================= CARAS, FOTOS ILUSTRADAS Y PERFILES SOCIALES COMPLETOS ================= */
 // ---------- caras dibujadas, una por persona ----------
@@ -9235,7 +9241,7 @@ openProfile=function(){_openProfilePF.apply(this,arguments);try{const b=S.buyers
       <div class="pf2-stats"><div><b class="num">${n.posts}</b><span>posts</span></div><div><b class="num">${kfmt(n.fol)}</b><span>seguidores</span></div><div><b class="num">${n.seg}</b><span>seguidos</span></div></div></div>
     <div class="pf2-id"><b>${esc(b.name)}${ver?' <i class="pf2-ver" title="Cuenta verificada">✓</i>':''}${b.lang?' '+FOR[b.lang].flag:''}</b><span class="pf2-h">@${esc(p.handle)}</span>${b.seenProfile||b.followed||isF?`<span class="pf2-tag">${esc(P.label||'')}</span>`:''}
       <p>${esc(gtx(b,p.bio[0]))}</p><p>${esc(gtx(b,p.bio[1]))}</p><p class="pf2-meta">📍 ${esc(b.city)}${bdK?` · 🎂 ${bdayTxt(F.bday)}`:''}${b.kn&&b.kn.age?` · ${F.age} años`:''}</p>
-      ${kn.length?`<div class="pf2-mut"><span class="pf2-mav">${kn.slice(0,3).map(x=>`<i>${avSVG(x)}</i>`).join('')}</span><span>${kn.length===1?`Amig${sexOf(kn[0])==='f'?'a':'o'} de ${esc(firstName(kn[0].name))}, que también te compró`:`Conoce a ${kn.slice(0,2).map(x=>esc(firstName(x.name))).join(' y ')}${kn.length>2?` y ${kn.length-2} más`:''}, que también te compraron`}</span></div>`:''}</div>
+      ${kn.length?`<div class="pf2-mut"><span class="pf2-mav">${kn.slice(0,3).map(x=>`<i>${avSVG(x)}</i>`).join('')}</span><span>${kn.length===1?`Amig${sexOf(b)==='f'?'a':'o'} de ${esc(firstName(kn[0].name))}, que también te compró`:`Conoce a ${kn.slice(0,2).map(x=>esc(firstName(x.name))).join(' y ')}${kn.length>2?` y ${kn.length-2} más`:''}, que también te compraron`}</span></div>`:''}</div>
     <div class="pf2-acts"><button class="pf-btn" data-act="pf-follow">${b.followed?'Siguiendo':'Seguir'}</button><button class="pf-btn ghost" data-act="pf-close">Mensaje</button>${isF?'<button class="pf-btn ghost" data-act="call-start">📞 Llamar</button>':''}</div>
     <div class="pf2-hl">${p.hl.map((l,i)=>`<div><span>${sceneSVG({k:['item','land','food'][i%3],ic:p.posts[i]||'⭐'},l+b.name)}</span><small>${esc(l)}</small></div>`).join('')}</div>
     <nav class="pf2-tabs"><a href="#" data-pft="posts" class="${PFV.tab==='posts'?'on':''}">Publicaciones</a>${relH?`<a href="#" data-pft="rel" class="${PFV.tab==='rel'?'on':''}">Tu relación</a>`:''}<a href="#" data-pft="info" class="${PFV.tab==='info'?'on':''}">Info</a></nav>
