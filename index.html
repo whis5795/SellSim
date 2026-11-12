@@ -1735,6 +1735,12 @@ body.webfull .wf-bar{display:flex}.wf-bar button{width:34px;height:34px;border:0
 .hp-frh{margin:12px 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.6}.hp-chat.hp-fr{border-left:3px solid #E85A9B}
 .hp-m.hp-vn{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px 9px;min-width:210px}.hp-m.hp-vn.play .vn-w i{animation:vnp 1s ease-in-out infinite alternate}
 .hp-tick{font-style:normal;font-size:10px;color:#53BDEB;margin-left:6px}.hp-qrb.ng{background:#E9F7EF;color:#0F5A37;font-weight:700}
+.nt,.toast{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.toast{pointer-events:auto}
+.sw-drag{transition:none!important;animation:none!important;cursor:grabbing}
+.sw-back{transition:transform .25s cubic-bezier(.2,.9,.3,1.2),opacity .25s}
+.sw-out{transition:transform .22s ease-in,opacity .22s ease-in}
+.sw-col{transition:height .25s ease,margin .25s ease,padding .25s ease}
 </style>
 
 <div class="chrome">
@@ -9404,7 +9410,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act="vn-pl
 function notify(b,text,onClick){try{const box=$('#nt-box')||(()=>{const d=document.createElement('div');d.id='nt-box';document.body.appendChild(d);return d})();
   const lock=typeof inRoom==='function'&&inRoom();const n=document.createElement('div');n.className='nt'+(lock?' lock':'');
   n.innerHTML=`${lock?`<div class="nt-lk">${String(Math.floor(S.min/60)).padStart(2,'0')}:${String(S.min%60).padStart(2,'0')} · Pantalla bloqueada</div>`:''}<div class="nt-r"><span class="av avi">${avSVG(b)}</span><div class="nt-c"><div class="nt-a"><b>${esc(b.name)}</b><small>${b.fam?'Familia':'Bazarito'} · ahora</small></div><p>${esc(String(text).slice(0,110))}</p></div></div>`;
-  n.addEventListener('click',()=>{n.remove();onClick?onClick():vdOpen(b)});box.prepend(n);while(box.children.length>3)box.lastChild.remove();setTimeout(()=>{n.classList.add('out');setTimeout(()=>n.remove(),400)},5200);
+  n.addEventListener('click',()=>{n.remove();onClick?onClick():vdOpen(b)});box.prepend(n);while(box.children.length>3)box.lastChild.remove();const hide=()=>{if(!n.isConnected)return;if(n._hold)return setTimeout(hide,1500);n.classList.add('out');setTimeout(()=>n.remove(),400)};setTimeout(hide,5200);
   try{navigator.vibrate&&navigator.vibrate([45,35,45])}catch(e){}try{ntSound(b)}catch(e){}}catch(e){_toastCV(text,'',onClick)}}
 function ntSound(b){const a=audio();if(!a||a.state!=='running')return;const h=vhash(b.name),notes=[523,587,659,698,784,880,988],f1=notes[h%7],f2=notes[(h>>>3)%7]*(h%2?1:1.5),t=a.currentTime;
   [[f1,0],[f2,.11]].forEach(([f,dt])=>{const o=a.createOscillator(),g=a.createGain();o.type=['sine','triangle'][h%2];o.frequency.value=f;g.gain.setValueAtTime(0,t+dt);g.gain.linearRampToValueAtTime(.08,t+dt+.01);g.gain.exponentialRampToValueAtTime(.001,t+dt+.25);o.connect(g);g.connect(a.destination);o.start(t+dt);o.stop(t+dt+.3)})}
@@ -9481,6 +9487,23 @@ document.addEventListener('click',e=>{const s=e.target.closest('[data-ac]');if(s
   if(e.target.closest('[data-ac-undo]')&&acUndo){e.preventDefault();const i=$('#c-input');const k=i.value.lastIndexOf(acUndo.from);if(k>=0)i.value=i.value.slice(0,k)+acUndo.to+i.value.slice(k+acUndo.from.length);acUndo=null;acSug();i.focus()}},true);
 (function acMount(){const c=document.querySelector('#chat .cx-comp .in');if(!c){setTimeout(acMount,500);return}if($('#c-sug'))return;const d=document.createElement('div');d.id='c-sug';d.className='ac-bar';const row=c.querySelector('.row');c.insertBefore(d,row);d.innerHTML=''})();
 const _renderChatAC=renderChat;renderChat=function(){const r=_renderChatAC.apply(this,arguments);try{const box=$('#c-sug');const inp=$('#c-input');if(box&&inp){box.hidden=inp.disabled;if(!box.innerHTML)box.innerHTML=acTog()}}catch(e){}return r};
+
+// ---------- deslizar para descartar notificaciones (como en el celular) ----------
+(function(){let D=null;
+  const sel='.nt,.toast';
+  document.addEventListener('pointerdown',e=>{const el=e.target.closest(sel);if(!el||e.button>0)return;D={el,x:e.clientX,y:e.clientY,dx:0,t:performance.now(),moved:false,id:e.pointerId};el._hold=true},true);
+  document.addEventListener('pointermove',e=>{if(!D||e.pointerId!==D.id)return;const dx=e.clientX-D.x,dy=e.clientY-D.y;
+    if(!D.moved){if(Math.abs(dx)<8)return;if(Math.abs(dy)>Math.abs(dx)){D.el._hold=false;D=null;return}D.moved=true;D.el.classList.add('sw-drag');try{D.el.setPointerCapture(e.pointerId)}catch(x){}}
+    D.dx=dx;const w=D.el.offsetWidth||300;D.el.style.transform=`translateX(${dx}px) rotate(${dx/w*4}deg)`;D.el.style.opacity=String(Math.max(.15,1-Math.abs(dx)/w*1.1));e.preventDefault()},{passive:false,capture:true});
+  const end=e=>{if(!D||(e&&e.pointerId!==D.id))return;const {el,dx,moved,t}=D;D=null;el._hold=false;if(!moved)return;el._swiped=true;setTimeout(()=>el._swiped=false,50);el.classList.remove('sw-drag');
+    const w=el.offsetWidth||300,v=Math.abs(dx)/Math.max(1,performance.now()-t);
+    if(Math.abs(dx)>w*.33||(v>.6&&Math.abs(dx)>30)){const dir=dx>0?1:-1;el.classList.add('sw-out');el.style.transform=`translateX(${dir*(window.innerWidth)}px) rotate(${dir*8}deg)`;el.style.opacity='0';
+      const h=el.offsetHeight;setTimeout(()=>{el.style.height=h+'px';el.style.overflow='hidden';requestAnimationFrame(()=>{el.classList.add('sw-col');el.style.height='0px';el.style.marginTop='-6px';el.style.paddingTop=el.style.paddingBottom='0'})},180);setTimeout(()=>el.remove(),480)}
+    else{el.classList.add('sw-back');el.style.transform='';el.style.opacity='';setTimeout(()=>el.classList.remove('sw-back'),260)}};
+  document.addEventListener('pointerup',end,true);document.addEventListener('pointercancel',end,true);
+  // si se deslizó, no cuenta como toque (no abre el chat)
+  document.addEventListener('click',e=>{const el=e.target.closest(sel);if(el&&el._swiped){e.stopImmediatePropagation();e.preventDefault()}},true);
+})();
 
 /* ================= NEGOCIOS: cuotas, trueques, estafadores, pujas entre dos, mayoristas y un rival ================= */
 const NG_INST={abuelita:.97,abuelito:.96,amable:.93,mama:.9,desconfiado:.92,tikismikis:.95,estudiante:.74,regateador:.8,revendedor:.7,gamer:.78,bromista:.8,_:.86};
